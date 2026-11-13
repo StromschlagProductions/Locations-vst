@@ -193,16 +193,9 @@ void LocationsEditor::paint (juce::Graphics& g)
     g.setColour (theme.accent);
     g.setFont (juce::FontOptions (13.0f, juce::Font::bold));
     g.drawText ("AUDIO DRAMA OFF-STAGE SIMULATOR", 228, 15, 330, 22, juce::Justification::centredLeft);
-    // Versionsmarke: helle Plakette, damit schwarzer Text auch im dunklen Look lesbar ist
-    const auto tag = juce::Rectangle<float> (466.0f, 19.0f, 36.0f, 17.0f);
-    g.setColour (juce::Colour (0xffe8ecec));
-    g.fillRoundedRectangle (tag, 4.0f);
-    g.setColour (juce::Colours::black);
-    g.setFont (juce::FontOptions (10.0f, juce::Font::bold));
-    g.drawText ("v" PLUGIN_VERSION_TEXT, tag.toNearestInt(), juce::Justification::centred);
     g.setColour (theme.dim);
     g.setFont (juce::FontOptions (11.0f));
-    g.drawText (u8 ("STROMSCHLAG AUDIO"), 80, 36, 300, 16, juce::Justification::centredLeft);
+    g.drawText (u8 ("STROMSCHLAG AUDIO  \xc2\xb7  v" PLUGIN_VERSION_TEXT), 80, 36, 300, 16, juce::Justification::centredLeft);
 
     // Karten
     g.setColour (theme.panel);
