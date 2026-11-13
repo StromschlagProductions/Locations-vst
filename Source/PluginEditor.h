@@ -34,15 +34,13 @@ private:
     juce::ComboBox placeA, placeB;
     juce::Label labelA, labelB, labelBlend;
     juce::Slider blend;
-    Knob distance, door, room, level, out;
-    juce::ToggleButton delay;
+    Knob distance, door, room, out;
     juce::TextButton themeButton;
     juce::TextButton helpButton;
     juce::TextEditor helpText;
     juce::TooltipWindow tooltipWindow { this, 400 };
     std::unique_ptr<APVTS::ComboBoxAttachment> attA, attB;
     std::unique_ptr<APVTS::SliderAttachment> attBlend;
-    std::unique_ptr<APVTS::ButtonAttachment> attDelay;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LocationsEditor)
 };

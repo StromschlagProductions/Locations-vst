@@ -51,9 +51,8 @@ also der Raum, in dem die Zuhörer sitzen.
 | Start-Entfernung | wie weit weg die Quelle bei Position 0 % ist |
 | Tür (zu-offen) | 0 % = geschlossene Tür (dumpf, leise), 100 % = offen (keine Wirkung) |
 | Raumanteil | Hall des Raums, in dem die Quelle steht (Trim in dB) |
-| Pegelwirkung | wie stark der Pegel mit Entfernung und Tür sinkt (0 % = nur Klangfarbe) |
 | Ausgang | Ausgangspegel |
-| Weg-Verzögerung | wenige Millisekunden Laufzeit (aus = kein Zeitversatz) |
+Die Lautstärke sinkt mit der Entfernung und bei geschlossener Tür automatisch. Der Laufweg (z. B. Treppenhaus) verzögert den Ton automatisch um wenige Millisekunden, bei Gleicher Raum gar nicht.
 
 ## Anwendung
 
