@@ -20,6 +20,8 @@ else()
     FetchContent_MakeAvailable(JUCE)
 endif()
 
+juce_add_binary_data(LocationsAssets SOURCES Assets/logo.png)
+
 juce_add_plugin(Locations
     COMPANY_NAME "Stromschlag Audio"
     PLUGIN_MANUFACTURER_CODE Strm
@@ -49,6 +51,7 @@ endif()
 
 target_link_libraries(Locations
     PRIVATE
+        LocationsAssets
         juce::juce_audio_utils
     PUBLIC
         juce::juce_recommended_config_flags
