@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.22)
-project(Locations VERSION 0.1.0)
+# Versionsnummer steht in der Datei VERSION (wird bei jeder Aenderung hochgezaehlt)
+file(STRINGS VERSION LOC_VERSION LIMIT_COUNT 1)
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS VERSION)
+project(Locations VERSION ${LOC_VERSION})
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -40,7 +43,7 @@ target_sources(Locations PRIVATE
     Source/PluginEditor.cpp)
 
 target_compile_definitions(Locations PUBLIC
-    PLUGIN_VERSION_TEXT="0.2"
+    PLUGIN_VERSION_TEXT="${LOC_VERSION}"
     JUCE_WEB_BROWSER=0
     JUCE_USE_CURL=0
     JUCE_VST3_CAN_REPLACE_VST2=0

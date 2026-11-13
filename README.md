@@ -79,6 +79,10 @@ Die Wohnzimmer-Impulsantwort legst du danach wie gewohnt in der DAW darüber. Da
 2. ZIP entpacken und den Ordner `Locations.vst3` nach `C:\Program Files\Common Files\VST3` kopieren.
 3. DAW neu starten bzw. Plugins neu scannen.
 
+## Versionen
+
+Die Versionsnummer steht in der Datei `VERSION`, im Plugin-Kopf und im Namen der Release. Sie wird bei jeder Änderung hochgezählt (1.0, 1.1, 1.2 …).
+
 ## Aufbau
 
 - `Source/LocationsDSP.h`: Klang-Engine (reines C++, Orte und Werte stehen oben in der Tabelle)
