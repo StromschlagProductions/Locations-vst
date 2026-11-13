@@ -43,7 +43,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout LocationsProcessor::createLa
     auto panText = AudioParameterFloatAttributes().withStringFromValueFunction (
         [] (float v, int) { const int pct = roundToInt (std::abs (v) * 100.0f);
                             return pct == 0 ? String ("Mitte") : String (v < 0 ? "L " : "R ") + String (pct) + " %"; });
-    layout.add (std::make_unique<AudioParameterFloat> (ParameterID { "pan", 1 }, "Panorama",
+    layout.add (std::make_unique<AudioParameterFloat> (ParameterID { "pan", 1 }, "Quelle L-R (Panorama)",
                                                        NormalisableRange<float> (-1.0f, 1.0f), 0.0f, panText));
     return layout;
 }

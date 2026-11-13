@@ -55,7 +55,7 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
 
     setupKnob (distance, "distance", u8 ("Entfernung A  nah \xe2\x86\x94 weit"));
     setupKnob (door, "door", u8 ("T\xc3\xbcr  zu \xe2\x86\x94 offen"));
-    setupKnob (pan, "pan", "Panorama");
+    setupKnob (pan, "pan", u8 ("Quelle  L \xe2\x86\x94 R"));
     setupKnob (room, "room", "Raumanteil A");
 
 
@@ -88,8 +88,10 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
         "Ort B ist immer nah, deshalb wirkt dieser Regler nur auf Ort A.\n\n"
         "TUER (zu-offen)\n"
         "0 % = Tuer geschlossen: dumpf und leise. 100 % = offen, ohne Wirkung. Eigener Regler, weil eine Tuer meist zu einem anderen Zeitpunkt aufgeht.\n\n"
-        "PANORAMA\n"
-        "Platziert die Quelle links oder rechts im Stereobild. Nur die Quelle wandert, der Raum (Hall, Echo) bleibt in der Mitte stehen. Mitte = keine Wirkung.\n\n"
+        "QUELLE L - R (Panorama)\n"
+        "Platziert die Quelle - also das, was auf der Spur liegt: Stimme, Schritte, Geraeusch - links oder rechts. "
+        "Nur die Quelle wandert, Hall und Echo des Raums bleiben in der Mitte stehen (anders als der Pan am Kanal). "
+        "Wirkt bei Ort A, auf dem Weg und bei Ort B. Mitte = keine Wirkung.\n\n"
         "RAUMANTEIL A\n"
         "Mehr oder weniger Hall bzw. Echo von Ort A, in dB. Feinregler, normalerweise auf 0 dB lassen.\n\n"
 
@@ -107,7 +109,7 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
     blend.setTooltip (u8 ("Position: 0 % = bei Ort A (weit), 100 % = bei Ort B (nah). Hauptregler fuer die Bewegung."));
     distance.slider.setTooltip (u8 ("Wie weit weg Ort A ist (nah = 0 %, weit = 100 %). Ort B ist immer nah."));
     door.slider.setTooltip (u8 ("0 % = Tuer zu (dumpf, leise), 100 % = offen"));
-    pan.slider.setTooltip (u8 ("Quelle links/rechts platzieren. Nur die Quelle wandert, der Raum bleibt in der Mitte"));
+    pan.slider.setTooltip (u8 ("Stimme bzw. Ger\xc3\xa4usch links/rechts platzieren. Hall und Echo bleiben in der Mitte. Wirkt bei Ort A, auf dem Weg und bei Ort B."));
     room.slider.setTooltip (u8 ("Mehr oder weniger Hall/Echo von Ort A (Feinregler, dB)"));
 
     applyTheme();
