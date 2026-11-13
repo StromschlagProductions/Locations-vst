@@ -21,6 +21,12 @@ LocationsEditor::Theme LocationsEditor::lightTheme()
 
 LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor (&p), processor (p)
 {
+    addAndMakeVisible (content);
+    setResizable (true, true);
+    setResizeLimits (kBaseW / 2, kBaseH / 2, kBaseW * 3, kBaseH * 3);   // 50 % bis 300 %
+    if (auto* c = getConstrainer())
+        c->setFixedAspectRatio ((double) kBaseW / (double) kBaseH);
+
     logo = juce::ImageCache::getFromMemory (BinaryData::logo_png, BinaryData::logo_pngSize);
     theme = (int) processor.apvts.state.getProperty (kThemeProp, 0) == 1 ? lightTheme() : darkTheme();
     setLookAndFeel (&look);
@@ -29,7 +35,7 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
     for (auto* box : { &placeA, &placeB })
     {
         box->addItemList (names, 1);
-        addAndMakeVisible (*box);
+        content.addAndMakeVisible (*box);
     }
     attA = std::make_unique<APVTS::ComboBoxAttachment> (processor.apvts, "placeA", placeA);
     attB = std::make_unique<APVTS::ComboBoxAttachment> (processor.apvts, "placeB", placeB);
@@ -40,11 +46,11 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
     labelBlend.setText (u8 ("\xe2\x97\x80  bei A (weit)     POSITION     bei B (nah)  \xe2\x96\xb6"), juce::dontSendNotification);
     labelBlend.setJustificationType (juce::Justification::centred);
     for (auto* l : { &labelA, &labelB, &labelBlend })
-        addAndMakeVisible (*l);
+        content.addAndMakeVisible (*l);
 
     blend.setSliderStyle (juce::Slider::LinearHorizontal);
     blend.setTextBoxStyle (juce::Slider::TextBoxBelow, false, 70, 18);
-    addAndMakeVisible (blend);
+    content.addAndMakeVisible (blend);
     attBlend = std::make_unique<APVTS::SliderAttachment> (processor.apvts, "blend", blend);
 
     setupKnob (distance, "distance", "Start-Entfernung");
@@ -54,7 +60,7 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
     setupKnob (out, "out", "Ausgang");
 
     delay.setButtonText (u8 ("Weg-Verz\xc3\xb6gerung"));
-    addAndMakeVisible (delay);
+    content.addAndMakeVisible (delay);
     attDelay = std::make_unique<APVTS::ButtonAttachment> (processor.apvts, "delay", delay);
 
     themeButton.onClick = [this]
@@ -63,10 +69,10 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
         processor.apvts.state.setProperty (kThemeProp, theme.dark ? 0 : 1, nullptr);
         applyTheme();
     };
-    addAndMakeVisible (themeButton);
+    content.addAndMakeVisible (themeButton);
 
     applyTheme();
-    setSize (680, 420);
+    setSize (kBaseW, kBaseH);
 }
 
 LocationsEditor::~LocationsEditor() { setLookAndFeel (nullptr); }
@@ -106,22 +112,24 @@ void LocationsEditor::setupKnob (Knob& k, const juce::String& paramId, const juc
 {
     k.slider.setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     k.slider.setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 18);
-    addAndMakeVisible (k.slider);
+    content.addAndMakeVisible (k.slider);
     k.label.setText (text, juce::dontSendNotification);
     k.label.setJustificationType (juce::Justification::centred);
-    addAndMakeVisible (k.label);
+    content.addAndMakeVisible (k.label);
     k.attachment = std::make_unique<APVTS::SliderAttachment> (processor.apvts, paramId, k.slider);
 }
 
 void LocationsEditor::paint (juce::Graphics& g)
 {
     g.fillAll (theme.bg);
+    g.addTransform (juce::AffineTransform::scale (uiScale));
+    const int W = kBaseW;
 
     // Kopfleiste: folgt dem Look (dunkel = dunkle Leiste + helles Logo, hell = helle Leiste + dunkles Logo)
     g.setColour (theme.panel);
-    g.fillRect (0, 0, getWidth(), 64);
+    g.fillRect (0, 0, W, 64);
     g.setColour (theme.line);
-    g.fillRect (0, 63, getWidth(), 1);
+    g.fillRect (0, 63, W, 1);
     g.setColour (theme.accent);
     g.fillRect (0, 0, 5, 64);
 
@@ -141,16 +149,21 @@ void LocationsEditor::paint (juce::Graphics& g)
 
     // Karten
     g.setColour (theme.panel);
-    g.fillRoundedRectangle (12.0f, 76.0f, (float) getWidth() - 24.0f, 122.0f, 8.0f);
-    g.fillRoundedRectangle (12.0f, 208.0f, (float) getWidth() - 24.0f, 200.0f, 8.0f);
+    g.fillRoundedRectangle (12.0f, 76.0f, (float) W - 24.0f, 122.0f, 8.0f);
+    g.fillRoundedRectangle (12.0f, 208.0f, (float) W - 24.0f, 200.0f, 8.0f);
     g.setColour (theme.line);
-    g.drawRoundedRectangle (12.5f, 76.5f, (float) getWidth() - 25.0f, 121.0f, 8.0f, 1.0f);
-    g.drawRoundedRectangle (12.5f, 208.5f, (float) getWidth() - 25.0f, 199.0f, 8.0f, 1.0f);
+    g.drawRoundedRectangle (12.5f, 76.5f, (float) W - 25.0f, 121.0f, 8.0f, 1.0f);
+    g.drawRoundedRectangle (12.5f, 208.5f, (float) W - 25.0f, 199.0f, 8.0f, 1.0f);
 }
 
 void LocationsEditor::resized()
 {
-    const int w = getWidth();
+    uiScale = std::min ((float) getWidth() / kBaseW, (float) getHeight() / kBaseH);
+    content.setTransform (juce::AffineTransform::scale (uiScale));
+    content.setBounds (0, 0, kBaseW, kBaseH);
+    repaint();
+
+    const int w = kBaseW;
     themeButton.setBounds (w - 128, 18, 112, 28);
 
     labelA.setBounds (24, 82, 200, 18);
