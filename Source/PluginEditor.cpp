@@ -53,10 +53,25 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
     content.addAndMakeVisible (blend);
     attBlend = std::make_unique<APVTS::SliderAttachment> (processor.apvts, "blend", blend);
 
-    setupKnob (distance, "distance", u8 ("Entfernung A  nah \xe2\x86\x94 weit"));
-    setupKnob (door, "door", u8 ("T\xc3\xbcr  zu \xe2\x86\x94 offen"));
+    setupKnob (distance, "distance", "Entfernung A");
+    setupKnob (door, "door", "Durchgang");
     setupKnob (pan, "pan", u8 ("Quelle  L \xe2\x86\x94 R"));
+    setupKnob (rear, "rear", u8 ("Vorne \xe2\x86\x94 Hinten"));
     setupKnob (room, "room", "Raumanteil A");
+
+    barrierBox.addItemList (LocationsProcessor::barrierNames(), 1);
+    weatherBox.addItemList (LocationsProcessor::weatherNames(), 1);
+    content.addAndMakeVisible (barrierBox);
+    content.addAndMakeVisible (weatherBox);
+    attBarrier = std::make_unique<APVTS::ComboBoxAttachment> (processor.apvts, "barrier", barrierBox);
+    attWeather = std::make_unique<APVTS::ComboBoxAttachment> (processor.apvts, "weather", weatherBox);
+    barrierLabel.setText ("DAZWISCHEN", juce::dontSendNotification);
+    weatherLabel.setText (u8 ("WETTER (DRAUSSEN)"), juce::dontSendNotification);
+    for (auto* l : { &barrierLabel, &weatherLabel })
+    {
+        l->setJustificationType (juce::Justification::centredRight);
+        content.addAndMakeVisible (*l);
+    }
 
 
     themeButton.onClick = [this]
@@ -79,26 +94,29 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
     helpText.setPopupMenuEnabled (false);
     helpText.setText (u8 (
         "ORT A / ORT B\n"
-        "Start- und Zielort der Bewegung. Ort B ist meistens \"Gleicher Raum\", also der Raum der Zuhoerer.\n\n"
+        "Start- und Zielort der Bewegung. Ort B ist meistens „Gleicher Raum“, also der Raum der Zuhörer. Ort B ist immer nah.\n\n"
         "POSITION (A nach B)\n"
-        "Der wichtigste Regler. 0 % = Quelle bei Ort A, weit weg. 100 % = bei Ort B, ganz nah. "
-        "Automatisiere ihn fuer jede Bewegung (Treppe runter, Foerster kommt naeher).\n\n"
-        "ENTFERNUNG A (nah - weit)\n"
-        "Wie weit weg Ort A ist: 0 % = nah, 100 % = weit. Beispiel Foerster: weit = tief im Wald, 40 % = hinter dem naechsten Baum. "
-        "Ort B ist immer nah, deshalb wirkt dieser Regler nur auf Ort A.\n\n"
-        "TUER (zu-offen)\n"
-        "0 % = Tuer geschlossen: dumpf und leise. 100 % = offen, ohne Wirkung. Eigener Regler, weil eine Tuer meist zu einem anderen Zeitpunkt aufgeht.\n\n"
-        "QUELLE L - R (Panorama)\n"
-        "Platziert die Quelle - also das, was auf der Spur liegt: Stimme, Schritte, Geraeusch - links oder rechts. "
-        "Nur die Quelle wandert, Hall und Echo des Raums bleiben in der Mitte stehen (anders als der Pan am Kanal). "
-        "Wirkt bei Ort A, auf dem Weg und bei Ort B. Mitte = keine Wirkung.\n\n"
+        "Der wichtigste Regler. 0 % = Quelle bei Ort A, 100 % = bei Ort B. Automatisiere ihn für jede Bewegung "
+        "(Treppe herunter, Förster kommt näher, jemand geht weg).\n\n"
+        "ENTFERNUNG A (nah – weit)\n"
+        "Wie weit weg Ort A ist. Beispiel Förster: weit = tief im Wald, 40 % = hinter dem nächsten Baum. "
+        "Wirkt nur auf Ort A.\n\n"
+        "DURCHGANG (zu – offen) und DAZWISCHEN\n"
+        "Unten links wählst du, was zwischen Quelle und Hörer ist: Tür, Fenster, Vorhang oder Autoscheibe. "
+        "Der Regler „Durchgang“ blendet von zu (dumpf, leise, mit dem Klang des Hindernisses) nach offen (keine Wirkung). "
+        "Fenster gekippt = etwa in der Mitte. Autoscheibe: jemand spricht von außen ins Auto oder umgekehrt.\n\n"
+        "QUELLE L ↔ R (Panorama)\n"
+        "Platziert die Quelle – also das, was auf der Spur liegt: Stimme, Schritte, Geräusch – links oder rechts. "
+        "Hall und Echo bleiben in der Mitte (anders als der Pan am Kanal). Wirkt bei Ort A, auf dem Weg und bei Ort B.\n\n"
+        "VORNE ↔ HINTEN\n"
+        "Steht die Quelle hinter dem Hörer, klingt sie etwas dunkler. Hall und Echo bleiben gleich.\n\n"
+        "WETTER (DRAUSSEN)\n"
+        "Nur wenn Ort A draußen ist. Wind, Regen oder Sturm schlucken Höhen und lassen Rufe in Böen schwanken. "
+        "Wirkt umso stärker, je weiter weg die Quelle ist, und verschwindet, wenn sie bei Ort B ankommt.\n\n"
         "RAUMANTEIL A\n"
         "Mehr oder weniger Hall bzw. Echo von Ort A, in dB. Feinregler, normalerweise auf 0 dB lassen.\n\n"
-
-        "Look: Dunkel / Hell umschalten. Das Fenster ist am rechten unteren Rand skalierbar."));
-    helpText.setColour (juce::TextEditor::backgroundColourId, theme.panel);
-    helpText.setColour (juce::TextEditor::textColourId, theme.text);
-    helpText.setColour (juce::TextEditor::outlineColourId, theme.accent);
+        "Lautstärke und Laufzeit des Weges ändern sich automatisch mit der Entfernung.\n"
+        "Look: Dunkel / Hell umschalten. Das Fenster ist am rechten unteren Rand skalierbar (50–300 %)."));
     helpText.setFont (juce::FontOptions (13.0f));
     helpText.setVisible (false);
     content.addChildComponent (helpText);   // startet ausgeblendet
@@ -108,7 +126,10 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
     placeB.setTooltip (u8 ("Zielort der Bewegung, meist Gleicher Raum"));
     blend.setTooltip (u8 ("Position: 0 % = bei Ort A (weit), 100 % = bei Ort B (nah). Hauptregler fuer die Bewegung."));
     distance.slider.setTooltip (u8 ("Wie weit weg Ort A ist (nah = 0 %, weit = 100 %). Ort B ist immer nah."));
-    door.slider.setTooltip (u8 ("0 % = Tuer zu (dumpf, leise), 100 % = offen"));
+    door.slider.setTooltip (u8 ("zu = dumpf und leise (Klang je nach \"Dazwischen\"), offen = keine Wirkung"));
+    rear.slider.setTooltip (u8 ("Quelle vor oder hinter dem H\xc3\xb6rer: hinten klingt sie etwas dunkler. Hall bleibt gleich."));
+    barrierBox.setTooltip (u8 ("Was zwischen Quelle und H\xc3\xb6rer ist: T\xc3\xbcr, Fenster, Vorhang oder Autoscheibe (jemand spricht von au\xc3\x9f" "en ins Auto)"));
+    weatherBox.setTooltip (u8 ("Nur wenn Ort A drau\xc3\x9f" "en ist: Wind, Regen oder Sturm schlucken H\xc3\xb6hen, B\xc3\xb6" "en lassen Rufe schwanken. Wirkt mit der Entfernung."));
     pan.slider.setTooltip (u8 ("Stimme bzw. Ger\xc3\xa4usch links/rechts platzieren. Hall und Echo bleiben in der Mitte. Wirkt bei Ort A, auf dem Weg und bei Ort B."));
     room.slider.setTooltip (u8 ("Mehr oder weniger Hall/Echo von Ort A (Feinregler, dB)"));
 
@@ -145,6 +166,11 @@ void LocationsEditor::applyTheme()
     for (auto* l : { &labelA, &labelB, &labelBlend })
         l->setColour (juce::Label::textColourId, theme.dim);
     themeButton.setButtonText (theme.dark ? "Look: Dunkel" : "Look: Hell");
+    helpText.setColour (juce::TextEditor::backgroundColourId, theme.panel);
+    helpText.setColour (juce::TextEditor::textColourId, theme.text);
+    helpText.setColour (juce::TextEditor::outlineColourId, theme.accent);
+    helpText.setColour (juce::TextEditor::focusedOutlineColourId, theme.accent);
+    helpText.applyColourToAllText (theme.text, true);
     sendLookAndFeelChange();
     repaint();
 }
@@ -220,12 +246,16 @@ void LocationsEditor::resized()
     blend.setBounds (24, 140, w - 48, 50);
 
     juce::Rectangle<int> row (24, 216, w - 48, 150);
-    const int kw = row.getWidth() / 4;
-    for (auto* k : { &distance, &door, &pan, &room })
+    const int kw = row.getWidth() / 5;
+    for (auto* k : { &distance, &door, &pan, &rear, &room })
     {
         auto cell = row.removeFromLeft (kw);
         k->label.setBounds (cell.removeFromTop (20));
         k->slider.setBounds (cell.reduced (8, 2));
     }
+    barrierLabel.setBounds (24, 372, 96, 24);
+    barrierBox.setBounds (124, 370, 150, 28);
+    weatherLabel.setBounds (w - 340, 372, 160, 24);
+    weatherBox.setBounds (w - 174, 370, 150, 28);
     helpText.toFront (false);
 }

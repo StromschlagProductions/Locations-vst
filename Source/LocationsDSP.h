@@ -59,6 +59,45 @@ inline const PlaceDef& place (int i)
     return defs[std::clamp (i, 0, kNumPlaces - 1)];
 }
 
+constexpr int kFirstOutdoor = 10;   // ab diesem Index sind die Orte "Draussen"
+
+//==============================================================================
+// Was zwischen Quelle und Hoerer ist (Regler "zu - offen" blendet zwischen diesem Klang und offen)
+struct BarrierDef
+{
+    const char* name;
+    float fcClosed;   // Tiefpass bei geschlossen (Hz)
+    float gainDb;     // Pegel bei geschlossen
+    float hpHz;       // Bassabsenkung bei geschlossen
+    float bodyHz;     // Eigenresonanz (Tuerblatt, Glas, Kabine)
+    float bodyQ, bodyAmt;
+};
+constexpr int kNumBarriers = 4;
+inline const BarrierDef& barrier (int i)
+{
+    static const BarrierDef defs[kNumBarriers] = {
+        { "Tuer",         650.0f, -17.0f, 110.0f,  210.0f, 2.3f, 0.35f },
+        { "Fenster",     1100.0f, -20.0f, 180.0f,  420.0f, 2.0f, 0.25f },
+        { "Vorhang",     3500.0f,  -5.0f,  20.0f,  300.0f, 1.0f, 0.00f },
+        { "Autoscheibe",  800.0f, -14.0f, 120.0f,  150.0f, 1.6f, 0.50f },
+    };
+    return defs[std::clamp (i, 0, kNumBarriers - 1)];
+}
+
+// Wetter draussen: zusaetzlicher Hoehenverlust, Pegelverlust und Boeen (Pegel schwankt langsam)
+struct WeatherDef { const char* name; float lpOct, gainDb, gustDb, gustHz; };
+constexpr int kNumWeathers = 4;
+inline const WeatherDef& weather (int i)
+{
+    static const WeatherDef defs[kNumWeathers] = {
+        { "Ruhig",  0.0f,  0.0f,  0.0f, 0.5f },
+        { "Wind",   1.0f, -3.0f,  6.0f, 0.6f },
+        { "Regen",  1.5f, -4.0f,  1.5f, 0.3f },
+        { "Sturm",  2.0f, -6.0f, 10.0f, 1.0f },
+    };
+    return defs[std::clamp (i, 0, kNumWeathers - 1)];
+}
+
 //==============================================================================
 // Zustandsvariablen-Filter (TPT), stabil bei bewegter Grenzfrequenz
 struct SVF
@@ -248,6 +287,9 @@ struct Params
     float door = 1.0f;         // 0 = zu, 1 = offen
     float roomDb = 0.0f;       // Raumanteil von Ort A (Trim, dB)
     float pan = 0.0f;          // -1 = links, 0 = Mitte, +1 = rechts (nur die Quelle, nicht der Raum)
+    float rear = 0.0f;         // 0 = vorne, 1 = hinten (nur die Quelle)
+    int   barrier = 0;         // Tuer / Fenster / Vorhang / Autoscheibe
+    int   weather = 0;         // Ruhig / Wind / Regen / Sturm (wirkt nur draussen bei Ort A)
 };
 
 class Engine
@@ -259,7 +301,7 @@ public:
         roomA.prepare (sr); roomB.prepare (sr);
         for (auto& d : path) d.prepare ((int) (0.04f * sr) + 4);
         smCoef = 1.0f - std::exp (-1.0f / (0.03f * sr / kBlock));   // 30 ms Glaettung
-        first = true; counter = 0;
+        first = true; firstBar = true; counter = 0;
         reset();
     }
     void reset()
@@ -270,6 +312,7 @@ public:
         for (auto& f : doorLp) f.reset();
         for (auto& f : doorHp) f.reset();
         for (auto& f : doorBp) f.reset();
+        for (auto& f : rearHp) f.reset();
     }
     // left/right duerfen identisch sein (Mono). Verarbeitung in-place.
     void process (float* left, float* right, int numSamples, const Params& p)
@@ -289,6 +332,11 @@ public:
             float al, ar, bl, br;
             roomA.process (mono, wetA, echoA, al, ar);
             roomB.process (mono, wetB, echoB, bl, br);
+            if (rearCut < 1.0f)                              // hinten: Hoehen der Quelle etwas dunkler
+            {
+                l += (rearCut - 1.0f) * rearHp[0].highpass (l);
+                r += (rearCut - 1.0f) * rearHp[1].highpass (r);
+            }
             l = (l * panL + al + bl) * gain;                 // Quelle gepannt, Raum bleibt stehen
             r = (r * panR + ar + br) * gain;
 
@@ -329,8 +377,18 @@ private:
 
         // Zielwerte: Ort A in Start-Entfernung, Ort B nah, dazwischen gleitend
         const float t = sBlend, dA = sDist;
-        const float fcT = logLerp (logLerp (A.fcNear, A.fcFar, dA), B.fcNear, t);
-        const float gT = lerp (lerp (A.gainNear, A.gainFar, dA), B.gainNear, t);
+        // Wetter: nur wenn Ort A draussen ist, staerker mit Entfernung, verschwindet zu Ort B hin
+        const auto& W = weather (p.weather);
+        const float wAmt = (p.placeA >= kFirstOutdoor ? 1.0f : 0.0f) * dA * (1.0f - t);
+        gustState = gustState + gustCoef * (rand01() * 2.0f - 1.0f - gustState);
+        gustState2 = gustState2 + gustCoef * (gustState - gustState2);
+        gustCoef = 1.0f - std::exp (-2.0f * kPi * W.gustHz * kBlock / sr);
+        const float gustNorm = 0.7f / (0.577f * std::sqrt (gustCoef * 0.5f));
+        const float gust = std::clamp (gustState2 * gustNorm, -1.0f, 1.0f);       // langsam schwankend, ca. -1..1
+        const float fcT = logLerp (logLerp (A.fcNear, A.fcFar, dA), B.fcNear, t)
+                          * std::pow (0.5f, W.lpOct * wAmt * (1.0f + 0.3f * gust));
+        const float gT = lerp (lerp (A.gainNear, A.gainFar, dA), B.gainNear, t)
+                         + (W.gainDb + W.gustDb * 0.5f * (gust - 1.0f)) * wAmt;
         const float ca = std::cos (t * kPi * 0.5f), cb = std::sin (t * kPi * 0.5f);   // Raeume: gleiche Leistung
         const float wAT = A.rt60 > 0.0f ? dbToLin (lerp (A.wetNear, A.wetFar, dA) + p.roomDb) * ca : 0.0f;
         const float wBT = B.rt60 > 0.0f ? dbToLin (B.wetNear) * cb : 0.0f;
@@ -359,18 +417,30 @@ private:
         panL = 1.41421356f * std::cos (theta);
         panR = 1.41421356f * std::sin (theta);
 
-        // Tuer: zu = 650 Hz steil, dumpf, leise; offen = unveraendert
+        // vorne/hinten (nur Quelle): hinten bis zu 7 dB weniger Hoehen ab ca. 2,5 kHz
+        sRear += smCoef * (std::clamp (p.rear, 0.0f, 1.0f) - sRear);
+        rearCut = dbToLin (-7.0f * sRear);
+        if (sRear < 0.001f) rearCut = 1.0f;
+        for (auto& f : rearHp) f.set (2500.0f, sr);
+
+        // Durchgang (Tuer, Fenster, Vorhang, Autoscheibe): zu = Klang des Hindernisses, offen = unveraendert
+        const auto& D = barrier (p.barrier);
+        if (firstBar) { bFc = std::log (D.fcClosed); bGain = D.gainDb; bHp = D.hpHz; bBodyHz = std::log (D.bodyHz); bQ = D.bodyQ; bAmt = D.bodyAmt; firstBar = false; }
+        bFc += smCoef * (std::log (D.fcClosed) - bFc);  bGain += smCoef * (D.gainDb - bGain);   // Typwechsel gleitet
+        bHp += smCoef * (D.hpHz - bHp);                  bBodyHz += smCoef * (std::log (D.bodyHz) - bBodyHz);
+        bQ += smCoef * (D.bodyQ - bQ);                    bAmt += smCoef * (D.bodyAmt - bAmt);
+        const float fcClosed = std::exp (bFc);
         const float closed = 1.0f - sDoor;
-        const float dfc = 650.0f * std::pow (20000.0f / 650.0f, std::pow (sDoor, 1.4f));
+        const float dfc = fcClosed * std::pow (20000.0f / fcClosed, std::pow (sDoor, 1.4f));
         for (int c = 0; c < 2; ++c)
         {
             doorLp[c * 2].set (dfc, sr, 0.5412f);
             doorLp[c * 2 + 1].set (dfc, sr, 1.3066f);
-            doorHp[c].set (20.0f + 90.0f * closed, sr);
-            doorBp[c].set (210.0f, sr, 2.3f);
+            doorHp[c].set (20.0f + (bHp - 20.0f) * closed, sr);
+            doorBp[c].set (std::exp (bBodyHz), sr, bQ);
         }
-        doorBody = 0.35f * closed * closed;
-        doorGain = dbToLin (-17.0f * std::pow (closed, 1.2f));
+        doorBody = bAmt * closed * closed;
+        doorGain = dbToLin (bGain * std::pow (closed, 1.2f));
         doorOpen = smooth01 ((sDoor - 0.9f) / 0.1f);
     }
 
@@ -380,9 +450,14 @@ private:
     float sDly = 1.0f, curDly = 1.0f, dlyStep = 0.0f;
     float open = 1.0f, gain = 1.0f, panL = 1.0f, panR = 1.0f;
     float doorBody = 0, doorGain = 1, doorOpen = 1;
+    float sRear = 0.0f, rearCut = 1.0f;
+    float bFc = 6.5f, bGain = 0.0f, bHp = 20.0f, bBodyHz = 5.3f, bQ = 1.0f, bAmt = 0.0f; bool firstBar = true;
+    float gustState = 0.0f, gustState2 = 0.0f, gustCoef = 0.01f;
+    unsigned int rng = 0x9e3779b9u;
+    float rand01() { rng ^= rng << 13; rng ^= rng >> 17; rng ^= rng << 5; return (float) (rng & 0xffffff) / 16777216.0f; }
     bool first = true; int counter = 0;
     Room roomA, roomB;
     Delay path[2];
-    SVF lp[2], doorLp[4], doorBp[2]; OnePole doorHp[2];
+    SVF lp[2], doorLp[4], doorBp[2]; OnePole doorHp[2], rearHp[2];
 };
 } // namespace loc
