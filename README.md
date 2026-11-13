@@ -1,6 +1,6 @@
 # LOCATIONS – Audio Drama Off-Stage Simulator
 
-*Stromschlag Audio · Kokopelli Studio*
+*Stromschlag Audio*
 
 VST3-Effekt für Hörspiel-Produktion. Er lässt eine Stimme oder ein Geräusch so klingen, als käme es aus
 einem anderen Raum, einer anderen Etage, hinter einer geschlossenen Tür oder aus der Ferne im Freien.
