@@ -3,6 +3,7 @@ name: Windows-VST3 bauen
 on:
   push:
     branches: [main]
+    paths-ignore: ['docs/**', 'README.md']   # Doku-Aenderungen loesen keinen neuen Bau aus
   workflow_dispatch:
 
 permissions:
