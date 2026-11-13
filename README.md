@@ -68,7 +68,7 @@ passieren automatisch.
 | Position (A nach B) | **der Regler für die Bewegung**: 0 % = bei Ort A, 100 % = bei Ort B (nah) |
 | Entfernung A (nah – weit) | wie weit weg Ort A ist. Wirkt nur auf Ort A |
 | Tür (zu – offen) | zu = dumpf und leise, offen = keine Wirkung. Eigener Regler, weil eine Tür meist zu einem anderen Zeitpunkt aufgeht, als sich jemand bewegt |
-| Panorama | platziert die Quelle links/rechts. Nur die Quelle wandert, der Raum (Hall, Echo) bleibt in der Mitte – anders als beim Pan am Kanal. Mitte = keine Wirkung |
+| Quelle L ↔ R | Panorama der Quelle – also dessen, was auf der Spur liegt (Stimme, Schritte, Geräusch). Nur die Quelle wandert, Hall und Echo bleiben in der Mitte – anders als beim Pan am Kanal. Wirkt bei Ort A, auf dem Weg und bei Ort B. Mitte = keine Wirkung |
 | Raumanteil A | mehr oder weniger Hall bzw. Echo von Ort A (Feinregler, normalerweise 0 dB) |
 
 ## Anwendung
@@ -96,6 +96,7 @@ Geht die Tür auf: Tür von zu auf offen ziehen, danach ggf. die Position, wenn 
 
 Die Versionsnummer steht in der Datei `VERSION`, im Plugin-Kopf und im Namen der Release. Sie wird bei jeder Änderung hochgezählt (1.0, 1.1, 1.2 …).
 
+- **1.2** – Panorama-Regler heißt jetzt „Quelle L ↔ R“, Erklärung in Hilfe und Tooltip präzisiert.
 - **1.1** – Engine mit einer einzigen gleitenden Kette (kein hohler Klang mehr in der Mitte der Bewegung),
   Ort B immer nah, Entfernung und Raumanteil nur für Ort A, Wald ohne Hall, neue Orte Dachboden, Badezimmer,
   Tunnel / Höhle, Schlucht / Felswand, Regler „Ausgang“ entfernt.
