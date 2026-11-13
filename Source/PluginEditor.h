@@ -23,8 +23,12 @@ private:
     static Theme darkTheme();
     static Theme lightTheme();
 
+    static constexpr int kBaseW = 680, kBaseH = 420;
+
     LocationsProcessor& processor;
     juce::LookAndFeel_V4 look;
+    juce::Component content;      // feste 680x420-Flaeche, wird skaliert
+    float uiScale = 1.0f;
     Theme theme;
     juce::Image logo;
     juce::ComboBox placeA, placeB;
