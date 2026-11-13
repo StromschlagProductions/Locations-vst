@@ -12,6 +12,16 @@ juce::StringArray LocationsProcessor::placeNames()
              u8 ("Drau\xc3\x9f" "en: Stra\xc3\x9f" "e"), u8 ("Drau\xc3\x9f" "en: Schlucht / Felswand") };
 }
 
+juce::StringArray LocationsProcessor::barrierNames()
+{
+    return { u8 ("T\xc3\xbcr"), "Fenster", "Vorhang", "Autoscheibe" };   // Reihenfolge wie loc::barrier()
+}
+
+juce::StringArray LocationsProcessor::weatherNames()
+{
+    return { "Ruhig", "Wind", "Regen", "Sturm" };                          // Reihenfolge wie loc::weather()
+}
+
 juce::AudioProcessorValueTreeState::ParameterLayout LocationsProcessor::createLayout()
 {
     using namespace juce;
@@ -36,8 +46,15 @@ juce::AudioProcessorValueTreeState::ParameterLayout LocationsProcessor::createLa
     auto doorText = AudioParameterFloatAttributes().withStringFromValueFunction (
         [] (float v, int) { const int pct = roundToInt (v * 100.0f);
                             return pct <= 0 ? String ("zu") : pct >= 100 ? String ("offen") : String (pct) + " %"; });
-    layout.add (std::make_unique<AudioParameterFloat> (ParameterID { "door", 1 }, u8 ("T\xc3\xbcr (zu-offen)"),
+    layout.add (std::make_unique<AudioParameterFloat> (ParameterID { "door", 1 }, "Durchgang (zu-offen)",
                                                        NormalisableRange<float> (0.0f, 1.0f), 1.0f, doorText));
+    auto rearText = AudioParameterFloatAttributes().withStringFromValueFunction (
+        [] (float v, int) { const int pct = roundToInt (v * 100.0f);
+                            return pct <= 0 ? String ("vorne") : pct >= 100 ? String ("hinten") : String (pct) + " %"; });
+    layout.add (std::make_unique<AudioParameterFloat> (ParameterID { "rear", 1 }, "Quelle vorne-hinten",
+                                                       NormalisableRange<float> (0.0f, 1.0f), 0.0f, rearText));
+    layout.add (std::make_unique<AudioParameterChoice> (ParameterID { "barrier", 1 }, "Dazwischen", barrierNames(), 0));
+    layout.add (std::make_unique<AudioParameterChoice> (ParameterID { "weather", 1 }, "Wetter (draussen)", weatherNames(), 0));
     layout.add (std::make_unique<AudioParameterFloat> (ParameterID { "room", 1 }, "Raumanteil (Ort A)",
                                                        NormalisableRange<float> (-24.0f, 12.0f), 0.0f, decibel));
     auto panText = AudioParameterFloatAttributes().withStringFromValueFunction (
@@ -61,6 +78,9 @@ LocationsProcessor::LocationsProcessor()
     pDoor = apvts.getRawParameterValue ("door");
     pRoom = apvts.getRawParameterValue ("room");
     pPan = apvts.getRawParameterValue ("pan");
+    pRear = apvts.getRawParameterValue ("rear");
+    pBarrier = apvts.getRawParameterValue ("barrier");
+    pWeather = apvts.getRawParameterValue ("weather");
 }
 
 void LocationsProcessor::prepareToPlay (double sampleRate, int)
@@ -93,6 +113,9 @@ void LocationsProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::M
     p.door = pDoor->load();
     p.roomDb = pRoom->load();
     p.pan = pPan->load();
+    p.rear = pRear->load();
+    p.barrier = juce::roundToInt (pBarrier->load());
+    p.weather = juce::roundToInt (pWeather->load());
 
     float* left = buffer.getWritePointer (0);
     float* right = numCh > 1 ? buffer.getWritePointer (1) : left;
