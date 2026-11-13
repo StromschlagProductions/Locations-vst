@@ -36,6 +36,10 @@ jobs:
           ./pluginval/pluginval.exe --strictness-level 8 --validate-in-process --validate "build/Locations_artefacts/Release/VST3/Locations.vst3"
           if ($LASTEXITCODE -ne 0) { exit 1 }
 
+      - name: ZIP packen
+        shell: pwsh
+        run: Compress-Archive -Path "build/Locations_artefacts/Release/VST3/Locations.vst3" -DestinationPath "Locations-VST3-Windows.zip"
+
       - name: Release mit ZIP erstellen
         uses: softprops/action-gh-release@v2
         with:
@@ -43,5 +47,5 @@ jobs:
           name: Locations ${{ github.run_number }}
           make_latest: true
           files: |
-            build/Locations_artefacts/Release/VST3/Locations.vst3/**
+            Locations-VST3-Windows.zip
           body: "Windows-VST3 aus dem automatischen Bau. Entpacken, Ordner Locations.vst3 nach C:\\Program Files\\Common Files\\VST3 kopieren."
