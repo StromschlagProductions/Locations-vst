@@ -4,6 +4,14 @@ VST3-Effekt für Hörspiel-Produktion: lässt eine Stimme oder ein Geräusch so 
 aus einem anderen Raum, einer anderen Etage, hinter einer Tür oder aus der Entfernung im Freien.
 Das Plugin erzeugt selbst keinen Klang, es verändert nur das Eingangssignal.
 
+## Oberfläche
+
+| Dunkel (Standard) | Hell |
+|---|---|
+| ![Dunkle Oberfläche](docs/oberflaeche-dunkel.png) | ![Helle Oberfläche](docs/oberflaeche-hell.png) |
+
+Der Umschalter oben rechts wechselt den Look, die Wahl wird mit dem Projekt gespeichert.
+
 ## Regler (alle automatisierbar)
 
 | Regler | Wirkung |
