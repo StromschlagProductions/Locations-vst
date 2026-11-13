@@ -13,6 +13,8 @@ einem anderen Raum, einer anderen Etage, hinter einer geschlossenen Tür oder au
 
 Der Umschalter oben rechts wechselt den Look, die Wahl wird mit dem Projekt gespeichert.
 
+Die Oberfläche lässt sich am rechten unteren Fensterrand stufenlos von 50 % bis 300 % vergrößern oder verkleinern. Das Seitenverhältnis bleibt dabei fest.
+
 ## Orte
 
 Ort A ist der Startpunkt der Bewegung, Ort B das Ziel. In der Praxis ist Ort B meist **Gleicher Raum**,
