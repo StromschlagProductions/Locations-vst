@@ -1,0 +1,34 @@
+name: Windows-VST3 bauen
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Konfigurieren
+        run: cmake -B build -A x64
+
+      - name: Bauen
+        run: cmake --build build --config Release --parallel
+
+      - name: Plugin bereitstellen
+        uses: actions/upload-artifact@v4
+        with:
+          name: Locations-VST3-Windows
+          path: build/Locations_artefacts/Release/VST3
+          if-no-files-found: error
+
+      - name: Stabilitaetstest (pluginval)
+        shell: pwsh
+        run: |
+          curl.exe -sSL -o pluginval.zip https://github.com/Tracktion/pluginval/releases/latest/download/pluginval_Windows.zip
+          Expand-Archive pluginval.zip -DestinationPath pluginval
+          ./pluginval/pluginval.exe --strictness-level 8 --validate-in-process --validate "build/Locations_artefacts/Release/VST3/Locations.vst3"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
