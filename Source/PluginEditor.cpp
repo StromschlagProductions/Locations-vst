@@ -142,7 +142,10 @@ void LocationsEditor::paint (juce::Graphics& g)
 
     g.setColour (theme.text);
     g.setFont (juce::FontOptions (24.0f, juce::Font::bold));
-    g.drawText ("LOCATIONS", 80, 8, 260, 30, juce::Justification::centredLeft);
+    g.drawText ("LOCATIONS", 80, 8, 150, 30, juce::Justification::centredLeft);
+    g.setColour (theme.accent);
+    g.setFont (juce::FontOptions (13.0f, juce::Font::bold));
+    g.drawText ("AUDIO DRAMA OFF-STAGE SIMULATOR", 228, 15, 330, 22, juce::Justification::centredLeft);
     g.setColour (theme.dim);
     g.setFont (juce::FontOptions (11.0f));
     g.drawText (u8 ("STROMSCHLAG AUDIO  \xc2\xb7  KOKOPELLI STUDIO"), 80, 36, 300, 16, juce::Justification::centredLeft);
