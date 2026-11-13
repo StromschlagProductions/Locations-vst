@@ -117,23 +117,25 @@ void LocationsEditor::paint (juce::Graphics& g)
 {
     g.fillAll (theme.bg);
 
-    // Kopfleiste
-    g.setColour (theme.dark ? theme.panel : juce::Colour (0xff233539));
+    // Kopfleiste: folgt dem Look (dunkel = dunkle Leiste + helles Logo, hell = helle Leiste + dunkles Logo)
+    g.setColour (theme.panel);
     g.fillRect (0, 0, getWidth(), 64);
+    g.setColour (theme.line);
+    g.fillRect (0, 63, getWidth(), 1);
     g.setColour (theme.accent);
     g.fillRect (0, 0, 5, 64);
 
-    // Logo: auf heller, abgerundeter Flaeche (bleibt unveraendert schwarz-weiss)
-    const auto logoBox = juce::Rectangle<float> (16.0f, 6.0f, 52.0f, 52.0f);
-    g.setColour (juce::Colour (0xfff2f3f2));
-    g.fillRoundedRectangle (logoBox, 6.0f);
     if (logo.isValid())
-        g.drawImage (logo, logoBox.reduced (3.0f), juce::RectanglePlacement::centred);
+    {
+        g.setColour (theme.text);   // Logo ist eine Tinten-Maske und wird in der Textfarbe gezeichnet
+        g.drawImage (logo, juce::Rectangle<float> (14.0f, 4.0f, 56.0f, 56.0f),
+                     juce::RectanglePlacement::centred, true);
+    }
 
-    g.setColour (juce::Colour (0xffe8ecec));
+    g.setColour (theme.text);
     g.setFont (juce::FontOptions (24.0f, juce::Font::bold));
     g.drawText ("LOCATIONS", 80, 8, 260, 30, juce::Justification::centredLeft);
-    g.setColour (juce::Colour (0xff8fa1a5));
+    g.setColour (theme.dim);
     g.setFont (juce::FontOptions (11.0f));
     g.drawText (u8 ("STROMSCHLAG AUDIO  \xc2\xb7  KOKOPELLI STUDIO"), 80, 36, 300, 16, juce::Justification::centredLeft);
 
