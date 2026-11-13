@@ -50,6 +50,7 @@ also der Raum, in dem die Zuhörer sitzen.
 | Position (A nach B) | **der eine Regler für die Bewegung**: 0 % = bei Ort A in Start-Entfernung, 100 % = bei Ort B ganz nah. Sind A und B gleich (z. B. Wald), ist es einfach „weit ↔ nah“ |
 | Start-Entfernung | wie weit weg die Quelle bei Position 0 % ist |
 | Tür (zu-offen) | 0 % = geschlossene Tür (dumpf, leise), 100 % = offen (keine Wirkung) |
+| Panorama | platziert die Quelle links/rechts im Stereobild. Nur die Quelle wandert, der Raum (Hall, Echo) bleibt in der Mitte, anders als beim Pan am Kanal. Mitte = keine Wirkung. Automatisierbar |
 | Raumanteil | Hall des Raums, in dem die Quelle steht (Trim in dB) |
 | Ausgang | Ausgangspegel |
 Die Lautstärke sinkt mit der Entfernung und bei geschlossener Tür automatisch. Der Laufweg (z. B. Treppenhaus) verzögert den Ton automatisch um wenige Millisekunden, bei Gleicher Raum gar nicht.

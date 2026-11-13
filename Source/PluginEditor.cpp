@@ -55,6 +55,7 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
 
     setupKnob (distance, "distance", "Start-Entfernung");
     setupKnob (door, "door", u8 ("T\xc3\xbcr  zu \xe2\x86\x94 offen"));
+    setupKnob (pan, "pan", "Panorama");
     setupKnob (room, "room", "Raumanteil");
     setupKnob (out, "out", "Ausgang");
 
@@ -87,6 +88,8 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
         "Wie weit weg die Quelle bei Position 0 % ist.\n\n"
         "TUER (zu-offen)\n"
         "0 % = Tuer geschlossen: dumpf und leise. 100 % = offen, ohne Wirkung. Eigener Regler, weil eine Tuer meist zu einem anderen Zeitpunkt aufgeht.\n\n"
+        "PANORAMA\n"
+        "Platziert die Quelle links oder rechts im Stereobild. Nur die Quelle wandert, der Raum (Hall, Echo) bleibt in der Mitte stehen. Mitte = keine Wirkung.\n\n"
         "RAUMANTEIL\n"
         "Hall des Raums, in dem die Quelle steht, in dB. Feinregler.\n\n"
         "AUSGANG\n"
@@ -105,6 +108,7 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
     blend.setTooltip (u8 ("Position: 0 % = bei Ort A (weit), 100 % = bei Ort B (nah). Hauptregler fuer die Bewegung."));
     distance.slider.setTooltip (u8 ("Wie weit weg die Quelle bei Position 0 % ist"));
     door.slider.setTooltip (u8 ("0 % = Tuer zu (dumpf, leise), 100 % = offen"));
+    pan.slider.setTooltip (u8 ("Quelle links/rechts platzieren. Nur die Quelle wandert, der Raum bleibt in der Mitte"));
     room.slider.setTooltip (u8 ("Hall des Raums der Quelle (Feinregler, dB)"));
     out.slider.setTooltip (u8 ("Ausgangspegel"));
 
@@ -216,8 +220,8 @@ void LocationsEditor::resized()
     blend.setBounds (24, 140, w - 48, 50);
 
     juce::Rectangle<int> row (24, 216, w - 48, 150);
-    const int kw = row.getWidth() / 4;
-    for (auto* k : { &distance, &door, &room, &out })
+    const int kw = row.getWidth() / 5;
+    for (auto* k : { &distance, &door, &pan, &room, &out })
     {
         auto cell = row.removeFromLeft (kw);
         k->label.setBounds (cell.removeFromTop (20));
