@@ -39,7 +39,7 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
     labelA.setText ("ORT A", juce::dontSendNotification);
     labelB.setText ("ORT B", juce::dontSendNotification);
     labelB.setJustificationType (juce::Justification::centredRight);
-    labelBlend.setText (u8 ("\xe2\x97\x80  A      Blende      B  \xe2\x96\xb6"), juce::dontSendNotification);
+    labelBlend.setText (u8 ("\xe2\x97\x80  bei A (weit)     POSITION     bei B (nah)  \xe2\x96\xb6"), juce::dontSendNotification);
     labelBlend.setJustificationType (juce::Justification::centred);
     for (auto* l : { &labelA, &labelB, &labelBlend })
     {
@@ -52,7 +52,7 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
     addAndMakeVisible (blend);
     attBlend = std::make_unique<APVTS::SliderAttachment> (processor.apvts, "blend", blend);
 
-    setupKnob (distance, "distance", "Entfernung");
+    setupKnob (distance, "distance", "Start-Entfernung");
     setupKnob (door, "door", u8 ("T\xc3\xbcr  zu \xe2\x86\x94 offen"));
     setupKnob (room, "room", "Raumanteil");
     setupKnob (level, "level", "Pegelwirkung");
