@@ -71,6 +71,53 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
     };
     content.addAndMakeVisible (themeButton);
 
+    helpButton.setButtonText ("?");
+    helpButton.setTooltip (u8 ("Hilfe: was machen die Regler?"));
+    helpButton.onClick = [this] { helpText.setVisible (! helpText.isVisible()); };
+    content.addAndMakeVisible (helpButton);
+
+    helpText.setMultiLine (true);
+    helpText.setReadOnly (true);
+    helpText.setScrollbarsShown (true);
+    helpText.setCaretVisible (false);
+    helpText.setPopupMenuEnabled (false);
+    helpText.setText (u8 (
+        "ORT A / ORT B\n"
+        "Start- und Zielort der Bewegung. Ort B ist meistens \"Gleicher Raum\", also der Raum der Zuhoerer.\n\n"
+        "POSITION (A nach B)\n"
+        "Der wichtigste Regler. 0 % = Quelle bei Ort A, weit weg. 100 % = bei Ort B, ganz nah. "
+        "Automatisiere ihn fuer jede Bewegung (Treppe runter, Foerster kommt naeher).\n\n"
+        "START-ENTFERNUNG\n"
+        "Wie weit weg die Quelle bei Position 0 % ist.\n\n"
+        "TUER (zu-offen)\n"
+        "0 % = Tuer geschlossen: dumpf und leise. 100 % = offen, ohne Wirkung. Eigener Regler, weil eine Tuer meist zu einem anderen Zeitpunkt aufgeht.\n\n"
+        "RAUMANTEIL\n"
+        "Hall des Raums, in dem die Quelle steht, in dB. Feinregler.\n\n"
+        "PEGELWIRKUNG\n"
+        "Wie stark Entfernung und Tuer die Lautstaerke senken. 0 % = nur Klangfarbe, Lautstaerke bleibt.\n\n"
+        "AUSGANG\n"
+        "Ausgangspegel des Plugins.\n\n"
+        "WEG-VERZOEGERUNG\n"
+        "Wenige Millisekunden Laufzeit fuer den Weg, z. B. Treppenhaus. Aus lassen, wenn nichts verrutschen soll.\n\n"
+        "Look: Dunkel / Hell umschalten. Das Fenster ist am rechten unteren Rand skalierbar."));
+    helpText.setColour (juce::TextEditor::backgroundColourId, theme.panel);
+    helpText.setColour (juce::TextEditor::textColourId, theme.text);
+    helpText.setColour (juce::TextEditor::outlineColourId, theme.accent);
+    helpText.setFont (juce::FontOptions (13.0f));
+    helpText.setVisible (false);
+    content.addAndMakeVisible (helpText);
+
+    // Tooltips
+    placeA.setTooltip (u8 ("Startort der Bewegung"));
+    placeB.setTooltip (u8 ("Zielort der Bewegung, meist Gleicher Raum"));
+    blend.setTooltip (u8 ("Position: 0 % = bei Ort A (weit), 100 % = bei Ort B (nah). Hauptregler fuer die Bewegung."));
+    distance.slider.setTooltip (u8 ("Wie weit weg die Quelle bei Position 0 % ist"));
+    door.slider.setTooltip (u8 ("0 % = Tuer zu (dumpf, leise), 100 % = offen"));
+    room.slider.setTooltip (u8 ("Hall des Raums der Quelle (Feinregler, dB)"));
+    level.slider.setTooltip (u8 ("Wie stark Entfernung und Tuer die Lautstaerke senken"));
+    out.slider.setTooltip (u8 ("Ausgangspegel"));
+    delay.setTooltip (u8 ("Wenige Millisekunden Laufzeit fuer den Weg, z. B. Treppenhaus"));
+
     applyTheme();
     setSize (kBaseW, kBaseH);
 }
@@ -146,9 +193,16 @@ void LocationsEditor::paint (juce::Graphics& g)
     g.setColour (theme.accent);
     g.setFont (juce::FontOptions (13.0f, juce::Font::bold));
     g.drawText ("AUDIO DRAMA OFF-STAGE SIMULATOR", 228, 15, 330, 22, juce::Justification::centredLeft);
+    // Versionsmarke: helle Plakette, damit schwarzer Text auch im dunklen Look lesbar ist
+    const auto tag = juce::Rectangle<float> (466.0f, 19.0f, 36.0f, 17.0f);
+    g.setColour (juce::Colour (0xffe8ecec));
+    g.fillRoundedRectangle (tag, 4.0f);
+    g.setColour (juce::Colours::black);
+    g.setFont (juce::FontOptions (10.0f, juce::Font::bold));
+    g.drawText ("v" PLUGIN_VERSION_TEXT, tag.toNearestInt(), juce::Justification::centred);
     g.setColour (theme.dim);
     g.setFont (juce::FontOptions (11.0f));
-    g.drawText (u8 ("STROMSCHLAG AUDIO  \xc2\xb7  KOKOPELLI STUDIO"), 80, 36, 300, 16, juce::Justification::centredLeft);
+    g.drawText (u8 ("STROMSCHLAG AUDIO"), 80, 36, 300, 16, juce::Justification::centredLeft);
 
     // Karten
     g.setColour (theme.panel);
@@ -168,6 +222,8 @@ void LocationsEditor::resized()
 
     const int w = kBaseW;
     themeButton.setBounds (w - 128, 18, 112, 28);
+    helpButton.setBounds (w - 170, 18, 32, 28);
+    helpText.setBounds (12, 70, w - 24, 330);
 
     labelA.setBounds (24, 82, 200, 18);
     labelB.setBounds (w - 224, 82, 200, 18);
@@ -185,4 +241,5 @@ void LocationsEditor::resized()
         k->slider.setBounds (cell.reduced (8, 2));
     }
     delay.setBounds (24, 372, 220, 26);
+    helpText.toFront (false);
 }

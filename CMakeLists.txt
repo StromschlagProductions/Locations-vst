@@ -40,6 +40,7 @@ target_sources(Locations PRIVATE
     Source/PluginEditor.cpp)
 
 target_compile_definitions(Locations PUBLIC
+    PLUGIN_VERSION_TEXT="0.1"
     JUCE_WEB_BROWSER=0
     JUCE_USE_CURL=0
     JUCE_VST3_CAN_REPLACE_VST2=0
