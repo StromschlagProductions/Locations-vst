@@ -15,6 +15,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Version lesen
+        shell: pwsh
+        run: |
+          $v = (Get-Content VERSION -TotalCount 1).Trim()
+          "LOC_VERSION=$v" >> $env:GITHUB_ENV
+
       - name: Konfigurieren
         run: cmake -B build -A x64
 
@@ -43,8 +49,8 @@ jobs:
       - name: Release mit ZIP erstellen
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: build-${{ github.run_number }}
-          name: Locations ${{ github.run_number }}
+          tag_name: v${{ env.LOC_VERSION }}-b${{ github.run_number }}
+          name: Locations v${{ env.LOC_VERSION }}
           make_latest: true
           files: |
             Locations-VST3-Windows.zip
