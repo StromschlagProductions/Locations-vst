@@ -173,6 +173,7 @@ struct Params
     float roomDb = 0.0f;       // Raumanteil der Quelle (Trim)
     float levelAmt = 1.0f;     // wie stark der Pegel mit Entfernung/Tuer sinkt (0..1)
     float outDb = 0.0f;
+    float pan = 0.0f;          // -1 = links, 0 = Mitte, +1 = rechts (nur die Quelle, nicht der Raum)
     bool  pathDelay = false;
 };
 
@@ -208,7 +209,8 @@ public:
         wet = p.rt60 > 0.0f ? dbToLin (lerp (p.wetNear, p.wetFar, distance) + roomDb) : 0.0f;
         echoGain = p.echoMs > 0.0f ? dbToLin (lerp (p.echoNear, p.echoFar, distance) + roomDb) : 0.0f;
     }
-    inline void process (float inL, float inR, float& outL, float& outR)
+    // dL/dR = Quelle (direkt), wL/wR = Raum der Quelle (Hall, Echo). Getrennt, damit nur die Quelle gepannt wird.
+    inline void process (float inL, float inR, float& dL, float& dR, float& wL, float& wR)
     {
         if (wanted != current || wantedDly != dly)         // Wechsel: ausblenden, umschalten, einblenden
         {
@@ -218,27 +220,28 @@ public:
         else if (hold > 0) --hold;                         // warten, bis die Weg-Verzoegerung gefuellt ist
         else if (fade < 1.0f) fade = std::min (1.0f, fade + fadeStep());
 
+        if (dly)                                           // Laufzeit des Weges zuerst
+        {
+            path[0].write (inL); path[1].write (inR);
+            inL = path[0].read(); inR = path[1].read();
+        }
         float l = lp[0].lowpass (inL), r = lp[1].lowpass (inR);
         l += (inL - l) * open; r += (inR - r) * open;
         const float mono = 0.5f * (l + r);
+        float wl = 0.0f, wr = 0.0f;
         if (wet > 0.0f)
         {
-            float wl, wr; rev.process (mono, wl, wr);
-            l += wl * wet; r += wr * wet;
+            float rl, rr; rev.process (mono, rl, rr);
+            wl += rl * wet; wr += rr * wet;
         }
         if (echoGain > 0.0f)
         {
             const float e = echo.read();
             echo.write (mono + echoLp.lowpass (e) * 0.35f);
-            l += e * echoGain; r += e * echoGain;
-        }
-        if (dly)
-        {
-            path[0].write (l); path[1].write (r);
-            l = path[0].read(); r = path[1].read();
+            wl += e * echoGain; wr += e * echoGain;
         }
         const float gg = gain * fade;
-        outL = l * gg; outR = r * gg;
+        dL = l * gg; dR = r * gg; wL = wl * gg; wR = wr * gg;
     }
 private:
     float fadeStep() const { return 1.0f / (0.012f * sr); }
@@ -288,11 +291,13 @@ public:
             if (++counter >= kBlock) counter = 0;
 
             const float inL = left[i], inR = right[i];
-            float al, ar, bl, br;
-            a.process (inL, inR, al, ar);
-            b.process (inL, inR, bl, br);
-            float l = al + (bl - al) * sBlend;
-            float r = ar + (br - ar) * sBlend;
+            float adl, adr, awl, awr, bdl, bdr, bwl, bwr;
+            a.process (inL, inR, adl, adr, awl, awr);
+            b.process (inL, inR, bdl, bdr, bwl, bwr);
+            const float dl = adl + (bdl - adl) * sBlend, dr = adr + (bdr - adr) * sBlend;
+            const float wl = awl + (bwl - awl) * sBlend, wr = awr + (bwr - awr) * sBlend;
+            float l = dl * panL + wl;                       // Quelle gepannt, Raum bleibt stehen
+            float r = dr * panR + wr;
 
             if (doorOpen < 1.0f)
             {
@@ -318,7 +323,12 @@ private:
         const float tBlend = std::clamp (p.blend, 0.0f, 1.0f);
         const float tDist = std::clamp (p.distance, 0.0f, 1.0f);
         const float tDoor = std::clamp (p.door, 0.0f, 1.0f);
-        if (first) { sBlend = tBlend; sDist = tDist; sDoor = tDoor; first = false; }
+        const float tPan = std::clamp (p.pan, -1.0f, 1.0f);
+        if (first) { sBlend = tBlend; sDist = tDist; sDoor = tDoor; sPan = tPan; first = false; }
+        sPan += smCoef * (tPan - sPan);
+        const float theta = (sPan + 1.0f) * kPi * 0.25f;   // Constant-Power, in der Mitte genau 0 dB
+        panL = 1.41421356f * std::cos (theta);
+        panR = 1.41421356f * std::sin (theta);
         sBlend += smCoef * (tBlend - sBlend);
         sDist += smCoef * (tDist - sDist);
         sDoor += smCoef * (tDoor - sDoor);
@@ -342,7 +352,7 @@ private:
         outGain = dbToLin (p.outDb);
     }
     float sr = 48000.0f, smCoef = 1.0f;
-    float sBlend = 0, sDist = 0.3f, sDoor = 1.0f;
+    float sBlend = 0, sDist = 0.3f, sDoor = 1.0f, sPan = 0.0f, panL = 1.0f, panR = 1.0f;
     float doorBody = 0, doorGain = 1, doorOpen = 1, outGain = 1;
     bool first = true; int counter = 0;
     Slot a, b;

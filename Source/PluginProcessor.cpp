@@ -33,6 +33,11 @@ juce::AudioProcessorValueTreeState::ParameterLayout LocationsProcessor::createLa
                                                        NormalisableRange<float> (0.0f, 1.0f), 1.0f, percent));
     layout.add (std::make_unique<AudioParameterFloat> (ParameterID { "room", 1 }, "Raumanteil",
                                                        NormalisableRange<float> (-24.0f, 12.0f), 0.0f, decibel));
+    auto panText = AudioParameterFloatAttributes().withStringFromValueFunction (
+        [] (float v, int) { const int pct = roundToInt (std::abs (v) * 100.0f);
+                            return pct == 0 ? String ("Mitte") : String (v < 0 ? "L " : "R ") + String (pct) + " %"; });
+    layout.add (std::make_unique<AudioParameterFloat> (ParameterID { "pan", 1 }, "Panorama",
+                                                       NormalisableRange<float> (-1.0f, 1.0f), 0.0f, panText));
     layout.add (std::make_unique<AudioParameterFloat> (ParameterID { "out", 1 }, "Ausgang",
                                                        NormalisableRange<float> (-24.0f, 12.0f), 0.0f, decibel));
     return layout;
@@ -51,6 +56,7 @@ LocationsProcessor::LocationsProcessor()
     pDoor = apvts.getRawParameterValue ("door");
     pRoom = apvts.getRawParameterValue ("room");
     pOut = apvts.getRawParameterValue ("out");
+    pPan = apvts.getRawParameterValue ("pan");
 }
 
 void LocationsProcessor::prepareToPlay (double sampleRate, int)
@@ -85,6 +91,7 @@ void LocationsProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::M
     p.roomDb = pRoom->load();
     p.levelAmt = 1.0f;          // Pegelabsenkung durch Entfernung/Tuer immer aktiv
     p.outDb = pOut->load();
+    p.pan = pPan->load();
     p.pathDelay = true;         // Laufzeit des Weges immer aktiv (0 bei Gleicher Raum)
 
     float* left = buffer.getWritePointer (0);
