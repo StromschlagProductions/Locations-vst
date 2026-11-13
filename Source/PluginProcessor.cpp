@@ -6,9 +6,10 @@ static juce::String u8 (const char* s) { return juce::String (juce::CharPointer_
 juce::StringArray LocationsProcessor::placeNames()
 {
     // Reihenfolge muss zu loc::place() in LocationsDSP.h passen
-    return { "Gleicher Raum", "Nebenraum", "Flur", "Treppenhaus", "Obere Etage", "Keller",
-             u8 ("Gro\xc3\x9f" "e Halle"), u8 ("Drau\xc3\x9f" "en: Feld"),
-             u8 ("Drau\xc3\x9f" "en: Wald"), u8 ("Drau\xc3\x9f" "en: Stra\xc3\x9f" "e") };
+    return { "Gleicher Raum", "Nebenraum", "Flur", "Treppenhaus", "Obere Etage", "Dachboden", "Keller",
+             "Badezimmer", u8 ("Gro\xc3\x9f" "e Halle"), u8 ("Tunnel / H\xc3\xb6hle"),
+             u8 ("Drau\xc3\x9f" "en: Feld"), u8 ("Drau\xc3\x9f" "en: Wald"),
+             u8 ("Drau\xc3\x9f" "en: Stra\xc3\x9f" "e"), u8 ("Drau\xc3\x9f" "en: Schlucht / Felswand") };
 }
 
 juce::AudioProcessorValueTreeState::ParameterLayout LocationsProcessor::createLayout()
@@ -27,19 +28,23 @@ juce::AudioProcessorValueTreeState::ParameterLayout LocationsProcessor::createLa
     layout.add (std::make_unique<AudioParameterChoice> (ParameterID { "placeB", 1 }, "Ort B", names, 0));
     layout.add (std::make_unique<AudioParameterFloat> (ParameterID { "blend", 1 }, "Position (A nach B)",
                                                        NormalisableRange<float> (0.0f, 1.0f), 0.0f, percent));
-    layout.add (std::make_unique<AudioParameterFloat> (ParameterID { "distance", 1 }, "Start-Entfernung",
-                                                       NormalisableRange<float> (0.0f, 1.0f), 0.3f, percent));
+    auto distText = AudioParameterFloatAttributes().withStringFromValueFunction (
+        [] (float v, int) { const int pct = roundToInt (v * 100.0f);
+                            return pct <= 0 ? String ("nah") : pct >= 100 ? String ("weit") : String (pct) + " %"; });
+    layout.add (std::make_unique<AudioParameterFloat> (ParameterID { "distance", 1 }, "Start-Entfernung (Ort A)",
+                                                       NormalisableRange<float> (0.0f, 1.0f), 1.0f, distText));
+    auto doorText = AudioParameterFloatAttributes().withStringFromValueFunction (
+        [] (float v, int) { const int pct = roundToInt (v * 100.0f);
+                            return pct <= 0 ? String ("zu") : pct >= 100 ? String ("offen") : String (pct) + " %"; });
     layout.add (std::make_unique<AudioParameterFloat> (ParameterID { "door", 1 }, u8 ("T\xc3\xbcr (zu-offen)"),
-                                                       NormalisableRange<float> (0.0f, 1.0f), 1.0f, percent));
-    layout.add (std::make_unique<AudioParameterFloat> (ParameterID { "room", 1 }, "Raumanteil",
+                                                       NormalisableRange<float> (0.0f, 1.0f), 1.0f, doorText));
+    layout.add (std::make_unique<AudioParameterFloat> (ParameterID { "room", 1 }, "Raumanteil (Ort A)",
                                                        NormalisableRange<float> (-24.0f, 12.0f), 0.0f, decibel));
     auto panText = AudioParameterFloatAttributes().withStringFromValueFunction (
         [] (float v, int) { const int pct = roundToInt (std::abs (v) * 100.0f);
                             return pct == 0 ? String ("Mitte") : String (v < 0 ? "L " : "R ") + String (pct) + " %"; });
     layout.add (std::make_unique<AudioParameterFloat> (ParameterID { "pan", 1 }, "Panorama",
                                                        NormalisableRange<float> (-1.0f, 1.0f), 0.0f, panText));
-    layout.add (std::make_unique<AudioParameterFloat> (ParameterID { "out", 1 }, "Ausgang",
-                                                       NormalisableRange<float> (-24.0f, 12.0f), 0.0f, decibel));
     return layout;
 }
 
@@ -55,7 +60,6 @@ LocationsProcessor::LocationsProcessor()
     pDistance = apvts.getRawParameterValue ("distance");
     pDoor = apvts.getRawParameterValue ("door");
     pRoom = apvts.getRawParameterValue ("room");
-    pOut = apvts.getRawParameterValue ("out");
     pPan = apvts.getRawParameterValue ("pan");
 }
 
@@ -85,14 +89,10 @@ void LocationsProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::M
     p.placeA = juce::roundToInt (pPlaceA->load());
     p.placeB = juce::roundToInt (pPlaceB->load());
     p.blend = pBlend->load();
-    // Ein Regler fuer die ganze Bewegung: Position 0 % = Ort A in Start-Entfernung, 100 % = Ort B ganz nah
-    p.distance = pDistance->load() * (1.0f - p.blend);
+    p.distance = pDistance->load();   // Entfernung von Ort A; Ort B ist immer nah
     p.door = pDoor->load();
     p.roomDb = pRoom->load();
-    p.levelAmt = 1.0f;          // Pegelabsenkung durch Entfernung/Tuer immer aktiv
-    p.outDb = pOut->load();
     p.pan = pPan->load();
-    p.pathDelay = true;         // Laufzeit des Weges immer aktiv (0 bei Gleicher Raum)
 
     float* left = buffer.getWritePointer (0);
     float* right = numCh > 1 ? buffer.getWritePointer (1) : left;

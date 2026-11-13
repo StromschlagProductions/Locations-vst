@@ -34,7 +34,7 @@ private:
     juce::ComboBox placeA, placeB;
     juce::Label labelA, labelB, labelBlend;
     juce::Slider blend;
-    Knob distance, door, pan, room, out;
+    Knob distance, door, pan, room;
     juce::TextButton themeButton;
     juce::TextButton helpButton;
     juce::TextEditor helpText;

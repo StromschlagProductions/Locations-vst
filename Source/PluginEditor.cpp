@@ -53,11 +53,10 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
     content.addAndMakeVisible (blend);
     attBlend = std::make_unique<APVTS::SliderAttachment> (processor.apvts, "blend", blend);
 
-    setupKnob (distance, "distance", "Start-Entfernung");
+    setupKnob (distance, "distance", u8 ("Entfernung A  nah \xe2\x86\x94 weit"));
     setupKnob (door, "door", u8 ("T\xc3\xbcr  zu \xe2\x86\x94 offen"));
     setupKnob (pan, "pan", "Panorama");
-    setupKnob (room, "room", "Raumanteil");
-    setupKnob (out, "out", "Ausgang");
+    setupKnob (room, "room", "Raumanteil A");
 
 
     themeButton.onClick = [this]
@@ -84,16 +83,16 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
         "POSITION (A nach B)\n"
         "Der wichtigste Regler. 0 % = Quelle bei Ort A, weit weg. 100 % = bei Ort B, ganz nah. "
         "Automatisiere ihn fuer jede Bewegung (Treppe runter, Foerster kommt naeher).\n\n"
-        "START-ENTFERNUNG\n"
-        "Wie weit weg die Quelle bei Position 0 % ist.\n\n"
+        "ENTFERNUNG A (nah - weit)\n"
+        "Wie weit weg Ort A ist: 0 % = nah, 100 % = weit. Beispiel Foerster: weit = tief im Wald, 40 % = hinter dem naechsten Baum. "
+        "Ort B ist immer nah, deshalb wirkt dieser Regler nur auf Ort A.\n\n"
         "TUER (zu-offen)\n"
         "0 % = Tuer geschlossen: dumpf und leise. 100 % = offen, ohne Wirkung. Eigener Regler, weil eine Tuer meist zu einem anderen Zeitpunkt aufgeht.\n\n"
         "PANORAMA\n"
         "Platziert die Quelle links oder rechts im Stereobild. Nur die Quelle wandert, der Raum (Hall, Echo) bleibt in der Mitte stehen. Mitte = keine Wirkung.\n\n"
-        "RAUMANTEIL\n"
-        "Hall des Raums, in dem die Quelle steht, in dB. Feinregler.\n\n"
-        "AUSGANG\n"
-        "Ausgangspegel des Plugins.\n\n"
+        "RAUMANTEIL A\n"
+        "Mehr oder weniger Hall bzw. Echo von Ort A, in dB. Feinregler, normalerweise auf 0 dB lassen.\n\n"
+
         "Look: Dunkel / Hell umschalten. Das Fenster ist am rechten unteren Rand skalierbar."));
     helpText.setColour (juce::TextEditor::backgroundColourId, theme.panel);
     helpText.setColour (juce::TextEditor::textColourId, theme.text);
@@ -106,11 +105,10 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
     placeA.setTooltip (u8 ("Startort der Bewegung"));
     placeB.setTooltip (u8 ("Zielort der Bewegung, meist Gleicher Raum"));
     blend.setTooltip (u8 ("Position: 0 % = bei Ort A (weit), 100 % = bei Ort B (nah). Hauptregler fuer die Bewegung."));
-    distance.slider.setTooltip (u8 ("Wie weit weg die Quelle bei Position 0 % ist"));
+    distance.slider.setTooltip (u8 ("Wie weit weg Ort A ist (nah = 0 %, weit = 100 %). Ort B ist immer nah."));
     door.slider.setTooltip (u8 ("0 % = Tuer zu (dumpf, leise), 100 % = offen"));
     pan.slider.setTooltip (u8 ("Quelle links/rechts platzieren. Nur die Quelle wandert, der Raum bleibt in der Mitte"));
-    room.slider.setTooltip (u8 ("Hall des Raums der Quelle (Feinregler, dB)"));
-    out.slider.setTooltip (u8 ("Ausgangspegel"));
+    room.slider.setTooltip (u8 ("Mehr oder weniger Hall/Echo von Ort A (Feinregler, dB)"));
 
     applyTheme();
     setSize (kBaseW, kBaseH);
@@ -220,8 +218,8 @@ void LocationsEditor::resized()
     blend.setBounds (24, 140, w - 48, 50);
 
     juce::Rectangle<int> row (24, 216, w - 48, 150);
-    const int kw = row.getWidth() / 5;
-    for (auto* k : { &distance, &door, &pan, &room, &out })
+    const int kw = row.getWidth() / 4;
+    for (auto* k : { &distance, &door, &pan, &room })
     {
         auto cell = row.removeFromLeft (kw);
         k->label.setBounds (cell.removeFromTop (20));
