@@ -8,9 +8,9 @@ Das Plugin erzeugt selbst keinen Klang, es verändert nur das Eingangssignal.
 
 | Regler | Wirkung |
 |---|---|
-| Ort A / Ort B | zwei Orte, zwischen denen geblendet wird |
-| Blende A-B | 0 % = Ort A, 100 % = Ort B (z. B. obere Etage → gleicher Raum) |
-| Entfernung | nah ↔ weit innerhalb des Ortes (dumpfer, leiser, mehr Raum) |
+| Ort A / Ort B | Start-Ort und Ziel-Ort der Bewegung (Ziel meist „Gleicher Raum“) |
+| Position (A nach B) | **der eine Regler für die Bewegung**: 0 % = bei Ort A in Start-Entfernung, 100 % = bei Ort B ganz nah. Sind A und B gleich (z. B. Wald), ist es einfach „weit ↔ nah“ |
+| Start-Entfernung | wie weit weg die Quelle bei Position 0 % ist |
 | Tür (zu-offen) | 0 % = geschlossene Tür, 100 % = offen (keine Wirkung) |
 | Raumanteil | Hall des Raums, in dem die Quelle steht (Trim in dB) |
 | Pegelwirkung | wie stark der Pegel mit Entfernung/Tür sinkt (0 % = nur Klangfarbe) |

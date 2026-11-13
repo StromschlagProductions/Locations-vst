@@ -25,9 +25,9 @@ juce::AudioProcessorValueTreeState::ParameterLayout LocationsProcessor::createLa
 
     layout.add (std::make_unique<AudioParameterChoice> (ParameterID { "placeA", 1 }, "Ort A", names, 1));
     layout.add (std::make_unique<AudioParameterChoice> (ParameterID { "placeB", 1 }, "Ort B", names, 0));
-    layout.add (std::make_unique<AudioParameterFloat> (ParameterID { "blend", 1 }, "Blende A-B",
+    layout.add (std::make_unique<AudioParameterFloat> (ParameterID { "blend", 1 }, "Position (A nach B)",
                                                        NormalisableRange<float> (0.0f, 1.0f), 0.0f, percent));
-    layout.add (std::make_unique<AudioParameterFloat> (ParameterID { "distance", 1 }, "Entfernung",
+    layout.add (std::make_unique<AudioParameterFloat> (ParameterID { "distance", 1 }, "Start-Entfernung",
                                                        NormalisableRange<float> (0.0f, 1.0f), 0.3f, percent));
     layout.add (std::make_unique<AudioParameterFloat> (ParameterID { "door", 1 }, u8 ("T\xc3\xbcr (zu-offen)"),
                                                        NormalisableRange<float> (0.0f, 1.0f), 1.0f, percent));
@@ -84,7 +84,8 @@ void LocationsProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::M
     p.placeA = juce::roundToInt (pPlaceA->load());
     p.placeB = juce::roundToInt (pPlaceB->load());
     p.blend = pBlend->load();
-    p.distance = pDistance->load();
+    // Ein Regler fuer die ganze Bewegung: Position 0 % = Ort A in Start-Entfernung, 100 % = Ort B ganz nah
+    p.distance = pDistance->load() * (1.0f - p.blend);
     p.door = pDoor->load();
     p.roomDb = pRoom->load();
     p.levelAmt = pLevel->load();
