@@ -56,12 +56,8 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
     setupKnob (distance, "distance", "Start-Entfernung");
     setupKnob (door, "door", u8 ("T\xc3\xbcr  zu \xe2\x86\x94 offen"));
     setupKnob (room, "room", "Raumanteil");
-    setupKnob (level, "level", "Pegelwirkung");
     setupKnob (out, "out", "Ausgang");
 
-    delay.setButtonText (u8 ("Weg-Verz\xc3\xb6gerung"));
-    content.addAndMakeVisible (delay);
-    attDelay = std::make_unique<APVTS::ButtonAttachment> (processor.apvts, "delay", delay);
 
     themeButton.onClick = [this]
     {
@@ -93,19 +89,15 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
         "0 % = Tuer geschlossen: dumpf und leise. 100 % = offen, ohne Wirkung. Eigener Regler, weil eine Tuer meist zu einem anderen Zeitpunkt aufgeht.\n\n"
         "RAUMANTEIL\n"
         "Hall des Raums, in dem die Quelle steht, in dB. Feinregler.\n\n"
-        "PEGELWIRKUNG\n"
-        "Wie stark Entfernung und Tuer die Lautstaerke senken. 0 % = nur Klangfarbe, Lautstaerke bleibt.\n\n"
         "AUSGANG\n"
         "Ausgangspegel des Plugins.\n\n"
-        "WEG-VERZOEGERUNG\n"
-        "Wenige Millisekunden Laufzeit fuer den Weg, z. B. Treppenhaus. Aus lassen, wenn nichts verrutschen soll.\n\n"
         "Look: Dunkel / Hell umschalten. Das Fenster ist am rechten unteren Rand skalierbar."));
     helpText.setColour (juce::TextEditor::backgroundColourId, theme.panel);
     helpText.setColour (juce::TextEditor::textColourId, theme.text);
     helpText.setColour (juce::TextEditor::outlineColourId, theme.accent);
     helpText.setFont (juce::FontOptions (13.0f));
     helpText.setVisible (false);
-    content.addAndMakeVisible (helpText);
+    content.addChildComponent (helpText);   // startet ausgeblendet
 
     // Tooltips
     placeA.setTooltip (u8 ("Startort der Bewegung"));
@@ -114,9 +106,7 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
     distance.slider.setTooltip (u8 ("Wie weit weg die Quelle bei Position 0 % ist"));
     door.slider.setTooltip (u8 ("0 % = Tuer zu (dumpf, leise), 100 % = offen"));
     room.slider.setTooltip (u8 ("Hall des Raums der Quelle (Feinregler, dB)"));
-    level.slider.setTooltip (u8 ("Wie stark Entfernung und Tuer die Lautstaerke senken"));
     out.slider.setTooltip (u8 ("Ausgangspegel"));
-    delay.setTooltip (u8 ("Wenige Millisekunden Laufzeit fuer den Weg, z. B. Treppenhaus"));
 
     applyTheme();
     setSize (kBaseW, kBaseH);
@@ -226,13 +216,12 @@ void LocationsEditor::resized()
     blend.setBounds (24, 140, w - 48, 50);
 
     juce::Rectangle<int> row (24, 216, w - 48, 150);
-    const int kw = row.getWidth() / 5;
-    for (auto* k : { &distance, &door, &room, &level, &out })
+    const int kw = row.getWidth() / 4;
+    for (auto* k : { &distance, &door, &room, &out })
     {
         auto cell = row.removeFromLeft (kw);
         k->label.setBounds (cell.removeFromTop (20));
         k->slider.setBounds (cell.reduced (8, 2));
     }
-    delay.setBounds (24, 372, 220, 26);
     helpText.toFront (false);
 }
