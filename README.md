@@ -152,7 +152,7 @@ Aus der Ferne kommen nur Fetzen durch, je näher er kommt, desto verständlicher
 
 Die Versionsnummer steht in der Datei `VERSION`, im Plugin-Kopf und im Namen der Release. Sie wird bei jeder Änderung hochgezählt (1.0, 1.1, 1.2 …).
 
-- **1.15** – Hilfe: Credits zeigen „Idee und Konzept: Lars Eickstädt“ und „Umsetzung: mit Claude (Anthropic)“.
+- **1.16** – Hilfe: Credits zeigen „Idee und Konzept: Lars Eickstädt“ (ohne Umsetzungszeile).
 - **1.14** – Onboard-Hilfe neu gegliedert: Überschriften fett, in der Reihenfolge der Oberfläche; Verdeckung-Hinweise ergänzt; Konzept- und Beta-Testing-Nennung.
 - **1.13** – Hilfe: Doppelklick bzw. Strg-Klick setzt einen Drehregler auf den Standardwert zurück.
 - **1.12** – L ↔ R funktioniert jetzt auch auf Mono-Spuren korrekt (vorher kam dort nur der linke Kanal heraus, rechts war fast still); Kasten VERDECKUNG ganz nach rechts; Wetter-Filter auf drei Stufen (Ruhig, Wind / Regen, Sturm), Sturm deutlich stärker.

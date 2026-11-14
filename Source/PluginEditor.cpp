@@ -65,8 +65,6 @@ static juce::AttributedString buildHelp (juce::Colour text, juce::Colour accent,
 
     head ("Idee und Konzept");
     body ("Lars Eickstädt, Stromschlag Audio");
-    head ("Umsetzung");
-    body ("mit Claude (Anthropic)");
     head ("Beta-Testing");
     body ("Markus Hildebrandt (SOUNDJOB)");
     note ("Gebaut mit JUCE.");
