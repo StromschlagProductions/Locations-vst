@@ -17,7 +17,7 @@ Eine Figur ruft aus dem oberen Stockwerk und kommt die Treppe herunter. Jemand s
 Tür, die sich langsam öffnet. Oder ein Suchtrupp ruft im nächtlichen Wald nach einem Vermissten und kommt hörbar näher.
 
 Für solche Szenen habe ich jedes Mal Plugin-Ketten gebaut: EQ, Filter, Hall, Delay und doppelte Spuren mit
-Überblendungen. Bis alles glaubwürdig klang, wurde es oft verschachtelt und mühsam.
+Überblendungen und vielschichtiger Automatisierung. Bis alles glaubwürdig klang, wurde es oft verschachtelt und mühsam.
 
 Irgendwann fiel mir auf, dass es meist um eine überschaubare Anzahl wiederkehrender Situationen geht. Daraus
 entstand die Idee für ein einziges Werkzeug: LOCATIONS. Kein Gimmick, sondern ein Alltagswerkzeug für meinen
