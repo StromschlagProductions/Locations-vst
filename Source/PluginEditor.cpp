@@ -21,6 +21,57 @@ LocationsEditor::Theme LocationsEditor::lightTheme()
              juce::Colour (0xff233539), juce::Colour (0xff5d6e72), juce::Colour (0xffb5bfbe), false };
 }
 
+// Inhalt der Onboard-Hilfe, in der Reihenfolge der Oberflaeche
+static juce::AttributedString buildHelp (juce::Colour text, juce::Colour accent, juce::Colour dim)
+{
+    juce::AttributedString s;
+    s.setWordWrap (juce::AttributedString::byWord);
+    s.setJustification (juce::Justification::topLeft);
+
+    auto head = [&] (const char* t)
+    { s.append (u8 (t) + "\n", juce::Font (juce::FontOptions (14.0f, juce::Font::bold)), accent); };
+    auto body = [&] (const char* t)
+    { s.append (u8 (t) + "\n\n", juce::Font (juce::FontOptions (13.0f)), text); };
+    auto note = [&] (const char* t)
+    { s.append (u8 (t) + "\n\n", juce::Font (juce::FontOptions (12.0f)), dim); };
+
+    s.append (u8 ("LOCATIONS – Hilfe") + u8 (" \xc2\xb7 v") + juce::String (PLUGIN_VERSION_TEXT) + "\n\n",
+              juce::Font (juce::FontOptions (17.0f, juce::Font::bold)), accent);
+
+    head ("ORT A / ORT B");
+    body ("Ort A ist der Startort der Bewegung, Ort B das Ziel. Meistens ist Ort B „Gleicher Raum“, also der Raum der Szene. Ort B ist immer nah.");
+
+    head ("POSITION (A nach B)");
+    body ("Der wichtigste Regler: 0 % = Quelle bei Ort A, 100 % = bei Ort B. Automatisiere ihn für jede Bewegung, zum Beispiel Treppe herunter, Suchtrupp kommt näher oder jemand geht weg.");
+
+    head ("Kasten ORT A (wirkt nur am Startort)");
+    body ("Entfernung: wie weit weg Ort A ist, von nah bis weit. Beispiel Suchtrupp: weit = tief im Wald, 40 % = ein paar Bäume entfernt.");
+    body ("Raumanteil: mehr oder weniger Hall bzw. Echo von Ort A, in dB. Feinregler, normalerweise auf 0 dB lassen.");
+    body ("Wetter-Filter: Ruhig, Wind / Regen, Sturm. Ändert nur den Klang, es kommen keine Wind- oder Regengeräusche dazu. Wirkt nur, wenn Ort A draußen ist, stärker mit der Entfernung, und verschwindet bei Ort B.");
+
+    head ("Kasten QUELLE (L ↔ R)");
+    body ("Platziert die Quelle links oder rechts: Stimme, Schritte, Geräusch auf der Spur. Hall und Echo bleiben in der Mitte, anders als beim Pan am Kanal. Gilt über die ganze Bewegung.");
+    note ("Funktioniert auf Stereo-Spuren und Stereo-Bussen. Auf einer Mono-Spur ohne Wirkung: dort den Pan am Kanal benutzen oder die Spur auf Stereo stellen (die Mono-Datei bleibt dabei unverändert).");
+
+    head ("Kasten VERDECKUNG (ganz rechts)");
+    body ("Etwas, das sich zwischen Quelle und Hörer stellt und den Klang dämpft. Art: Tür, Fenster, Vorhang, Autoscheibe, Schrank, Kofferraum oder Unter Wasser.");
+    body ("zu ↔ offen: zu = dumpf und leise mit dem Klang des Hindernisses, offen = keine Wirkung. Die Verdeckung hängt nicht an der Position, sie wirkt also auch bei Ort B (100 %). So funktionieren Kofferraum oder Autoscheibe, auch wenn die Quelle nah ist. Für „frei im Raum“ ganz auf offen stellen.");
+    body ("Solange die Verdeckung wirkt, ist ihr Kasten orange umrandet und zeigt „aktiv“.");
+    note ("Fenster gekippt = etwa in der Mitte. Autoscheibe: jemand spricht von außen ins Auto oder umgekehrt.");
+
+    head ("Allgemein");
+    body ("Doppelklick auf einen Drehregler oder Strg-Klick setzt ihn auf den Standardwert zurück.");
+    body ("Look: Dunkel / Hell umschalten, die Wahl wird mit dem Projekt gespeichert. Das Fenster ist am rechten unteren Rand skalierbar (50–300 %).");
+
+    head ("Konzept und Entwicklung");
+    body ("Lars Eickstädt, Stromschlag Audio");
+    head ("Beta-Testing");
+    body ("Markus Hildebrandt (SOUNDJOB)");
+    note ("Gebaut mit JUCE.");
+
+    return s;
+}
+
 LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor (&p), processor (p)
 {
     addAndMakeVisible (content);
@@ -82,46 +133,13 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
 
     helpButton.setButtonText ("?");
     helpButton.setTooltip (u8 ("Hilfe: was machen die Regler?"));
-    helpButton.onClick = [this] { helpText.setVisible (! helpText.isVisible()); };
+    helpButton.onClick = [this] { helpScroll.setVisible (! helpScroll.isVisible()); };
     content.addAndMakeVisible (helpButton);
 
-    helpText.setMultiLine (true);
-    helpText.setReadOnly (true);
-    helpText.setScrollbarsShown (true);
-    helpText.setCaretVisible (false);
-    helpText.setPopupMenuEnabled (false);
-    helpText.setText (u8 (
-        "ORT A / ORT B\n"
-        "Start- und Zielort der Bewegung. Ort B ist meistens „Gleicher Raum“, also der Raum der Szene, aus dessen Blickwinkel man hört. Ort B ist immer nah.\n\n"
-        "POSITION (A nach B)\n"
-        "Der wichtigste Regler. 0 % = Quelle bei Ort A, 100 % = bei Ort B. Automatisiere ihn für jede Bewegung "
-        "(Treppe herunter, Suchtrupp kommt näher, jemand geht weg).\n\n"
-        "Unten gibt es drei Kästen: ORT A (wirkt nur am Startort), QUELLE (links/rechts, bleibt über die ganze Bewegung gleich) "
-        "und ganz rechts VERDECKUNG (unabhängig von der Position, wirkt auch bei Ort B).\n\n"
-        "ORT A – ENTFERNUNG (nah – weit)\n"
-        "Wie weit weg Ort A ist. Beispiel Suchtrupp: weit = tief im Wald, 40 % = ein paar Bäume entfernt. "
-        "Wirkt nur auf Ort A.\n\n"
-        "VERDECKUNG (zu – offen + Art)\n"
-        "Etwas, das sich zwischen Quelle und Hörer stellt und den Klang dämpft. Unter dem Regler wählst du die Art: "
-        "Tür, Fenster, Vorhang, Autoscheibe, Schrank, Kofferraum oder Unter Wasser. Der Regler blendet von zu (dumpf, leise, mit dem Klang des Hindernisses) nach offen (keine Wirkung). "
-        "Er hängt nicht an der Position: Die Tür bleibt zu, bis du sie öffnest – auch wenn die Quelle schon zu 100 % bei Ort B ist. So gehen Fälle wie Kofferraum, Schrank, Autoscheibe oder Unter Wasser, bei denen die Quelle nah ist und trotzdem etwas dazwischen liegt. Für „frei im Raum“ den Regler ganz auf offen stellen. Solange die Verdeckung wirkt, ist der Kasten VERDECKUNG orange umrandet und zeigt „aktiv“. "
-        "Fenster gekippt = etwa in der Mitte. Autoscheibe: jemand spricht von außen ins Auto oder umgekehrt.\n\n"
-        "QUELLE – L ↔ R (Panorama)\n"
-        "Platziert die Quelle – also das, was auf der Spur liegt: Stimme, Schritte, Geräusch – links oder rechts. "
-        "Hall und Echo bleiben in der Mitte (anders als der Pan am Kanal). Wirkt bei Ort A, auf dem Weg und bei Ort B. "
-        "Funktioniert nur auf einer Stereo-Spur oder einem Stereo-Bus. Auf einer Mono-Spur ist der Regler ohne Wirkung – dort den Pan am Kanal benutzen.\n\n"
-        "ORT A – WETTER-FILTER\n"
-        "Ändert nur den Klang, es kommen keine Wind- oder Regengeräusche dazu. Nur wenn Ort A draußen ist: "
-        "Wind / Regen oder Sturm schlucken Höhen und lassen Rufe in Böen schwanken (Sturm deutlich stärker). "
-        "Wirkt umso stärker, je weiter weg die Quelle ist, und verschwindet, wenn sie bei Ort B ankommt.\n\n"
-        "ORT A – RAUMANTEIL\n"
-        "Mehr oder weniger Hall bzw. Echo von Ort A, in dB. Feinregler, normalerweise auf 0 dB lassen.\n\n"
-        "Lautstärke und Laufzeit des Weges ändern sich automatisch mit der Entfernung.\n"
-        "Doppelklick auf einen Drehregler oder Strg-Klick setzt ihn auf den Standardwert zurück.\n"
-        "Look: Dunkel / Hell umschalten. Das Fenster ist am rechten unteren Rand skalierbar (50–300 %)."));
-    helpText.setFont (juce::FontOptions (13.0f));
-    helpText.setVisible (false);
-    content.addChildComponent (helpText);   // startet ausgeblendet
+    helpScroll.setViewedComponent (&helpText, false);
+    helpScroll.setScrollBarsShown (true, false);
+    helpScroll.setVisible (false);
+    content.addChildComponent (helpScroll);   // startet ausgeblendet
 
     // Tooltips
     placeA.setTooltip (u8 ("Startort der Bewegung"));
@@ -172,11 +190,7 @@ void LocationsEditor::applyTheme()
     for (auto* l : { &labelA, &labelB, &labelBlend })
         l->setColour (juce::Label::textColourId, theme.dim);
     themeButton.setButtonText (theme.dark ? "Look: Dunkel" : "Look: Hell");
-    helpText.setColour (juce::TextEditor::backgroundColourId, theme.panel);
-    helpText.setColour (juce::TextEditor::textColourId, theme.text);
-    helpText.setColour (juce::TextEditor::outlineColourId, theme.accent);
-    helpText.setColour (juce::TextEditor::focusedOutlineColourId, theme.accent);
-    helpText.applyColourToAllText (theme.text, true);
+    helpText.setAttributed (buildHelp (theme.text, theme.accent, theme.dim), theme.panel);
     sendLookAndFeelChange();
     repaint();
 }
@@ -305,7 +319,8 @@ void LocationsEditor::resized()
     const int w = kBaseW;
     themeButton.setBounds (w - 128, 18, 112, 28);
     helpButton.setBounds (w - 170, 18, 32, 28);
-    helpText.setBounds (12, 70, w - 24, 330);
+    helpScroll.setBounds (12, 70, w - 24, 330);
+    helpText.setWidth (helpScroll.getMaximumVisibleWidth());
 
     labelA.setBounds (24, 82, 200, 18);
     labelB.setBounds (w - 224, 82, 200, 18);
@@ -330,5 +345,5 @@ void LocationsEditor::resized()
     const int vx = 466, vw = w - 12 - 6 - vx;
     placeKnob (door, vx, 236, vw);
     barrierBox.setBounds (vx + 12, 366, vw - 24, 28);
-    helpText.toFront (false);
+    helpScroll.toFront (false);
 }
