@@ -8,7 +8,7 @@ und lässt es mit **einem** automatisierbaren Regler von dort heranrücken.
 
 ## Warum es dieses Plugin gibt
 
-In meiner langjährigen Arbeit an Hörspielproduktionen habe ich immer wieder die Erfahrung gemacht, dass die
+Bei meiner langjährigen Arbeit an Hörspielproduktionen habe ich immer wieder die Erfahrung gemacht, dass die
 Skripte Szenen enthalten, in denen Stimmen aus einiger Entfernung oder aus einem anderen Raum zu hören sind:
 Eine Figur ruft aus dem oberen Stockwerk und kommt die Treppe herunter. Jemand spricht hinter einer geschlossenen
 Tür, die sich langsam öffnet. Oder ein Suchtrupp ruft im nächtlichen Wald nach einem Vermissten und kommt hörbar näher.
