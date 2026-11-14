@@ -238,8 +238,8 @@ void LocationsEditor::paint (juce::Graphics& g)
         leaf.applyTransform (place);
         waves.applyTransform (place);
         // dezent: mischt Textfarbe zum Leistenhintergrund, damit Titel und Logo kraeftiger bleiben
-        const auto ink  = theme.panel.interpolatedWith (theme.text, 0.55f);
-        const auto fill = theme.panel.interpolatedWith (theme.text, 0.18f);
+        const auto ink  = theme.panel.interpolatedWith (theme.text, 0.42f);
+        const auto fill = theme.panel.interpolatedWith (theme.text, 0.14f);
         g.setColour (fill);
         g.fillPath (leaf);
         g.setColour (ink);
