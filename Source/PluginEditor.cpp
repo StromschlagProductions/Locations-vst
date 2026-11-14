@@ -56,7 +56,6 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
     setupKnob (distance, "distance", "Entfernung");
     setupKnob (door, "door", u8 ("zu \xe2\x86\x94 offen"));
     setupKnob (pan, "pan", u8 ("L \xe2\x86\x94 R"));
-    setupKnob (rear, "rear", u8 ("Vorne \xe2\x86\x94 Hinten"));
     setupKnob (room, "room", "Raumanteil");
 
     barrierBox.addItemList (LocationsProcessor::barrierNames(), 1);
@@ -90,14 +89,14 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
     helpText.setPopupMenuEnabled (false);
     helpText.setText (u8 (
         "ORT A / ORT B\n"
-        "Start- und Zielort der Bewegung. Ort B ist meistens „Gleicher Raum“, also der Raum der Zuhörer. Ort B ist immer nah.\n\n"
+        "Start- und Zielort der Bewegung. Ort B ist meistens „Gleicher Raum“, also der Raum der Szene, aus dessen Blickwinkel man hört. Ort B ist immer nah.\n\n"
         "POSITION (A nach B)\n"
         "Der wichtigste Regler. 0 % = Quelle bei Ort A, 100 % = bei Ort B. Automatisiere ihn für jede Bewegung "
-        "(Treppe herunter, Förster kommt näher, jemand geht weg).\n\n"
+        "(Treppe herunter, Suchtrupp kommt näher, jemand geht weg).\n\n"
         "Unten gibt es drei Kästen: ORT A (wirkt nur am Startort), VERDECKUNG (unabhängig von der Position) "
-        "und QUELLE (gilt für die ganze Bewegung).\n\n"
+        "und QUELLE (links/rechts, bleibt über die ganze Bewegung gleich).\n\n"
         "ORT A – ENTFERNUNG (nah – weit)\n"
-        "Wie weit weg Ort A ist. Beispiel Förster: weit = tief im Wald, 40 % = hinter dem nächsten Baum. "
+        "Wie weit weg Ort A ist. Beispiel Suchtrupp: weit = tief im Wald, 40 % = ein paar Bäume entfernt. "
         "Wirkt nur auf Ort A.\n\n"
         "VERDECKUNG (zu – offen + Art)\n"
         "Etwas, das sich zwischen Quelle und Hörer stellt und den Klang dämpft. Unter dem Regler wählst du die Art: "
@@ -107,8 +106,6 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
         "QUELLE – L ↔ R (Panorama)\n"
         "Platziert die Quelle – also das, was auf der Spur liegt: Stimme, Schritte, Geräusch – links oder rechts. "
         "Hall und Echo bleiben in der Mitte (anders als der Pan am Kanal). Wirkt bei Ort A, auf dem Weg und bei Ort B.\n\n"
-        "QUELLE – VORNE ↔ HINTEN\n"
-        "Steht die Quelle hinter dem Hörer, klingt sie etwas dunkler. Hall und Echo bleiben gleich.\n\n"
         "ORT A – WETTER-FILTER\n"
         "Ändert nur den Klang, es kommen keine Wind- oder Regengeräusche dazu. Nur wenn Ort A draußen ist: "
         "Wind, Regen oder Sturm schlucken Höhen und lassen Rufe in Böen schwanken. "
@@ -127,7 +124,6 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
     blend.setTooltip (u8 ("Position: 0 % = bei Ort A (weit), 100 % = bei Ort B (nah). Hauptregler fuer die Bewegung."));
     distance.slider.setTooltip (u8 ("Wie weit weg Ort A ist (nah = 0 %, weit = 100 %). Ort B ist immer nah."));
     door.slider.setTooltip (u8 ("zu = dumpf und leise (Klang je nach Art der Verdeckung), offen = keine Wirkung"));
-    rear.slider.setTooltip (u8 ("Quelle vor oder hinter dem H\xc3\xb6rer: hinten klingt sie etwas dunkler. Hall bleibt gleich."));
     barrierBox.setTooltip (u8 ("Was zwischen Quelle und H\xc3\xb6rer ist: T\xc3\xbcr, Fenster, Vorhang oder Autoscheibe (jemand spricht von au\xc3\x9f" "en ins Auto)"));
     weatherBox.setTooltip (u8 ("Ändert nur den Klang, erzeugt keine Wind- oder Regengeräusche: Höhen werden geschluckt, Böen lassen Rufe schwanken. Wirkt nur, wenn Ort A draußen ist, und stärker mit der Entfernung."));
     weatherLabel.setTooltip (weatherBox.getTooltip());
@@ -235,13 +231,19 @@ void LocationsEditor::paint (juce::Graphics& g)
             waves.addArc (cx - r, cy - r, 2.0f * r, 2.0f * r,
                           juce::MathConstants<float>::halfPi - half,
                           juce::MathConstants<float>::halfPi + half, true);
-        const auto place = juce::AffineTransform::scale (1.3f).translated (468.0f, 15.0f);
+        juce::GlyphArrangement ga;
+        ga.addLineOfText (juce::Font (juce::FontOptions (13.0f, juce::Font::bold)),
+                          "AUDIO DRAMA OFF-STAGE SIMULATOR", 0.0f, 0.0f);
+        const float subEnd  = 228.0f + ga.getBoundingBox (0, -1, true).getWidth();   // Ende des Untertitels
+        const float helpX   = (float) (kBaseW - 170);                                 // linke Kante des ?-Knopfs
+        const float mid     = 0.5f * (subEnd + helpX);                                // Mitte dazwischen
+        const auto place = juce::AffineTransform::scale (1.3f).translated (mid - 11.9f, 15.0f);   // 11,9 = Mitte des Symbols
         door.applyTransform (place);
         leaf.applyTransform (place);
         waves.applyTransform (place);
         // dezent: mischt Textfarbe zum Leistenhintergrund, damit Titel und Logo kraeftiger bleiben
-        const auto ink  = theme.panel.interpolatedWith (theme.text, 0.42f);
-        const auto fill = theme.panel.interpolatedWith (theme.text, 0.14f);
+        const auto ink  = theme.panel.interpolatedWith (theme.text, 0.30f);
+        const auto fill = theme.panel.interpolatedWith (theme.text, 0.10f);
         g.setColour (fill);
         g.fillPath (leaf);
         g.setColour (ink);
@@ -261,7 +263,7 @@ void LocationsEditor::paint (juce::Graphics& g)
     struct Box { float x, w; const char* title; const char* note; };
     const Box boxes[] = { { 12.0f, 280.0f, "ORT A", "nur am Startort" },
                           { 300.0f, 152.0f, "VERDECKUNG", "" },
-                          { 460.0f, (float) W - 472.0f, "QUELLE", "ganze Bewegung" } };
+                          { 460.0f, (float) W - 472.0f, "QUELLE", "" } };
     for (const auto& b : boxes)
     {
         g.setColour (theme.panel);
@@ -309,9 +311,8 @@ void LocationsEditor::resized()
     // VERDECKUNG: Regler in der Reihe, Art-Auswahl darunter (auf Hoehe des Wetter-Filters)
     placeKnob (door, 306, 236, 140);
     barrierBox.setBounds (312, 366, 128, 28);
-    // QUELLE: L-R, vorne-hinten
-    const int qx = 466, qw = (w - 12 - 6 - qx) / 2;
+    // QUELLE: L-R (ein Regler, mittig im Kasten)
+    const int qx = 466, qw = w - 12 - 6 - qx;
     placeKnob (pan, qx, 236, qw);
-    placeKnob (rear, qx + qw, 236, qw);
     helpText.toFront (false);
 }

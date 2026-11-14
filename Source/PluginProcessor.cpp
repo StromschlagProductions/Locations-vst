@@ -48,11 +48,6 @@ juce::AudioProcessorValueTreeState::ParameterLayout LocationsProcessor::createLa
                             return pct <= 0 ? String ("zu") : pct >= 100 ? String ("offen") : String (pct) + " %"; });
     layout.add (std::make_unique<AudioParameterFloat> (ParameterID { "door", 1 }, "Verdeckung (zu-offen)",
                                                        NormalisableRange<float> (0.0f, 1.0f), 1.0f, doorText));
-    auto rearText = AudioParameterFloatAttributes().withStringFromValueFunction (
-        [] (float v, int) { const int pct = roundToInt (v * 100.0f);
-                            return pct <= 0 ? String ("vorne") : pct >= 100 ? String ("hinten") : String (pct) + " %"; });
-    layout.add (std::make_unique<AudioParameterFloat> (ParameterID { "rear", 1 }, "Quelle vorne-hinten",
-                                                       NormalisableRange<float> (0.0f, 1.0f), 0.0f, rearText));
     layout.add (std::make_unique<AudioParameterChoice> (ParameterID { "barrier", 1 }, "Verdeckung (Art)", barrierNames(), 0));
     layout.add (std::make_unique<AudioParameterChoice> (ParameterID { "weather", 1 }, "Wetter-Filter (Ort A draussen)", weatherNames(), 0));
     layout.add (std::make_unique<AudioParameterFloat> (ParameterID { "room", 1 }, "Raumanteil (Ort A)",
@@ -78,7 +73,6 @@ LocationsProcessor::LocationsProcessor()
     pDoor = apvts.getRawParameterValue ("door");
     pRoom = apvts.getRawParameterValue ("room");
     pPan = apvts.getRawParameterValue ("pan");
-    pRear = apvts.getRawParameterValue ("rear");
     pBarrier = apvts.getRawParameterValue ("barrier");
     pWeather = apvts.getRawParameterValue ("weather");
 }
@@ -113,7 +107,6 @@ void LocationsProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::M
     p.door = pDoor->load();
     p.roomDb = pRoom->load();
     p.pan = pPan->load();
-    p.rear = pRear->load();
     p.barrier = juce::roundToInt (pBarrier->load());
     p.weather = juce::roundToInt (pWeather->load());
 

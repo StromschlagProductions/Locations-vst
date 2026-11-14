@@ -287,7 +287,6 @@ struct Params
     float door = 1.0f;         // 0 = zu, 1 = offen
     float roomDb = 0.0f;       // Raumanteil von Ort A (Trim, dB)
     float pan = 0.0f;          // -1 = links, 0 = Mitte, +1 = rechts (nur die Quelle, nicht der Raum)
-    float rear = 0.0f;         // 0 = vorne, 1 = hinten (nur die Quelle)
     int   barrier = 0;         // Tuer / Fenster / Vorhang / Autoscheibe
     int   weather = 0;         // Ruhig / Wind / Regen / Sturm (wirkt nur draussen bei Ort A)
 };
@@ -312,7 +311,6 @@ public:
         for (auto& f : doorLp) f.reset();
         for (auto& f : doorHp) f.reset();
         for (auto& f : doorBp) f.reset();
-        for (auto& f : rearHp) f.reset();
     }
     // left/right duerfen identisch sein (Mono). Verarbeitung in-place.
     void process (float* left, float* right, int numSamples, const Params& p)
@@ -332,11 +330,6 @@ public:
             float al, ar, bl, br;
             roomA.process (mono, wetA, echoA, al, ar);
             roomB.process (mono, wetB, echoB, bl, br);
-            if (rearCut < 1.0f)                              // hinten: Hoehen der Quelle etwas dunkler
-            {
-                l += (rearCut - 1.0f) * rearHp[0].highpass (l);
-                r += (rearCut - 1.0f) * rearHp[1].highpass (r);
-            }
             l = (l * panL + al + bl) * gain;                 // Quelle gepannt, Raum bleibt stehen
             r = (r * panR + ar + br) * gain;
 
@@ -417,12 +410,6 @@ private:
         panL = 1.41421356f * std::cos (theta);
         panR = 1.41421356f * std::sin (theta);
 
-        // vorne/hinten (nur Quelle): hinten bis zu 7 dB weniger Hoehen ab ca. 2,5 kHz
-        sRear += smCoef * (std::clamp (p.rear, 0.0f, 1.0f) - sRear);
-        rearCut = dbToLin (-7.0f * sRear);
-        if (sRear < 0.001f) rearCut = 1.0f;
-        for (auto& f : rearHp) f.set (2500.0f, sr);
-
         // Verdeckung (Tuer, Fenster, Vorhang, Autoscheibe): zu = Klang des Hindernisses, offen = unveraendert
         const auto& D = barrier (p.barrier);
         if (firstBar) { bFc = std::log (D.fcClosed); bGain = D.gainDb; bHp = D.hpHz; bBodyHz = std::log (D.bodyHz); bQ = D.bodyQ; bAmt = D.bodyAmt; firstBar = false; }
@@ -450,7 +437,6 @@ private:
     float sDly = 1.0f, curDly = 1.0f, dlyStep = 0.0f;
     float open = 1.0f, gain = 1.0f, panL = 1.0f, panR = 1.0f;
     float doorBody = 0, doorGain = 1, doorOpen = 1;
-    float sRear = 0.0f, rearCut = 1.0f;
     float bFc = 6.5f, bGain = 0.0f, bHp = 20.0f, bBodyHz = 5.3f, bQ = 1.0f, bAmt = 0.0f; bool firstBar = true;
     float gustState = 0.0f, gustState2 = 0.0f, gustCoef = 0.01f;
     unsigned int rng = 0x9e3779b9u;
@@ -458,6 +444,6 @@ private:
     bool first = true; int counter = 0;
     Room roomA, roomB;
     Delay path[2];
-    SVF lp[2], doorLp[4], doorBp[2]; OnePole doorHp[2], rearHp[2];
+    SVF lp[2], doorLp[4], doorBp[2]; OnePole doorHp[2];
 };
 } // namespace loc
