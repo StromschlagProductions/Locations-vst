@@ -1,4 +1,4 @@
-# LOCATIONS – Audio Drama Off-Stage Simulator <picture><source media="(prefers-color-scheme: dark)" srcset="docs/symbol-dunkel.png"><img align="middle" src="docs/symbol-hell.png" alt="Tür mit Schallwellen" height="59"></picture>
+# LOCATIONS – Audio Drama Off-Stage Simulator <sub><picture><source media="(prefers-color-scheme: dark)" srcset="docs/symbol-dunkel.png"><img src="docs/symbol-hell.png" alt="Tür mit Schallwellen" height="36"></picture></sub>
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/logo-dunkel.png">
