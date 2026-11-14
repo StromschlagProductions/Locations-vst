@@ -52,7 +52,7 @@ verkleinern. Das Seitenverhältnis bleibt dabei fest.
 - **Position** ist der eine Regler, den du automatisierst: 0 % = bei Ort A, 100 % = bei Ort B.
   Auf dem Weg dahin werden Klangfarbe, Lautstärke, Hall, Echo und Laufzeit gleitend von A nach B überführt.
 - **Entfernung A** legt vorher fest, wie weit weg Ort A ist. So kannst du die Position immer von ganz links
-  nach ganz rechts fahren und bestimmst trotzdem, ob der Förster tief im Wald oder hinter dem nächsten Baum anfängt.
+  nach ganz rechts fahren und bestimmst trotzdem, ob der Suchtrupp tief im Wald oder hinter den nächsten Bäumen anfängt.
 
 Den Hall deines Hörraums (z. B. Wohnzimmer-Impulsantwort) legst du wie gewohnt danach in der DAW darüber.
 
