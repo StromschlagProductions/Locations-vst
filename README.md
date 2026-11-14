@@ -38,7 +38,7 @@ eine ganze Kette von Plugins aufzubauen.
 *LOCATIONS soll niemandem die Erfahrung abnehmen, solche Szenen selbst zu gestalten. Besonders am Anfang kann es viel
 Spaß machen und lehrreich sein, eine Effektkette selbst aufzubauen und zu hören, wie EQ, Hall, Laufzeit und
 Automation ineinandergreifen. Ich bin dankbar, dass ich diesen Weg selbst gegangen bin – auch wenn er manchmal
-umständlich war. Gerade dadurch weiß ich, wie diese Effekte ineinandergreifen, um eine akustische Situation zu simulieren, und was ich mir von einem Werkzeug wünsche, das all das in einem vereint. LOCATIONS soll das Gestalten
+umständlich und mühselig war. Gerade dadurch weiß ich, wie diese Effekte ineinandergreifen, um eine akustische Situation zu simulieren, und was ich mir von einem Werkzeug wünsche, das all das in einem vereint. LOCATIONS soll das Gestalten
 nicht ersetzen, sondern die technische Umsetzung im Alltag einfacher machen.*
 
 – Lars Eickstädt, Stromschlag Audio
