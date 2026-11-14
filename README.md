@@ -15,9 +15,8 @@ zusammengebaut – EQ, Filter, Hall, Delay, doppelte Spuren mit Überblendungen 
 bis es glaubwürdig klang.
 
 Irgendwann wurde mir klar: Es sind immer wieder dieselben ein, zwei Handvoll Situationen. Also lag der Gedanke
-nahe, daraus ein einziges Werkzeug zu machen. Zusammen mit Claude (Anthropic) habe ich LOCATIONS ausgetüftelt,
-entworfen und gebaut – kein Gimmick, sondern ein Alltagswerkzeug für meinen eigenen Workflow, das auf jede
-Sprecher- oder Geräuschspur passt.
+nahe, daraus ein einziges Werkzeug zu machen. Daraus habe ich dann an einem Alltagswerkzeug getüftelt, entworfen und gebaut – kein Gimmick, sondern ein
+Werkzeug für meinen eigenen Workflow, das auf jede Sprecher- oder Geräuschspur passt.
 
 Damit lässt sich eine Quelle fest an einen Ort setzen – hinten in den Wald, hinter eine verschlossene Tür,
 in den Keller – oder in Bewegung bringen: Die Tür geht beim Sprechen auf, jemand kommt aus dem Nebenraum herein
@@ -150,6 +149,10 @@ Die Versionsnummer steht in der Datei `VERSION`, im Plugin-Kopf und im Namen der
 - `Source/LocationsDSP.h`: Klang-Engine (reines C++, Orte und Werte stehen oben in der Tabelle)
 - `Source/PluginProcessor.*`, `Source/PluginEditor.*`: JUCE-Plugin und Oberfläche
 - `.github/workflows/build.yml`: automatischer Windows-Bau mit Stabilitätstest (pluginval) und Release
+
+## Beta-Test und Danke
+
+**SOUNDJOB / Markus Hildebrandt** – Beta-Testing
 
 Gebaut mit [JUCE](https://juce.com) 8. Ideen zur Raum- und Entfernungssimulation angeregt durch die
 MIT-lizenzierten Airwindows-Plugins (Distance, Cans) von Chris Johnson; kein Code daraus übernommen.
