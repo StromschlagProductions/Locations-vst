@@ -6,6 +6,29 @@ VST3-Effekt für Hörspiel-Produktion. Er lässt eine Stimme oder ein Geräusch 
 einem anderen Raum, einer anderen Etage, hinter einer geschlossenen Tür oder aus der Ferne im Freien –
 und lässt es mit **einem** automatisierbaren Regler von dort heranrücken.
 
+## Warum es dieses Plugin gibt
+
+Seit Jahren produziere ich Hörspiele, und immer wieder stehe ich vor denselben Situationen: Jemand ruft aus
+der oberen Etage, kommt die Treppe herunter, spricht hinter einer geschlossenen Tür, die sich dann öffnet,
+oder ein Förster brüllt aus der Tiefe des Waldes und kommt näher. Jedes Mal habe ich dafür Plugin-Ketten
+zusammengebaut – EQ, Filter, Hall, Delay, doppelte Spuren mit Überblendungen – oft verschachtelt und mühsam,
+bis es glaubwürdig klang.
+
+Irgendwann wurde mir klar: Es sind immer wieder dieselben ein, zwei Handvoll Situationen. Also lag der Gedanke
+nahe, daraus ein einziges Werkzeug zu machen. Zusammen mit Claude (Anthropic) habe ich LOCATIONS ausgetüftelt,
+entworfen und gebaut – kein Gimmick, sondern ein Alltagswerkzeug für meinen eigenen Workflow, das auf jede
+Sprecher- oder Geräuschspur passt.
+
+Damit lässt sich eine Quelle fest an einen Ort setzen – hinten in den Wald, hinter eine verschlossene Tür,
+in den Keller – oder in Bewegung bringen: Die Tür geht beim Sprechen auf, jemand kommt aus dem Nebenraum herein
+oder geht hinter dem Zuhörer vorbei. Gesteuert wird das im Wesentlichen mit einem einzigen automatisierbaren Regler.
+
+LOCATIONS ist bewusst für **Stereo-Hörspiele** gemacht. Für Surround (5.1) oder binaurale Produktionen gibt es
+andere Lösungen; hier geht es um eine einfache, schnelle Lösung im Stereobild, ohne jedes Mal mit einer Handvoll
+Plugins hantieren zu müssen.
+
+– Lars, Stromschlag Audio
+
 **⬇ Download (Windows, VST3):** https://github.com/StromschlagProductions/Locations-vst/releases/latest
 
 ## Oberfläche
