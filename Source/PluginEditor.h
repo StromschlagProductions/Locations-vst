@@ -36,7 +36,7 @@ private:
     juce::Slider blend;
     Knob distance, door, pan, rear, room;
     juce::ComboBox barrierBox, weatherBox;
-    juce::Label barrierLabel, weatherLabel;
+    juce::Label weatherLabel;
     std::unique_ptr<APVTS::ComboBoxAttachment> attBarrier, attWeather;
     juce::TextButton themeButton;
     juce::TextButton helpButton;

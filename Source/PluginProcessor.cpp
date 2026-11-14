@@ -54,7 +54,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout LocationsProcessor::createLa
     layout.add (std::make_unique<AudioParameterFloat> (ParameterID { "rear", 1 }, "Quelle vorne-hinten",
                                                        NormalisableRange<float> (0.0f, 1.0f), 0.0f, rearText));
     layout.add (std::make_unique<AudioParameterChoice> (ParameterID { "barrier", 1 }, "Dazwischen", barrierNames(), 0));
-    layout.add (std::make_unique<AudioParameterChoice> (ParameterID { "weather", 1 }, "Wetter (draussen)", weatherNames(), 0));
+    layout.add (std::make_unique<AudioParameterChoice> (ParameterID { "weather", 1 }, "Wetter-Filter (Ort A draussen)", weatherNames(), 0));
     layout.add (std::make_unique<AudioParameterFloat> (ParameterID { "room", 1 }, "Raumanteil (Ort A)",
                                                        NormalisableRange<float> (-24.0f, 12.0f), 0.0f, decibel));
     auto panText = AudioParameterFloatAttributes().withStringFromValueFunction (
