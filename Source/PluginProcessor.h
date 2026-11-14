@@ -40,6 +40,7 @@ public:
 private:
     static juce::AudioProcessorValueTreeState::ParameterLayout createLayout();
     loc::Engine engine;
+    std::vector<float> monoScratch;   // zweiter Kanal fuer Mono-Spuren (vorab angelegt)
     std::atomic<float>* pPlaceA = nullptr; std::atomic<float>* pPlaceB = nullptr;
     std::atomic<float>* pBlend = nullptr;  std::atomic<float>* pDistance = nullptr;
     std::atomic<float>* pDoor = nullptr;   std::atomic<float>* pRoom = nullptr;

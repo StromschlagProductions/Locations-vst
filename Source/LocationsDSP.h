@@ -92,14 +92,13 @@ inline const BarrierDef& barrier (int i)
 
 // Wetter draussen: zusaetzlicher Hoehenverlust, Pegelverlust und Boeen (Pegel schwankt langsam)
 struct WeatherDef { const char* name; float lpOct, gainDb, gustDb, gustHz; };
-constexpr int kNumWeathers = 4;
+constexpr int kNumWeathers = 3;
 inline const WeatherDef& weather (int i)
 {
     static const WeatherDef defs[kNumWeathers] = {
-        { "Ruhig",  0.0f,  0.0f,  0.0f, 0.5f },
-        { "Wind",   1.0f, -3.0f,  6.0f, 0.6f },
-        { "Regen",  1.5f, -4.0f,  1.5f, 0.3f },
-        { "Sturm",  2.0f, -6.0f, 10.0f, 1.0f },
+        { "Ruhig",         0.0f,  0.0f,  0.0f, 0.5f },
+        { "Wind / Regen",  1.3f, -4.0f,  5.0f, 0.5f },
+        { "Sturm",         2.6f, -9.0f, 12.0f, 1.0f },
     };
     return defs[std::clamp (i, 0, kNumWeathers - 1)];
 }
@@ -294,7 +293,7 @@ struct Params
     float roomDb = 0.0f;       // Raumanteil von Ort A (Trim, dB)
     float pan = 0.0f;          // -1 = links, 0 = Mitte, +1 = rechts (nur die Quelle, nicht der Raum)
     int   barrier = 0;         // Tuer / Fenster / Vorhang / Autoscheibe
-    int   weather = 0;         // Ruhig / Wind / Regen / Sturm (wirkt nur draussen bei Ort A)
+    int   weather = 0;         // Ruhig / Wind-Regen / Sturm (wirkt nur draussen bei Ort A)
 };
 
 class Engine
