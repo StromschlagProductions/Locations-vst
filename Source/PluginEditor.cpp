@@ -63,8 +63,10 @@ static juce::AttributedString buildHelp (juce::Colour text, juce::Colour accent,
     body ("Doppelklick auf einen Drehregler oder Strg-Klick setzt ihn auf den Standardwert zurück.");
     body ("Look: Dunkel / Hell umschalten, die Wahl wird mit dem Projekt gespeichert. Das Fenster ist am rechten unteren Rand skalierbar (50–300 %).");
 
-    head ("Konzept und Entwicklung");
+    head ("Idee und Konzept");
     body ("Lars Eickstädt, Stromschlag Audio");
+    head ("Umsetzung");
+    body ("mit Claude (Anthropic)");
     head ("Beta-Testing");
     body ("Markus Hildebrandt (SOUNDJOB)");
     note ("Gebaut mit JUCE.");
