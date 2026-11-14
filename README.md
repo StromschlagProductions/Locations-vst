@@ -8,25 +8,27 @@ und lässt es mit **einem** automatisierbaren Regler von dort heranrücken.
 
 ## Warum es dieses Plugin gibt
 
-Seit Jahren produziere ich Hörspiele, und immer wieder stehe ich vor denselben Situationen: Jemand ruft aus
-der oberen Etage, kommt die Treppe herunter, spricht hinter einer geschlossenen Tür, die sich dann öffnet,
-oder ein Förster brüllt aus der Tiefe des Waldes und kommt näher. Jedes Mal habe ich dafür Plugin-Ketten
-zusammengebaut – EQ, Filter, Hall, Delay, doppelte Spuren mit Überblendungen – oft verschachtelt und mühsam,
-bis es glaubwürdig klang.
+Seit Jahren produziere ich Hörspiele. In den Geschichten kommen immer wieder ähnliche Szenen vor: Eine Figur
+ruft aus dem oberen Stockwerk und kommt die Treppe herunter. Jemand spricht hinter einer geschlossenen Tür, die
+sich langsam öffnet. Oder ein Förster brüllt aus der Tiefe des Waldes und kommt näher.
 
-Irgendwann wurde mir klar: Es sind immer wieder dieselben ein, zwei Handvoll Situationen. Also lag der Gedanke
-nahe, daraus ein einziges Werkzeug zu machen. Daraus habe ich dann an einem Alltagswerkzeug getüftelt, entworfen und gebaut – kein Gimmick, sondern ein
-Werkzeug für meinen eigenen Workflow, das auf jede Sprecher- oder Geräuschspur passt.
+Für solche Szenen habe ich jedes Mal Plugin-Ketten gebaut: EQ, Filter, Hall, Delay und doppelte Spuren mit
+Überblendungen. Bis alles glaubwürdig klang, wurde es oft verschachtelt und mühsam.
 
-Damit lässt sich eine Quelle fest an einen Ort setzen – hinten in den Wald, hinter eine verschlossene Tür,
-in den Keller – oder in Bewegung bringen: Die Tür geht beim Sprechen auf, jemand kommt aus dem Nebenraum herein
-oder geht hinter dem Zuhörer vorbei. Gesteuert wird das im Wesentlichen mit einem einzigen automatisierbaren Regler.
+Irgendwann fiel mir auf, dass es meist um eine überschaubare Anzahl wiederkehrender Situationen geht. Daraus
+entstand die Idee für ein einziges Werkzeug: LOCATIONS. Kein Gimmick, sondern ein Alltagswerkzeug für meinen
+eigenen Workflow – für jede Sprecher- oder SFX-Spur.
 
-LOCATIONS ist bewusst für **Stereo-Hörspiele** gemacht. Für Surround (5.1) oder binaurale Produktionen gibt es
-andere Lösungen; hier geht es um eine einfache, schnelle Lösung im Stereobild, ohne jedes Mal mit einer Handvoll
-Plugins hantieren zu müssen.
+Mit LOCATIONS lässt sich eine Quelle an einem Ort platzieren: tief im Wald, hinter einer geschlossenen Tür oder
+im Keller. Sie lässt sich aber auch in Bewegung setzen: Eine Tür öffnet sich, während jemand spricht, jemand
+kommt aus dem Nebenraum herein oder geht hinter dem Zuhörer vorbei. Die Bewegung wird dabei über Automation in
+der DAW gesteuert – im Wesentlichen mit einem einzigen Regler.
 
-– Lars, Stromschlag Audio
+LOCATIONS ist bewusst für Stereo-Hörspiele gemacht. Für Surround- oder binaurale Produktionen gibt es andere
+Lösungen. Hier geht es darum, räumliche Szenen im Stereobild einfach und schnell umzusetzen – ohne jedes Mal
+eine ganze Kette von Plugins aufzubauen.
+
+– Lars Eickstädt, Stromschlag Audio
 
 **⬇ Download (Windows, VST3):** https://github.com/StromschlagProductions/Locations-vst/releases/latest
 
