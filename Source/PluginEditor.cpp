@@ -218,6 +218,37 @@ void LocationsEditor::paint (juce::Graphics& g)
     g.setFont (juce::FontOptions (11.0f));
     g.drawText (u8 ("STROMSCHLAG AUDIO  \xc2\xb7  v" PLUGIN_VERSION_TEXT), 80, 36, 300, 16, juce::Justification::centredLeft);
 
+    // Kleines Symbol: halboffene Tuer, die Schallwellen kommen aus der Oeffnung (einfarbig, folgt dem Look)
+    {
+        const float ox = 0.0f, oy = 0.0f;   // Symbol wird in eigenen Koordinaten gebaut und dann verschoben/vergroessert
+        juce::Path door, leaf, waves;
+        door.addRectangle (ox + 1.0f, oy + 1.0f, 11.5f, 24.0f);
+        leaf.startNewSubPath (ox + 1.0f, oy + 1.0f);
+        leaf.lineTo (ox + 6.5f, oy + 4.5f);
+        leaf.lineTo (ox + 6.5f, oy + 21.5f);
+        leaf.lineTo (ox + 1.0f, oy + 25.0f);
+        leaf.closeSubPath();
+        const float cx = ox + 6.5f, cy = oy + 13.0f, half = 0.62f;
+        for (float r : { 4.0f, 8.5f, 13.0f })
+            waves.addArc (cx - r, cy - r, 2.0f * r, 2.0f * r,
+                          juce::MathConstants<float>::halfPi - half,
+                          juce::MathConstants<float>::halfPi + half, true);
+        const auto place = juce::AffineTransform::scale (1.3f).translated (468.0f, 15.0f);
+        door.applyTransform (place);
+        leaf.applyTransform (place);
+        waves.applyTransform (place);
+        // dezent: mischt Textfarbe zum Leistenhintergrund, damit Titel und Logo kraeftiger bleiben
+        const auto ink  = theme.panel.interpolatedWith (theme.text, 0.55f);
+        const auto fill = theme.panel.interpolatedWith (theme.text, 0.18f);
+        g.setColour (fill);
+        g.fillPath (leaf);
+        g.setColour (ink);
+        g.strokePath (door, juce::PathStrokeType (1.8f));
+        g.strokePath (leaf, juce::PathStrokeType (1.4f));
+        g.strokePath (waves, juce::PathStrokeType (2.0f, juce::PathStrokeType::curved,
+                                                   juce::PathStrokeType::rounded));
+    }
+
     // Karten
     g.setColour (theme.panel);
     g.fillRoundedRectangle (12.0f, 76.0f, (float) W - 24.0f, 122.0f, 8.0f);
