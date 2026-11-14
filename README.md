@@ -115,7 +115,7 @@ passieren automatisch.
 | | Raumanteil | mehr oder weniger Hall bzw. Echo von Ort A (Feinregler, normalerweise 0 dB) |
 | | Wetter-Filter | Ruhig, Wind, Regen, Sturm. **Ändert nur den Klang, erzeugt keine Wind- oder Regengeräusche.** Nur wenn Ort A draußen ist: Höhen werden geschluckt, Böen lassen Rufe schwanken. Stärker mit der Entfernung, verschwindet zu Ort B hin |
 | **VERDECKUNG** – etwas, das sich zwischen Quelle und Hörer stellt; unabhängig von der Position | Art | Tür, Fenster (gekippt ≈ Mitte), Vorhang, Autoscheibe, Schrank, Kofferraum oder Unter Wasser |
-| | zu ↔ offen | zu = dumpf und leise mit dem Klang des Hindernisses, offen = keine Wirkung. Die Tür bleibt zu, bis du sie öffnest – auch wenn die Quelle schon bei Ort B ist |
+| | zu ↔ offen | zu = dumpf und leise mit dem Klang des Hindernisses, offen = keine Wirkung. Die Verdeckung wirkt auch bei Ort B (100 %) – so gehen Kofferraum, Schrank, Autoscheibe oder Unter Wasser, wenn die Quelle nah ist. Für „frei im Raum“ ganz auf offen stellen. Solange sie wirkt, ist der Kasten orange umrandet und zeigt „aktiv“ |
 | **QUELLE** | L ↔ R | Panorama der Quelle (Stimme, Schritte, Geräusch auf der Spur). Nur die Quelle wandert, Hall und Echo bleiben in der Mitte – anders als beim Pan am Kanal. Gilt über die ganze Bewegung |
 
 ## Anwendung
@@ -152,6 +152,7 @@ Aus der Ferne kommen nur Fetzen durch, je näher er kommt, desto verständlicher
 
 Die Versionsnummer steht in der Datei `VERSION`, im Plugin-Kopf und im Namen der Release. Sie wird bei jeder Änderung hochgezählt (1.0, 1.1, 1.2 …).
 
+- **1.10** – Kasten VERDECKUNG ist orange umrandet und zeigt „aktiv“, solange die Verdeckung wirkt; Hilfe, Tooltip und README erklären, dass sie auch bei Ort B wirkt.
 - **1.9** – Neue Orte Kirche, Museum und Tiefgarage; neue Verdeckungen Schrank, Kofferraum und Unter Wasser.
   *Achtung:* Die Draußen-Orte stehen in der Liste jetzt weiter hinten – Projekte mit älteren Versionen bitte Ort A/B prüfen.
 - **1.8** – Regler „Vorne ↔ Hinten“ entfernt (der Effekt war im Stereobild zu schwach, um glaubwürdig zu sein), Hinweis „ganze Bewegung“ gestrichen, Tür-Symbol dezenter und mittig zwischen Titel und Hilfe-Knopf.
