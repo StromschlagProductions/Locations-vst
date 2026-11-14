@@ -191,6 +191,8 @@ void LocationsEditor::applyTheme()
         l->setColour (juce::Label::textColourId, theme.dim);
     themeButton.setButtonText (theme.dark ? "Look: Dunkel" : "Look: Hell");
     helpText.setAttributed (buildHelp (theme.text, theme.accent, theme.dim), theme.panel);
+    helpScroll.fill = theme.panel;
+    helpScroll.edge = theme.line;
     sendLookAndFeelChange();
     repaint();
 }
@@ -317,9 +319,10 @@ void LocationsEditor::resized()
     repaint();
 
     const int w = kBaseW;
-    themeButton.setBounds (w - 128, 18, 112, 28);
-    helpButton.setBounds (w - 170, 18, 32, 28);
-    helpScroll.setBounds (12, 70, w - 24, 330);
+    // Look links, Hilfe ganz rechts (gleicher Gesamtplatz, nur getauscht)
+    themeButton.setBounds (w - 170, 18, 112, 28);
+    helpButton.setBounds (w - 48, 18, 32, 28);
+    helpScroll.setBounds (12, 76, w - 24, 332);   // deckt die Kartenflaeche (y 76 bis 408) genau ab
     helpText.setWidth (helpScroll.getMaximumVisibleWidth());
 
     labelA.setBounds (24, 82, 200, 18);

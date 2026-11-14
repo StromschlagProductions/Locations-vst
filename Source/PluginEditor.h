@@ -15,7 +15,7 @@ public:
     }
     void paint (juce::Graphics& g) override
     {
-        g.fillAll (bg);
+        // transparent: der abgerundete Hintergrund kommt vom HelpPanel
         tl.draw (g, getLocalBounds().toFloat().reduced (14.0f, 10.0f));
     }
 private:
@@ -30,6 +30,21 @@ private:
     juce::TextLayout tl;
     juce::Colour bg;
     int laidOutW = 0;
+};
+
+// Hilfe-Flaeche: Viewport mit abgerundetem Hintergrund (passt auf die Kartenflaeche darunter)
+class HelpPanel : public juce::Viewport
+{
+public:
+    juce::Colour fill, edge;
+    void paint (juce::Graphics& g) override
+    {
+        auto r = getLocalBounds().toFloat();
+        g.setColour (fill);
+        g.fillRoundedRectangle (r, 8.0f);
+        g.setColour (edge);
+        g.drawRoundedRectangle (r.reduced (0.5f), 8.0f, 1.0f);
+    }
 };
 
 class LocationsEditor : public juce::AudioProcessorEditor
@@ -72,7 +87,7 @@ private:
     std::unique_ptr<APVTS::ComboBoxAttachment> attBarrier, attWeather;
     juce::TextButton themeButton;
     juce::TextButton helpButton;
-    juce::Viewport helpScroll;
+    HelpPanel helpScroll;
     HelpView helpText;
     juce::TooltipWindow tooltipWindow { this, 400 };
     std::unique_ptr<APVTS::ComboBoxAttachment> attA, attB;
