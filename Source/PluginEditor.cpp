@@ -55,6 +55,7 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
 
     setupKnob (distance, "distance", "Entfernung");
     setupKnob (door, "door", u8 ("zu \xe2\x86\x94 offen"));
+    door.slider.onValueChange = [this] { repaint(); };   // Kasten VERDECKUNG zeigt an, ob sie wirkt
     setupKnob (pan, "pan", u8 ("L \xe2\x86\x94 R"));
     setupKnob (room, "room", "Raumanteil");
 
@@ -101,7 +102,7 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
         "VERDECKUNG (zu – offen + Art)\n"
         "Etwas, das sich zwischen Quelle und Hörer stellt und den Klang dämpft. Unter dem Regler wählst du die Art: "
         "Tür, Fenster, Vorhang, Autoscheibe, Schrank, Kofferraum oder Unter Wasser. Der Regler blendet von zu (dumpf, leise, mit dem Klang des Hindernisses) nach offen (keine Wirkung). "
-        "Er hängt nicht an der Position: Die Tür bleibt zu, bis du sie öffnest. "
+        "Er hängt nicht an der Position: Die Tür bleibt zu, bis du sie öffnest – auch wenn die Quelle schon zu 100 % bei Ort B ist. So gehen Fälle wie Kofferraum, Schrank, Autoscheibe oder Unter Wasser, bei denen die Quelle nah ist und trotzdem etwas dazwischen liegt. Für „frei im Raum“ den Regler ganz auf offen stellen. Solange die Verdeckung wirkt, ist der Kasten VERDECKUNG orange umrandet und zeigt „aktiv“. "
         "Fenster gekippt = etwa in der Mitte. Autoscheibe: jemand spricht von außen ins Auto oder umgekehrt.\n\n"
         "QUELLE – L ↔ R (Panorama)\n"
         "Platziert die Quelle – also das, was auf der Spur liegt: Stimme, Schritte, Geräusch – links oder rechts. "
@@ -123,7 +124,7 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
     placeB.setTooltip (u8 ("Zielort der Bewegung, meist Gleicher Raum"));
     blend.setTooltip (u8 ("Position: 0 % = bei Ort A (weit), 100 % = bei Ort B (nah). Hauptregler fuer die Bewegung."));
     distance.slider.setTooltip (u8 ("Wie weit weg Ort A ist (nah = 0 %, weit = 100 %). Ort B ist immer nah."));
-    door.slider.setTooltip (u8 ("zu = dumpf und leise (Klang je nach Art der Verdeckung), offen = keine Wirkung"));
+    door.slider.setTooltip (u8 ("zu = dumpf und leise (Klang je nach Art der Verdeckung), offen = keine Wirkung. Wirkt auch bei Ort B (100 %) \xe2\x80\x93 f\xc3\xbcr frei im Raum ganz auf offen stellen."));
     barrierBox.setTooltip (u8 ("Was zwischen Quelle und H\xc3\xb6rer ist: T\xc3\xbcr, Fenster, Vorhang, Autoscheibe, Schrank, Kofferraum oder Unter Wasser"));
     weatherBox.setTooltip (u8 ("Ändert nur den Klang, erzeugt keine Wind- oder Regengeräusche: Höhen werden geschluckt, Böen lassen Rufe schwanken. Wirkt nur, wenn Ort A draußen ist, und stärker mit der Entfernung."));
     weatherLabel.setTooltip (weatherBox.getTooltip());
@@ -264,18 +265,20 @@ void LocationsEditor::paint (juce::Graphics& g)
     const Box boxes[] = { { 12.0f, 280.0f, "ORT A", "nur am Startort" },
                           { 300.0f, 152.0f, "VERDECKUNG", "" },
                           { 460.0f, (float) W - 472.0f, "QUELLE", "" } };
+    const bool barrierActive = door.slider.getValue() < 0.995;   // Verdeckung wirkt (nicht ganz offen)
     for (const auto& b : boxes)
     {
+        const bool hot = barrierActive && juce::String (b.title) == "VERDECKUNG";
         g.setColour (theme.panel);
         g.fillRoundedRectangle (b.x, 208.0f, b.w, 200.0f, 8.0f);
-        g.setColour (theme.line);
-        g.drawRoundedRectangle (b.x + 0.5f, 208.5f, b.w - 1.0f, 199.0f, 8.0f, 1.0f);
+        g.setColour (hot ? theme.accent : theme.line);
+        g.drawRoundedRectangle (b.x + 0.5f, 208.5f, b.w - 1.0f, 199.0f, 8.0f, hot ? 2.0f : 1.0f);
         g.setColour (theme.accent);
         g.setFont (juce::FontOptions (12.0f, juce::Font::bold));
         g.drawText (b.title, (int) b.x + 12, 214, (int) b.w - 24, 16, juce::Justification::centredLeft);
-        g.setColour (theme.dim);
-        g.setFont (juce::FontOptions (10.5f));
-        g.drawText (u8 (b.note), (int) b.x + 12, 214, (int) b.w - 24, 16, juce::Justification::centredRight);
+        g.setColour (hot ? theme.accent : theme.dim);
+        g.setFont (juce::FontOptions (10.5f, hot ? juce::Font::bold : juce::Font::plain));
+        g.drawText (hot ? juce::String ("aktiv") : u8 (b.note), (int) b.x + 12, 214, (int) b.w - 24, 16, juce::Justification::centredRight);
     }
 }
 
