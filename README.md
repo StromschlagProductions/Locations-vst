@@ -23,12 +23,6 @@ Irgendwann fiel mir auf, dass es meist um eine überschaubare Anzahl wiederkehre
 entstand die Idee für ein einziges Werkzeug: LOCATIONS. Kein Gimmick, sondern ein Alltagswerkzeug für meinen
 eigenen Workflow – für jede Sprecher- oder SFX-Spur.
 
-LOCATIONS soll niemandem die Erfahrung abnehmen, solche Szenen selbst zu gestalten. Besonders am Anfang kann es viel
-Spaß machen und lehrreich sein, eine Effektkette selbst aufzubauen und zu hören, wie EQ, Hall, Laufzeit und
-Automation ineinandergreifen. Ich bin dankbar, dass ich diesen Weg selbst gegangen bin – auch wenn er manchmal
-umständlich war. Gerade dadurch weiß ich, was ich mir von einem solchen Werkzeug wünsche. LOCATIONS soll diese Arbeit
-nicht ersetzen, sondern sie im Alltag einfacher machen.
-
 Mit LOCATIONS lässt sich eine Quelle an einem Ort platzieren: tief im Wald, hinter einer geschlossenen Tür oder
 im Keller. Sie lässt sich aber auch in Bewegung setzen, etwa wenn jemand aus dem Nebenraum hereinkommt oder ein
 Suchtrupp im Wald näher rückt. Diese Bewegung wird über Automation in der DAW gesteuert – im Wesentlichen mit dem
@@ -38,6 +32,12 @@ ebenfalls automatisieren lassen.
 LOCATIONS ist bewusst für Stereo-Hörspiele gemacht. Für Surround- oder binaurale Produktionen gibt es andere
 Lösungen. Hier geht es darum, räumliche Szenen im Stereobild einfach und schnell umzusetzen – ohne jedes Mal
 eine ganze Kette von Plugins aufzubauen.
+
+LOCATIONS soll niemandem die Erfahrung abnehmen, solche Szenen selbst zu gestalten. Besonders am Anfang kann es viel
+Spaß machen und lehrreich sein, eine Effektkette selbst aufzubauen und zu hören, wie EQ, Hall, Laufzeit und
+Automation ineinandergreifen. Ich bin dankbar, dass ich diesen Weg selbst gegangen bin – auch wenn er manchmal
+umständlich war. Gerade dadurch weiß ich, was ich mir von einem solchen Werkzeug wünsche. LOCATIONS soll diese Arbeit
+nicht ersetzen, sondern sie im Alltag einfacher machen.
 
 – Lars Eickstädt, Stromschlag Audio
 
