@@ -82,6 +82,9 @@ Den Hall des Szenenraums (z. B. eine Wohnzimmer-Impulsantwort) legst du wie gewo
 | Badezimmer | Gekachelter kleiner Raum nebenan | Kurzer, heller, harter Hall |
 | Große Halle | Weitläufiger Innenraum | Viel Hall, kaum Höhenverlust |
 | Tunnel / Höhle | Tunnel, Stollen, Höhle | Sehr langer, harter Nachhall |
+| Kirche | Kirchenschiff, Kapelle, Gewölbe | Sehr langer, weicher, warmer Nachhall |
+| Museum | Hohe Ausstellungsräume, Foyer | Großer, heller, harter Hall |
+| Tiefgarage | Beton, niedrige Decke | Langer, rauer Hall mit kurzem Flatterecho |
 
 **Draußen** (kein Raumhall, sondern Höhenverlust mit der Entfernung und Echos)
 
@@ -111,7 +114,7 @@ passieren automatisch.
 | **ORT A** – wirkt nur am Startort | Entfernung | wie weit weg Ort A ist (nah – weit) |
 | | Raumanteil | mehr oder weniger Hall bzw. Echo von Ort A (Feinregler, normalerweise 0 dB) |
 | | Wetter-Filter | Ruhig, Wind, Regen, Sturm. **Ändert nur den Klang, erzeugt keine Wind- oder Regengeräusche.** Nur wenn Ort A draußen ist: Höhen werden geschluckt, Böen lassen Rufe schwanken. Stärker mit der Entfernung, verschwindet zu Ort B hin |
-| **VERDECKUNG** – etwas, das sich zwischen Quelle und Hörer stellt; unabhängig von der Position | Art | Tür, Fenster (gekippt ≈ Mitte), Vorhang oder Autoscheibe |
+| **VERDECKUNG** – etwas, das sich zwischen Quelle und Hörer stellt; unabhängig von der Position | Art | Tür, Fenster (gekippt ≈ Mitte), Vorhang, Autoscheibe, Schrank, Kofferraum oder Unter Wasser |
 | | zu ↔ offen | zu = dumpf und leise mit dem Klang des Hindernisses, offen = keine Wirkung. Die Tür bleibt zu, bis du sie öffnest – auch wenn die Quelle schon bei Ort B ist |
 | **QUELLE** | L ↔ R | Panorama der Quelle (Stimme, Schritte, Geräusch auf der Spur). Nur die Quelle wandert, Hall und Echo bleiben in der Mitte – anders als beim Pan am Kanal. Gilt über die ganze Bewegung |
 
@@ -131,6 +134,9 @@ Geht die Tür auf: zu ↔ offen aufziehen, danach ggf. die Position, wenn die Fi
 **Jemand spricht von außen ins Auto:** Ort A und B = Gleicher Raum (oder Draußen: Straße), Verdeckung = Autoscheibe,
 Regler auf „zu“. Kurbelt jemand die Scheibe herunter: zu ↔ offen aufziehen.
 
+**Jemand ist im Kofferraum oder Schrank eingesperrt:** Ort A und B = Gleicher Raum, Verdeckung = Kofferraum bzw. Schrank, Regler auf „zu“.
+Geht die Klappe auf: zu ↔ offen aufziehen.
+
 **Ruf über das Feld bei Sturm:** Ort A = Draußen: Feld, Entfernung A = weit, Wetter-Filter = Sturm. Position von 0 auf 100 %:
 Aus der Ferne kommen nur Fetzen durch, je näher er kommt, desto verständlicher.
 
@@ -146,6 +152,8 @@ Aus der Ferne kommen nur Fetzen durch, je näher er kommt, desto verständlicher
 
 Die Versionsnummer steht in der Datei `VERSION`, im Plugin-Kopf und im Namen der Release. Sie wird bei jeder Änderung hochgezählt (1.0, 1.1, 1.2 …).
 
+- **1.9** – Neue Orte Kirche, Museum und Tiefgarage; neue Verdeckungen Schrank, Kofferraum und Unter Wasser.
+  *Achtung:* Die Draußen-Orte stehen in der Liste jetzt weiter hinten – Projekte mit älteren Versionen bitte Ort A/B prüfen.
 - **1.8** – Regler „Vorne ↔ Hinten“ entfernt (der Effekt war im Stereobild zu schwach, um glaubwürdig zu sein), Hinweis „ganze Bewegung“ gestrichen, Tür-Symbol dezenter und mittig zwischen Titel und Hilfe-Knopf.
   *Achtung:* Projekte mit Version 1.7 bitte kurz prüfen; der Regler ist weg.
 - **1.7** – Drehregler lassen sich nur noch senkrecht ziehen (hoch = mehr, runter = weniger), seitliche Handbewegung wirkt nicht mehr mit; kürzerer Weg bis zu den Endstellungen.

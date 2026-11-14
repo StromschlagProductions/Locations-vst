@@ -100,7 +100,7 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
         "Wirkt nur auf Ort A.\n\n"
         "VERDECKUNG (zu – offen + Art)\n"
         "Etwas, das sich zwischen Quelle und Hörer stellt und den Klang dämpft. Unter dem Regler wählst du die Art: "
-        "Tür, Fenster, Vorhang oder Autoscheibe. Der Regler blendet von zu (dumpf, leise, mit dem Klang des Hindernisses) nach offen (keine Wirkung). "
+        "Tür, Fenster, Vorhang, Autoscheibe, Schrank, Kofferraum oder Unter Wasser. Der Regler blendet von zu (dumpf, leise, mit dem Klang des Hindernisses) nach offen (keine Wirkung). "
         "Er hängt nicht an der Position: Die Tür bleibt zu, bis du sie öffnest. "
         "Fenster gekippt = etwa in der Mitte. Autoscheibe: jemand spricht von außen ins Auto oder umgekehrt.\n\n"
         "QUELLE – L ↔ R (Panorama)\n"
@@ -124,7 +124,7 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
     blend.setTooltip (u8 ("Position: 0 % = bei Ort A (weit), 100 % = bei Ort B (nah). Hauptregler fuer die Bewegung."));
     distance.slider.setTooltip (u8 ("Wie weit weg Ort A ist (nah = 0 %, weit = 100 %). Ort B ist immer nah."));
     door.slider.setTooltip (u8 ("zu = dumpf und leise (Klang je nach Art der Verdeckung), offen = keine Wirkung"));
-    barrierBox.setTooltip (u8 ("Was zwischen Quelle und H\xc3\xb6rer ist: T\xc3\xbcr, Fenster, Vorhang oder Autoscheibe (jemand spricht von au\xc3\x9f" "en ins Auto)"));
+    barrierBox.setTooltip (u8 ("Was zwischen Quelle und H\xc3\xb6rer ist: T\xc3\xbcr, Fenster, Vorhang, Autoscheibe, Schrank, Kofferraum oder Unter Wasser"));
     weatherBox.setTooltip (u8 ("Ändert nur den Klang, erzeugt keine Wind- oder Regengeräusche: Höhen werden geschluckt, Böen lassen Rufe schwanken. Wirkt nur, wenn Ort A draußen ist, und stärker mit der Entfernung."));
     weatherLabel.setTooltip (weatherBox.getTooltip());
     pan.slider.setTooltip (u8 ("Stimme bzw. Ger\xc3\xa4usch links/rechts platzieren. Hall und Echo bleiben in der Mitte. Wirkt bei Ort A, auf dem Weg und bei Ort B."));

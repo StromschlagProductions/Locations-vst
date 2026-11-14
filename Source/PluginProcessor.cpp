@@ -8,13 +8,14 @@ juce::StringArray LocationsProcessor::placeNames()
     // Reihenfolge muss zu loc::place() in LocationsDSP.h passen
     return { "Gleicher Raum", "Nebenraum", "Flur", "Treppenhaus", "Obere Etage", "Dachboden", "Keller",
              "Badezimmer", u8 ("Gro\xc3\x9f" "e Halle"), u8 ("Tunnel / H\xc3\xb6hle"),
+             "Kirche", "Museum", "Tiefgarage",
              u8 ("Drau\xc3\x9f" "en: Feld"), u8 ("Drau\xc3\x9f" "en: Wald"),
              u8 ("Drau\xc3\x9f" "en: Stra\xc3\x9f" "e"), u8 ("Drau\xc3\x9f" "en: Schlucht / Felswand") };
 }
 
 juce::StringArray LocationsProcessor::barrierNames()
 {
-    return { u8 ("T\xc3\xbcr"), "Fenster", "Vorhang", "Autoscheibe" };   // Reihenfolge wie loc::barrier()
+    return { u8 ("T\xc3\xbcr"), "Fenster", "Vorhang", "Autoscheibe", "Schrank", "Kofferraum", "Unter Wasser" };   // Reihenfolge wie loc::barrier()
 }
 
 juce::StringArray LocationsProcessor::weatherNames()
