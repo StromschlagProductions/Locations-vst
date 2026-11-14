@@ -62,17 +62,24 @@ passieren automatisch.
 
 ## Regler (alle automatisierbar)
 
+**Oben**
+
 | Regler | Wirkung |
 |---|---|
 | Ort A / Ort B | Start und Ziel der Bewegung |
 | Position (A nach B) | **der Regler für die Bewegung**: 0 % = bei Ort A, 100 % = bei Ort B (nah) |
-| Entfernung A (nah – weit) | wie weit weg Ort A ist. Wirkt nur auf Ort A |
-| Durchgang (zu – offen) | zu = dumpf und leise mit dem Klang dessen, was dazwischen ist; offen = keine Wirkung. Eigener Regler, weil eine Tür meist zu einem anderen Zeitpunkt aufgeht, als sich jemand bewegt |
-| Dazwischen | Tür, Fenster (gekippt ≈ Mitte), Vorhang oder Autoscheibe (jemand spricht von außen ins Auto) |
-| Quelle L ↔ R | Panorama der Quelle – also dessen, was auf der Spur liegt (Stimme, Schritte, Geräusch). Nur die Quelle wandert, Hall und Echo bleiben in der Mitte – anders als beim Pan am Kanal. Wirkt bei Ort A, auf dem Weg und bei Ort B. Mitte = keine Wirkung |
-| Vorne ↔ Hinten | steht die Quelle hinter dem Hörer, klingt sie etwas dunkler. Hall und Echo bleiben gleich |
-| Wetter (draußen) | Ruhig, Wind, Regen, Sturm. Nur wenn Ort A draußen ist: schluckt Höhen, Böen lassen Rufe schwanken. Stärker mit der Entfernung, verschwindet bei Ort B |
-| Raumanteil A | mehr oder weniger Hall bzw. Echo von Ort A (Feinregler, normalerweise 0 dB) |
+
+**Unten, in drei Kästen**
+
+| Kasten | Regler | Wirkung |
+|---|---|---|
+| **ORT A** – wirkt nur am Startort | Entfernung | wie weit weg Ort A ist (nah – weit) |
+| | Raumanteil | mehr oder weniger Hall bzw. Echo von Ort A (Feinregler, normalerweise 0 dB) |
+| | Wetter-Filter | Ruhig, Wind, Regen, Sturm. **Ändert nur den Klang, erzeugt keine Wind- oder Regengeräusche.** Nur wenn Ort A draußen ist: Höhen werden geschluckt, Böen lassen Rufe schwanken. Stärker mit der Entfernung, verschwindet zu Ort B hin |
+| **DAZWISCHEN** – unabhängig von der Position | Auswahl | Tür, Fenster (gekippt ≈ Mitte), Vorhang oder Autoscheibe |
+| | zu ↔ offen | zu = dumpf und leise mit dem Klang des Hindernisses, offen = keine Wirkung. Die Tür bleibt zu, bis du sie öffnest – auch wenn die Quelle schon bei Ort B ist |
+| **QUELLE** – gilt für die ganze Bewegung | L ↔ R | Panorama der Quelle (Stimme, Schritte, Geräusch auf der Spur). Nur die Quelle wandert, Hall und Echo bleiben in der Mitte – anders als beim Pan am Kanal |
+| | Vorne ↔ Hinten | hinter dem Hörer klingt die Quelle etwas dunkler. Hall und Echo bleiben gleich |
 
 ## Anwendung
 
@@ -84,13 +91,13 @@ Steht er nur hinter dem nächsten Baum: Entfernung A auf etwa 40 %.
 
 **Jemand geht weg:** wie oben, nur die Position von 100 auf 0 % ziehen.
 
-**Vor der geschlossenen Tür:** Ort A = Flur, Ort B = Gleicher Raum, Position auf 0 %, Dazwischen = Tür, Durchgang auf „zu“.
-Geht die Tür auf: Durchgang von zu auf offen ziehen, danach ggf. die Position, wenn die Figur hereinkommt.
+**Vor der geschlossenen Tür:** Ort A = Flur, Ort B = Gleicher Raum, Position auf 0 %, Dazwischen = Tür, Regler auf „zu“.
+Geht die Tür auf: zu ↔ offen aufziehen, danach ggf. die Position, wenn die Figur hereinkommt.
 
 **Jemand spricht von außen ins Auto:** Ort A und B = Gleicher Raum (oder Draußen: Straße), Dazwischen = Autoscheibe,
-Durchgang auf „zu“. Kurbelt jemand die Scheibe herunter: Durchgang auf offen ziehen.
+Regler auf „zu“. Kurbelt jemand die Scheibe herunter: zu ↔ offen aufziehen.
 
-**Ruf über das Feld bei Sturm:** Ort A = Draußen: Feld, Entfernung A = weit, Wetter = Sturm. Position von 0 auf 100 %:
+**Ruf über das Feld bei Sturm:** Ort A = Draußen: Feld, Entfernung A = weit, Wetter-Filter = Sturm. Position von 0 auf 100 %:
 Aus der Ferne kommen nur Fetzen durch, je näher er kommt, desto verständlicher.
 
 **Ruf aus der Schlucht:** Ort A und B = Draußen: Schlucht / Felswand, Entfernung A = weit, Position auf 0 % lassen.
@@ -105,6 +112,7 @@ Aus der Ferne kommen nur Fetzen durch, je näher er kommt, desto verständlicher
 
 Die Versionsnummer steht in der Datei `VERSION`, im Plugin-Kopf und im Namen der Release. Sie wird bei jeder Änderung hochgezählt (1.0, 1.1, 1.2 …).
 
+- **1.4** – Untere Fläche in drei Kästen gegliedert (Ort A, Dazwischen, Quelle), „Wetter“ heißt jetzt „Wetter-Filter“, Hilfe angepasst.
 - **1.3** – Auswahl „Dazwischen“ (Tür, Fenster, Vorhang, Autoscheibe), Wetter für draußen (Wind, Regen, Sturm), Regler Vorne ↔ Hinten, Hilfe mit Umlauten.
 - **1.2** – Panorama-Regler heißt jetzt „Quelle L ↔ R“, Erklärung in Hilfe und Tooltip präzisiert.
 - **1.1** – Engine mit einer einzigen gleitenden Kette (kein hohler Klang mehr in der Mitte der Bewegung),

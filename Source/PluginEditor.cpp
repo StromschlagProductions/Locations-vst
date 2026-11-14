@@ -53,11 +53,11 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
     content.addAndMakeVisible (blend);
     attBlend = std::make_unique<APVTS::SliderAttachment> (processor.apvts, "blend", blend);
 
-    setupKnob (distance, "distance", "Entfernung A");
-    setupKnob (door, "door", "Durchgang");
-    setupKnob (pan, "pan", u8 ("Quelle  L \xe2\x86\x94 R"));
+    setupKnob (distance, "distance", "Entfernung");
+    setupKnob (door, "door", u8 ("zu \xe2\x86\x94 offen"));
+    setupKnob (pan, "pan", u8 ("L \xe2\x86\x94 R"));
     setupKnob (rear, "rear", u8 ("Vorne \xe2\x86\x94 Hinten"));
-    setupKnob (room, "room", "Raumanteil A");
+    setupKnob (room, "room", "Raumanteil");
 
     barrierBox.addItemList (LocationsProcessor::barrierNames(), 1);
     weatherBox.addItemList (LocationsProcessor::weatherNames(), 1);
@@ -65,13 +65,9 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
     content.addAndMakeVisible (weatherBox);
     attBarrier = std::make_unique<APVTS::ComboBoxAttachment> (processor.apvts, "barrier", barrierBox);
     attWeather = std::make_unique<APVTS::ComboBoxAttachment> (processor.apvts, "weather", weatherBox);
-    barrierLabel.setText ("DAZWISCHEN", juce::dontSendNotification);
-    weatherLabel.setText (u8 ("WETTER (DRAUSSEN)"), juce::dontSendNotification);
-    for (auto* l : { &barrierLabel, &weatherLabel })
-    {
-        l->setJustificationType (juce::Justification::centredRight);
-        content.addAndMakeVisible (*l);
-    }
+    weatherLabel.setText ("Wetter-Filter", juce::dontSendNotification);
+    weatherLabel.setJustificationType (juce::Justification::centredLeft);
+    content.addAndMakeVisible (weatherLabel);
 
 
     themeButton.onClick = [this]
@@ -98,22 +94,26 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
         "POSITION (A nach B)\n"
         "Der wichtigste Regler. 0 % = Quelle bei Ort A, 100 % = bei Ort B. Automatisiere ihn für jede Bewegung "
         "(Treppe herunter, Förster kommt näher, jemand geht weg).\n\n"
-        "ENTFERNUNG A (nah – weit)\n"
+        "Unten gibt es drei Kästen: ORT A (wirkt nur am Startort), DAZWISCHEN (unabhängig von der Position) "
+        "und QUELLE (gilt für die ganze Bewegung).\n\n"
+        "ORT A – ENTFERNUNG (nah – weit)\n"
         "Wie weit weg Ort A ist. Beispiel Förster: weit = tief im Wald, 40 % = hinter dem nächsten Baum. "
         "Wirkt nur auf Ort A.\n\n"
-        "DURCHGANG (zu – offen) und DAZWISCHEN\n"
-        "Unten links wählst du, was zwischen Quelle und Hörer ist: Tür, Fenster, Vorhang oder Autoscheibe. "
-        "Der Regler „Durchgang“ blendet von zu (dumpf, leise, mit dem Klang des Hindernisses) nach offen (keine Wirkung). "
+        "DAZWISCHEN (Auswahl + zu – offen)\n"
+        "Im Kasten wählst du, was zwischen Quelle und Hörer ist: Tür, Fenster, Vorhang oder Autoscheibe. "
+        "Der Regler darunter blendet von zu (dumpf, leise, mit dem Klang des Hindernisses) nach offen (keine Wirkung). "
+        "Er hängt nicht an der Position: Die Tür bleibt zu, bis du sie öffnest. "
         "Fenster gekippt = etwa in der Mitte. Autoscheibe: jemand spricht von außen ins Auto oder umgekehrt.\n\n"
-        "QUELLE L ↔ R (Panorama)\n"
+        "QUELLE – L ↔ R (Panorama)\n"
         "Platziert die Quelle – also das, was auf der Spur liegt: Stimme, Schritte, Geräusch – links oder rechts. "
         "Hall und Echo bleiben in der Mitte (anders als der Pan am Kanal). Wirkt bei Ort A, auf dem Weg und bei Ort B.\n\n"
-        "VORNE ↔ HINTEN\n"
+        "QUELLE – VORNE ↔ HINTEN\n"
         "Steht die Quelle hinter dem Hörer, klingt sie etwas dunkler. Hall und Echo bleiben gleich.\n\n"
-        "WETTER (DRAUSSEN)\n"
-        "Nur wenn Ort A draußen ist. Wind, Regen oder Sturm schlucken Höhen und lassen Rufe in Böen schwanken. "
+        "ORT A – WETTER-FILTER\n"
+        "Ändert nur den Klang, es kommen keine Wind- oder Regengeräusche dazu. Nur wenn Ort A draußen ist: "
+        "Wind, Regen oder Sturm schlucken Höhen und lassen Rufe in Böen schwanken. "
         "Wirkt umso stärker, je weiter weg die Quelle ist, und verschwindet, wenn sie bei Ort B ankommt.\n\n"
-        "RAUMANTEIL A\n"
+        "ORT A – RAUMANTEIL\n"
         "Mehr oder weniger Hall bzw. Echo von Ort A, in dB. Feinregler, normalerweise auf 0 dB lassen.\n\n"
         "Lautstärke und Laufzeit des Weges ändern sich automatisch mit der Entfernung.\n"
         "Look: Dunkel / Hell umschalten. Das Fenster ist am rechten unteren Rand skalierbar (50–300 %)."));
@@ -129,7 +129,8 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
     door.slider.setTooltip (u8 ("zu = dumpf und leise (Klang je nach \"Dazwischen\"), offen = keine Wirkung"));
     rear.slider.setTooltip (u8 ("Quelle vor oder hinter dem H\xc3\xb6rer: hinten klingt sie etwas dunkler. Hall bleibt gleich."));
     barrierBox.setTooltip (u8 ("Was zwischen Quelle und H\xc3\xb6rer ist: T\xc3\xbcr, Fenster, Vorhang oder Autoscheibe (jemand spricht von au\xc3\x9f" "en ins Auto)"));
-    weatherBox.setTooltip (u8 ("Nur wenn Ort A drau\xc3\x9f" "en ist: Wind, Regen oder Sturm schlucken H\xc3\xb6hen, B\xc3\xb6" "en lassen Rufe schwanken. Wirkt mit der Entfernung."));
+    weatherBox.setTooltip (u8 ("Ändert nur den Klang, erzeugt keine Wind- oder Regengeräusche: Höhen werden geschluckt, Böen lassen Rufe schwanken. Wirkt nur, wenn Ort A draußen ist, und stärker mit der Entfernung."));
+    weatherLabel.setTooltip (weatherBox.getTooltip());
     pan.slider.setTooltip (u8 ("Stimme bzw. Ger\xc3\xa4usch links/rechts platzieren. Hall und Echo bleiben in der Mitte. Wirkt bei Ort A, auf dem Weg und bei Ort B."));
     room.slider.setTooltip (u8 ("Mehr oder weniger Hall/Echo von Ort A (Feinregler, dB)"));
 
@@ -220,10 +221,27 @@ void LocationsEditor::paint (juce::Graphics& g)
     // Karten
     g.setColour (theme.panel);
     g.fillRoundedRectangle (12.0f, 76.0f, (float) W - 24.0f, 122.0f, 8.0f);
-    g.fillRoundedRectangle (12.0f, 208.0f, (float) W - 24.0f, 200.0f, 8.0f);
     g.setColour (theme.line);
     g.drawRoundedRectangle (12.5f, 76.5f, (float) W - 25.0f, 121.0f, 8.0f, 1.0f);
-    g.drawRoundedRectangle (12.5f, 208.5f, (float) W - 25.0f, 199.0f, 8.0f, 1.0f);
+
+    // Untere Kaesten: ORT A | DAZWISCHEN | QUELLE
+    struct Box { float x, w; const char* title; const char* note; };
+    const Box boxes[] = { { 12.0f, 280.0f, "ORT A", "nur am Startort" },
+                          { 300.0f, 152.0f, "DAZWISCHEN", "" },
+                          { 460.0f, (float) W - 472.0f, "QUELLE", "ganze Bewegung" } };
+    for (const auto& b : boxes)
+    {
+        g.setColour (theme.panel);
+        g.fillRoundedRectangle (b.x, 208.0f, b.w, 200.0f, 8.0f);
+        g.setColour (theme.line);
+        g.drawRoundedRectangle (b.x + 0.5f, 208.5f, b.w - 1.0f, 199.0f, 8.0f, 1.0f);
+        g.setColour (theme.accent);
+        g.setFont (juce::FontOptions (12.0f, juce::Font::bold));
+        g.drawText (b.title, (int) b.x + 12, 214, (int) b.w - 24, 16, juce::Justification::centredLeft);
+        g.setColour (theme.dim);
+        g.setFont (juce::FontOptions (10.5f));
+        g.drawText (u8 (b.note), (int) b.x + 12, 214, (int) b.w - 24, 16, juce::Justification::centredRight);
+    }
 }
 
 void LocationsEditor::resized()
@@ -245,17 +263,22 @@ void LocationsEditor::resized()
     labelBlend.setBounds (224, 82, w - 448, 18);
     blend.setBounds (24, 140, w - 48, 50);
 
-    juce::Rectangle<int> row (24, 216, w - 48, 150);
-    const int kw = row.getWidth() / 5;
-    for (auto* k : { &distance, &door, &pan, &rear, &room })
+    auto placeKnob = [] (Knob& k, int x, int y, int cw)
     {
-        auto cell = row.removeFromLeft (kw);
-        k->label.setBounds (cell.removeFromTop (20));
-        k->slider.setBounds (cell.reduced (8, 2));
-    }
-    barrierLabel.setBounds (24, 372, 96, 24);
-    barrierBox.setBounds (124, 370, 150, 28);
-    weatherLabel.setBounds (w - 340, 372, 160, 24);
-    weatherBox.setBounds (w - 174, 370, 150, 28);
+        k.label.setBounds (x, y, cw, 18);
+        k.slider.setBounds (x + 10, y + 20, cw - 20, 100);
+    };
+    // ORT A: Entfernung, Raumanteil, darunter Wetter-Filter
+    placeKnob (distance, 18, 236, 134);
+    placeKnob (room, 152, 236, 134);
+    weatherLabel.setBounds (24, 368, 100, 26);
+    weatherBox.setBounds (124, 366, 156, 28);
+    // DAZWISCHEN: Auswahl oben, Regler darunter
+    barrierBox.setBounds (312, 238, 128, 28);
+    placeKnob (door, 306, 274, 140);
+    // QUELLE: L-R, vorne-hinten
+    const int qx = 466, qw = (w - 12 - 6 - qx) / 2;
+    placeKnob (pan, qx, 236, qw);
+    placeKnob (rear, qx + qw, 236, qw);
     helpText.toFront (false);
 }
