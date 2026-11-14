@@ -1,3 +1,8 @@
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/kopf-dunkel.png">
+  <img src="docs/kopf-hell.png" alt="Stromschlag Audio – LOCATIONS" height="120">
+</picture>
+
 # LOCATIONS – Audio Drama Off-Stage Simulator
 
 *Stromschlag Audio*
