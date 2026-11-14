@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LOCATIONS – Audio Drama Off-Stage Simulator · Stromschlag Audio</title>
+<meta name="description" content="LOCATIONS: VST3-Effekt für Hörspielproduktionen. Eine Quelle an einen Ort setzen oder mit einem Regler bewegen. Stromschlag Audio.">
+<style>
+  :root { --bg:#14161a; --panel:#1d2026; --text:#e9e6df; --muted:#9a968c; --accent:#e0a030; --line:#2c2f37; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; line-height:1.6; }
+  main { max-width: 900px; margin: 0 auto; padding: 48px 24px 64px; }
+  .logo-box { background:#fff; display:inline-block; border-radius:10px; padding:14px 20px; }
+  .logo-box img { display:block; height:56px; width:auto; }
+  h1 { font-size: 2.4rem; margin: 28px 0 4px; letter-spacing: .02em; }
+  .sub { color: var(--muted); margin: 0 0 20px; font-size: 1.1rem; }
+  .lead { font-size: 1.15rem; max-width: 46em; }
+  .btn { display:inline-block; margin: 26px 0 8px; padding: 14px 26px; background: var(--accent); color:#1a1305; font-weight: 700; text-decoration:none; border-radius: 8px; }
+  .btn:hover { filter: brightness(1.08); }
+  .meta { color: var(--muted); font-size: .92rem; margin-bottom: 36px; }
+  h2 { font-size: 1.3rem; margin: 40px 0 12px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+  ul { padding-left: 1.2em; }
+  li { margin: .35em 0; }
+  .shots { display:grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .shots figure { margin: 0; background: var(--panel); border:1px solid var(--line); border-radius:10px; padding:10px; }
+  .shots img { width:100%; display:block; border-radius:6px; }
+  .shots figcaption { color: var(--muted); font-size: .9rem; margin-top: 8px; text-align:center; }
+  @media (max-width: 640px) { .shots { grid-template-columns: 1fr; } h1 { font-size: 1.9rem; } }
+  code { background: var(--panel); padding: 1px 6px; border-radius: 4px; font-size: .95em; }
+  footer { margin-top: 56px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: .92rem; }
+  footer a { color: var(--accent); }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+
+  <div class="logo-box"><img src="logo.png" alt="Stromschlag Audio"></div>
+
+  <h1>LOCATIONS</h1>
+  <p class="sub">Audio Drama Off-Stage Simulator · Stromschlag Audio</p>
+
+  <p class="lead">Ein VST3-Effekt für Hörspielproduktionen. Er setzt eine Stimme oder ein Geräusch in einen anderen Raum,
+  eine andere Etage, hinter eine Verdeckung oder in die Ferne im Freien – und lässt es mit einem automatisierbaren
+  Regler heranrücken.</p>
+
+  <a class="btn" id="dl" href="https://github.com/StromschlagProductions/Locations-vst/releases/latest">⬇ Download (Windows, VST3)</a>
+  <div class="meta" id="ver">Aktuelle Version: <span id="vnum">1.5</span> · Installation: ZIP entpacken, den ganzen Ordner <code>Locations.vst3</code> nach <code>C:\Program Files\Common Files\VST3</code> kopieren.</div>
+
+  <h2>Was es kann</h2>
+  <ul>
+    <li><strong>Quelle platzieren:</strong> tief im Wald, hinter einer geschlossenen Tür oder im Keller.</li>
+    <li><strong>Quelle bewegen:</strong> eine Tür öffnet sich, während jemand spricht, oder jemand geht hinter dem Zuhörer vorbei.</li>
+    <li><strong>Ein Hauptregler:</strong> „Position (A nach B)“ ist der Regler, den man automatisiert. Alles andere stellt man einmal ein.</li>
+    <li><strong>Orte:</strong> 14 Umgebungen innen und draußen, dazu Verdeckungen wie Tür, Fenster, Vorhang und Autoscheibe.</li>
+    <li><strong>Wetter-Filter für draußen:</strong> Ruhig, Wind, Regen, Sturm. Er verändert nur den Klang.</li>
+    <li><strong>Vergrößerbare Oberfläche</strong> von 50 % bis 300 %, hell und dunkel.</li>
+  </ul>
+
+  <h2>Oberfläche</h2>
+  <div class="shots">
+    <figure><img src="oberflaeche-dunkel.png" alt="LOCATIONS, dunkle Oberfläche"><figcaption>Dunkel (Standard)</figcaption></figure>
+    <figure><img src="oberflaeche-hell.png" alt="LOCATIONS, helle Oberfläche"><figcaption>Hell</figcaption></figure>
+  </div>
+
+  <h2>Für wen</h2>
+  <p>LOCATIONS ist bewusst für <strong>Stereo-Hörspiele</strong> gemacht. Für Surround (5.1) oder binaurale Produktionen gibt es andere Lösungen.</p>
+
+  <h2>Mehr</h2>
+  <p>Anwendungsbeispiele, alle Orte und Regler, die Versionshistorie und den Quellcode gibt es in der
+  <a href="https://github.com/StromschlagProductions/Locations-vst#readme">README auf GitHub</a>.</p>
+
+  <footer>
+    LOCATIONS · Stromschlag Audio · Lars Eickstädt<br>
+    Gebaut mit <a href="https://juce.com">JUCE</a>.
+  </footer>
+
+</main>
+<script>
+  // Version und Download-Link immer aus dem neuesten Release holen, damit die Seite nicht veraltet.
+  fetch("https://api.github.com/repos/StromschlagProductions/Locations-vst/releases/latest")
+    .then(r => r.ok ? r.json() : null)
+    .then(rel => {
+      if (!rel) return;
+      if (rel.tag_name) document.getElementById("vnum").textContent = rel.tag_name.replace(/^v/, "").replace(/-b\d+$/, "");
+      const zip = (rel.assets || []).find(a => a.name.endsWith(".zip"));
+      if (zip) document.getElementById("dl").href = zip.browser_download_url;
+    })
+    .catch(() => {});
+</script>
+</body>
+</html>
