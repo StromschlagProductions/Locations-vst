@@ -20,7 +20,7 @@ juce::StringArray LocationsProcessor::barrierNames()
 
 juce::StringArray LocationsProcessor::weatherNames()
 {
-    return { "Ruhig", "Wind", "Regen", "Sturm" };                          // Reihenfolge wie loc::weather()
+    return { "Ruhig", "Wind / Regen", "Sturm" };                          // Reihenfolge wie loc::weather()
 }
 
 juce::AudioProcessorValueTreeState::ParameterLayout LocationsProcessor::createLayout()
@@ -78,18 +78,21 @@ LocationsProcessor::LocationsProcessor()
     pWeather = apvts.getRawParameterValue ("weather");
 }
 
-void LocationsProcessor::prepareToPlay (double sampleRate, int)
+void LocationsProcessor::prepareToPlay (double sampleRate, int maxBlock)
 {
     engine.prepare (sampleRate);
+    monoScratch.assign ((size_t) juce::jmax (maxBlock, 4096), 0.0f);
     setLatencySamples (0);
 }
 
 bool LocationsProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
 {
     const auto out = layouts.getMainOutputChannelSet();
+    const auto in = layouts.getMainInputChannelSet();
     if (out != juce::AudioChannelSet::mono() && out != juce::AudioChannelSet::stereo())
         return false;
-    return layouts.getMainInputChannelSet() == out;
+    if (in == out) return true;
+    return in == juce::AudioChannelSet::mono() && out == juce::AudioChannelSet::stereo();   // Mono rein, Stereo raus
 }
 
 void LocationsProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer&)
@@ -112,8 +115,25 @@ void LocationsProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::M
     p.weather = juce::roundToInt (pWeather->load());
 
     float* left = buffer.getWritePointer (0);
-    float* right = numCh > 1 ? buffer.getWritePointer (1) : left;
-    engine.process (left, right, numSamples, p);
+
+    if (numCh > 1)
+    {
+        // Mono rein, Stereo raus: den Eingang auf beide Seiten legen, dann wirkt L-R normal
+        if (getTotalNumInputChannels() == 1)
+            buffer.copyFrom (1, 0, buffer, 0, 0, numSamples);
+        engine.process (left, buffer.getWritePointer (1), numSamples, p);
+    }
+    else
+    {
+        // reine Mono-Spur: kein Panorama moeglich (das macht der Pan am Kanal), Raum links/rechts zusammenmischen
+        p.pan = 0.0f;
+        if ((int) monoScratch.size() < numSamples) return;   // sollte nie passieren
+        float* r = monoScratch.data();
+        std::copy (left, left + numSamples, r);
+        engine.process (left, r, numSamples, p);
+        for (int i = 0; i < numSamples; ++i)
+            left[i] = 0.5f * (left[i] + r[i]);
+    }
 
     for (int ch = 2; ch < numCh; ++ch)
         buffer.clear (ch, 0, numSamples);

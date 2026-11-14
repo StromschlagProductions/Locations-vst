@@ -96,8 +96,8 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
         "POSITION (A nach B)\n"
         "Der wichtigste Regler. 0 % = Quelle bei Ort A, 100 % = bei Ort B. Automatisiere ihn für jede Bewegung "
         "(Treppe herunter, Suchtrupp kommt näher, jemand geht weg).\n\n"
-        "Unten gibt es drei Kästen: ORT A (wirkt nur am Startort), VERDECKUNG (unabhängig von der Position) "
-        "und QUELLE (links/rechts, bleibt über die ganze Bewegung gleich).\n\n"
+        "Unten gibt es drei Kästen: ORT A (wirkt nur am Startort), QUELLE (links/rechts, bleibt über die ganze Bewegung gleich) "
+        "und ganz rechts VERDECKUNG (unabhängig von der Position, wirkt auch bei Ort B).\n\n"
         "ORT A – ENTFERNUNG (nah – weit)\n"
         "Wie weit weg Ort A ist. Beispiel Suchtrupp: weit = tief im Wald, 40 % = ein paar Bäume entfernt. "
         "Wirkt nur auf Ort A.\n\n"
@@ -108,10 +108,11 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
         "Fenster gekippt = etwa in der Mitte. Autoscheibe: jemand spricht von außen ins Auto oder umgekehrt.\n\n"
         "QUELLE – L ↔ R (Panorama)\n"
         "Platziert die Quelle – also das, was auf der Spur liegt: Stimme, Schritte, Geräusch – links oder rechts. "
-        "Hall und Echo bleiben in der Mitte (anders als der Pan am Kanal). Wirkt bei Ort A, auf dem Weg und bei Ort B.\n\n"
+        "Hall und Echo bleiben in der Mitte (anders als der Pan am Kanal). Wirkt bei Ort A, auf dem Weg und bei Ort B. "
+        "Funktioniert nur auf einer Stereo-Spur oder einem Stereo-Bus. Auf einer Mono-Spur ist der Regler ohne Wirkung – dort den Pan am Kanal benutzen.\n\n"
         "ORT A – WETTER-FILTER\n"
         "Ändert nur den Klang, es kommen keine Wind- oder Regengeräusche dazu. Nur wenn Ort A draußen ist: "
-        "Wind, Regen oder Sturm schlucken Höhen und lassen Rufe in Böen schwanken. "
+        "Wind / Regen oder Sturm schlucken Höhen und lassen Rufe in Böen schwanken (Sturm deutlich stärker). "
         "Wirkt umso stärker, je weiter weg die Quelle ist, und verschwindet, wenn sie bei Ort B ankommt.\n\n"
         "ORT A – RAUMANTEIL\n"
         "Mehr oder weniger Hall bzw. Echo von Ort A, in dB. Feinregler, normalerweise auf 0 dB lassen.\n\n"
@@ -269,8 +270,8 @@ void LocationsEditor::paint (juce::Graphics& g)
     // Untere Kaesten: ORT A | VERDECKUNG | QUELLE
     struct Box { float x, w; const char* title; const char* note; };
     const Box boxes[] = { { 12.0f, 280.0f, "ORT A", "nur am Startort" },
-                          { 300.0f, 152.0f, "VERDECKUNG", "" },
-                          { 460.0f, (float) W - 472.0f, "QUELLE", "" } };
+                          { 300.0f, 152.0f, "QUELLE", "" },
+                          { 460.0f, (float) W - 472.0f, "VERDECKUNG", "" } };
     const bool barrierActive = door.slider.getValue() < 0.995;   // Verdeckung wirkt (nicht ganz offen)
     for (const auto& b : boxes)
     {
@@ -322,11 +323,11 @@ void LocationsEditor::resized()
     placeKnob (room, 152, 236, 134);
     weatherLabel.setBounds (24, 368, 100, 26);
     weatherBox.setBounds (124, 366, 156, 28);
-    // VERDECKUNG: Regler in der Reihe, Art-Auswahl darunter (auf Hoehe des Wetter-Filters)
-    placeKnob (door, 306, 236, 140);
-    barrierBox.setBounds (312, 366, 128, 28);
-    // QUELLE: L-R (ein Regler, mittig im Kasten)
-    const int qx = 466, qw = w - 12 - 6 - qx;
-    placeKnob (pan, qx, 236, qw);
+    // QUELLE (Mitte): L-R
+    placeKnob (pan, 306, 236, 140);
+    // VERDECKUNG (rechts aussen, wirkt bis zum Schluss): Regler, Art-Auswahl darunter (auf Hoehe des Wetter-Filters)
+    const int vx = 466, vw = w - 12 - 6 - vx;
+    placeKnob (door, vx, 236, vw);
+    barrierBox.setBounds (vx + 12, 366, vw - 24, 28);
     helpText.toFront (false);
 }
