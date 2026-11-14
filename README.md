@@ -21,9 +21,10 @@ entstand die Idee für ein einziges Werkzeug: LOCATIONS. Kein Gimmick, sondern e
 eigenen Workflow – für jede Sprecher- oder SFX-Spur.
 
 Mit LOCATIONS lässt sich eine Quelle an einem Ort platzieren: tief im Wald, hinter einer geschlossenen Tür oder
-im Keller. Sie lässt sich aber auch in Bewegung setzen: Eine Tür öffnet sich, während jemand spricht, jemand
-kommt aus dem Nebenraum herein oder geht hinter dem Zuhörer vorbei. Die Bewegung wird dabei über Automation in
-der DAW gesteuert – im Wesentlichen mit einem einzigen Regler.
+im Keller. Sie lässt sich aber auch in Bewegung setzen, etwa wenn jemand aus dem Nebenraum hereinkommt oder ein
+Suchtrupp im Wald näher rückt. Diese Bewegung wird über Automation in der DAW gesteuert – im Wesentlichen mit dem
+Regler „Position (A nach B)“. Für weitere Veränderungen, etwa das Öffnen einer Tür, gibt es eigene Regler, die sich
+ebenfalls automatisieren lassen.
 
 LOCATIONS ist bewusst für Stereo-Hörspiele gemacht. Für Surround- oder binaurale Produktionen gibt es andere
 Lösungen. Hier geht es darum, räumliche Szenen im Stereobild einfach und schnell umzusetzen – ohne jedes Mal
