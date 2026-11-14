@@ -8,9 +8,10 @@ und lässt es mit **einem** automatisierbaren Regler von dort heranrücken.
 
 ## Warum es dieses Plugin gibt
 
-Seit Jahren produziere ich Hörspiele. In den Geschichten kommen immer wieder ähnliche Szenen vor: Eine Figur
-ruft aus dem oberen Stockwerk und kommt die Treppe herunter. Jemand spricht hinter einer geschlossenen Tür, die
-sich langsam öffnet. Oder ein Förster brüllt aus der Tiefe des Waldes und kommt näher.
+In meiner langjährigen Arbeit an Hörspielproduktionen habe ich immer wieder die Erfahrung gemacht, dass die
+Skripte Szenen enthalten, in denen Stimmen aus einiger Entfernung oder aus einem anderen Raum zu hören sind:
+Eine Figur ruft aus dem oberen Stockwerk und kommt die Treppe herunter. Jemand spricht hinter einer geschlossenen
+Tür, die sich langsam öffnet. Oder ein Suchtrupp ruft im nächtlichen Wald nach einem Vermissten und kommt hörbar näher.
 
 Für solche Szenen habe ich jedes Mal Plugin-Ketten gebaut: EQ, Filter, Hall, Delay und doppelte Spuren mit
 Überblendungen. Bis alles glaubwürdig klang, wurde es oft verschachtelt und mühsam.
@@ -110,8 +111,8 @@ passieren automatisch.
 **Treppe herunter:** Ort A = Obere Etage, Ort B = Gleicher Raum. Position von 0 auf 100 % ziehen,
 zu dem Zeitpunkt, an dem die Figur losgeht. Stimme, Schritte usw. am besten auf einen gemeinsamen Bus mit dem Plugin legen.
 
-**Förster kommt aus dem Wald:** Ort A und B = Draußen: Wald, Entfernung A = weit. Position von 0 auf 100 % ziehen.
-Steht er nur hinter dem nächsten Baum: Entfernung A auf etwa 40 %.
+**Suchtrupp im Wald kommt näher:** Ort A und B = Draußen: Wald, Entfernung A = weit. Position von 0 auf 100 % ziehen.
+Ist der Trupp nur ein paar Bäume entfernt: Entfernung A auf etwa 40 %.
 
 **Jemand geht weg:** wie oben, nur die Position von 100 auf 0 % ziehen.
 
