@@ -117,6 +117,7 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
         "ORT A – RAUMANTEIL\n"
         "Mehr oder weniger Hall bzw. Echo von Ort A, in dB. Feinregler, normalerweise auf 0 dB lassen.\n\n"
         "Lautstärke und Laufzeit des Weges ändern sich automatisch mit der Entfernung.\n"
+        "Doppelklick auf einen Drehregler oder Strg-Klick setzt ihn auf den Standardwert zurück.\n"
         "Look: Dunkel / Hell umschalten. Das Fenster ist am rechten unteren Rand skalierbar (50–300 %)."));
     helpText.setFont (juce::FontOptions (13.0f));
     helpText.setVisible (false);
