@@ -33,11 +33,11 @@ LOCATIONS ist bewusst für Stereo-Hörspiele gemacht. Für Surround- oder binaur
 Lösungen. Hier geht es darum, räumliche Szenen im Stereobild einfach und schnell umzusetzen – ohne jedes Mal
 eine ganze Kette von Plugins aufzubauen.
 
-LOCATIONS soll niemandem die Erfahrung abnehmen, solche Szenen selbst zu gestalten. Besonders am Anfang kann es viel
+*LOCATIONS soll niemandem die Erfahrung abnehmen, solche Szenen selbst zu gestalten. Besonders am Anfang kann es viel
 Spaß machen und lehrreich sein, eine Effektkette selbst aufzubauen und zu hören, wie EQ, Hall, Laufzeit und
 Automation ineinandergreifen. Ich bin dankbar, dass ich diesen Weg selbst gegangen bin – auch wenn er manchmal
 umständlich war. Gerade dadurch weiß ich, was ich mir von einem solchen Werkzeug wünsche. LOCATIONS soll diese Arbeit
-nicht ersetzen, sondern sie im Alltag einfacher machen.
+nicht ersetzen, sondern sie im Alltag einfacher machen.*
 
 – Lars Eickstädt, Stromschlag Audio
 
