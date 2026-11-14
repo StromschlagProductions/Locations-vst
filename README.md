@@ -113,8 +113,7 @@ passieren automatisch.
 | | Wetter-Filter | Ruhig, Wind, Regen, Sturm. **Ändert nur den Klang, erzeugt keine Wind- oder Regengeräusche.** Nur wenn Ort A draußen ist: Höhen werden geschluckt, Böen lassen Rufe schwanken. Stärker mit der Entfernung, verschwindet zu Ort B hin |
 | **VERDECKUNG** – etwas, das sich zwischen Quelle und Hörer stellt; unabhängig von der Position | Art | Tür, Fenster (gekippt ≈ Mitte), Vorhang oder Autoscheibe |
 | | zu ↔ offen | zu = dumpf und leise mit dem Klang des Hindernisses, offen = keine Wirkung. Die Tür bleibt zu, bis du sie öffnest – auch wenn die Quelle schon bei Ort B ist |
-| **QUELLE** – gilt für die ganze Bewegung | L ↔ R | Panorama der Quelle (Stimme, Schritte, Geräusch auf der Spur). Nur die Quelle wandert, Hall und Echo bleiben in der Mitte – anders als beim Pan am Kanal |
-| | Vorne ↔ Hinten | hinter dem Hörer klingt die Quelle etwas dunkler. Es entsteht keine binaurale Rundum-Ortung; Hall und Echo bleiben gleich |
+| **QUELLE** | L ↔ R | Panorama der Quelle (Stimme, Schritte, Geräusch auf der Spur). Nur die Quelle wandert, Hall und Echo bleiben in der Mitte – anders als beim Pan am Kanal. Gilt über die ganze Bewegung |
 
 ## Anwendung
 
@@ -147,6 +146,8 @@ Aus der Ferne kommen nur Fetzen durch, je näher er kommt, desto verständlicher
 
 Die Versionsnummer steht in der Datei `VERSION`, im Plugin-Kopf und im Namen der Release. Sie wird bei jeder Änderung hochgezählt (1.0, 1.1, 1.2 …).
 
+- **1.8** – Regler „Vorne ↔ Hinten“ entfernt (der Effekt war im Stereobild zu schwach, um glaubwürdig zu sein), Hinweis „ganze Bewegung“ gestrichen, Tür-Symbol dezenter und mittig zwischen Titel und Hilfe-Knopf.
+  *Achtung:* Projekte mit Version 1.7 bitte kurz prüfen; der Regler ist weg.
 - **1.7** – Drehregler lassen sich nur noch senkrecht ziehen (hoch = mehr, runter = weniger), seitliche Handbewegung wirkt nicht mehr mit; kürzerer Weg bis zu den Endstellungen.
 - **1.6** – Kleines Symbol in der Kopfleiste (halboffene Tür mit Schallwellen, dezent in der Farbe der Leiste).
 - **1.5** – „Dazwischen“ heißt jetzt „Verdeckung“, Regler stehen in allen Kästen auf einer Linie, Auswahl darunter.

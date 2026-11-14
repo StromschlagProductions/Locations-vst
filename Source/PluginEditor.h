@@ -34,7 +34,7 @@ private:
     juce::ComboBox placeA, placeB;
     juce::Label labelA, labelB, labelBlend;
     juce::Slider blend;
-    Knob distance, door, pan, rear, room;
+    Knob distance, door, pan, room;
     juce::ComboBox barrierBox, weatherBox;
     juce::Label weatherLabel;
     std::unique_ptr<APVTS::ComboBoxAttachment> attBarrier, attWeather;

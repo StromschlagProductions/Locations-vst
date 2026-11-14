@@ -43,7 +43,7 @@ private:
     std::atomic<float>* pPlaceA = nullptr; std::atomic<float>* pPlaceB = nullptr;
     std::atomic<float>* pBlend = nullptr;  std::atomic<float>* pDistance = nullptr;
     std::atomic<float>* pDoor = nullptr;   std::atomic<float>* pRoom = nullptr;
-    std::atomic<float>* pPan = nullptr;  std::atomic<float>* pRear = nullptr;
+    std::atomic<float>* pPan = nullptr;
     std::atomic<float>* pBarrier = nullptr; std::atomic<float>* pWeather = nullptr;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LocationsProcessor)
