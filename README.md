@@ -1,11 +1,9 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/kopf-dunkel.png">
-  <img src="docs/kopf-hell.png" alt="Stromschlag Audio – LOCATIONS" height="120">
-</picture>
-
 # LOCATIONS – Audio Drama Off-Stage Simulator
 
-*Stromschlag Audio*
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/kopf-dunkel.png">
+  <img src="docs/kopf-hell.png" alt="Stromschlag Audio – LOCATIONS" height="64">
+</picture>
 
 VST3-Effekt für Hörspiel-Produktion. Er lässt eine Stimme oder ein Geräusch so klingen, als käme es aus
 einem anderen Raum, einer anderen Etage, hinter einer geschlossenen Tür oder aus der Ferne im Freien –
