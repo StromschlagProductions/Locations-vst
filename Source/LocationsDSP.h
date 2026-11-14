@@ -36,7 +36,7 @@ struct PlaceDef
 };
 
 // Reihenfolge = Reihenfolge in der Auswahlliste (PluginProcessor::placeNames)
-constexpr int kNumPlaces = 14;
+constexpr int kNumPlaces = 17;
 inline const PlaceDef& place (int i)
 {
     static const PlaceDef defs[kNumPlaces] = {
@@ -51,6 +51,9 @@ inline const PlaceDef& place (int i)
         { "Badezimmer",          5500,  2500,  -3.0f,  -9.0f, 0.70f, 7000, 0.5f,  -8,  -4,  5.0f,   0, -80,  -80, 0.0f },
         { "Grosse Halle",        9000,  3000,  -2.0f, -12.0f, 2.20f, 4000, 2.0f, -12,  -2, 10.0f,   0, -80,  -80, 0.0f },
         { "Tunnel / Hoehle",     9000,  3500,  -1.0f, -12.0f, 2.80f, 3500, 2.2f,  -9,   0, 12.0f,   0, -80,  -80, 0.0f },
+        { "Kirche",              8000,  3000,  -2.0f, -12.0f, 3.20f, 3000, 2.3f, -10,  -1, 12.0f,   0, -80,  -80, 0.0f },
+        { "Museum",             10000,  3500,  -2.0f, -12.0f, 1.80f, 5500, 1.8f, -12,  -3, 10.0f,   0, -80,  -80, 0.0f },
+        { "Tiefgarage",          8000,  3000,  -2.0f, -12.0f, 2.00f, 4500, 1.6f,  -9,  -2, 10.0f,  35, -26,  -18, 0.25f },
         { "Draussen: Feld",     16000,  2200,   0.0f, -24.0f, 0.00f, 6000, 1.0f, -80, -80, 30.0f,   0, -80,  -80, 0.0f },
         { "Draussen: Wald",     12000,  1800,  -1.0f, -22.0f, 0.00f, 2800, 1.0f, -80, -80, 30.0f, 140, -32,  -13, 0.30f },
         { "Draussen: Strasse",  14000,  2500,   0.0f, -22.0f, 0.50f, 3500, 1.6f, -24, -13, 30.0f,  95, -20,  -10, 0.35f },
@@ -59,7 +62,7 @@ inline const PlaceDef& place (int i)
     return defs[std::clamp (i, 0, kNumPlaces - 1)];
 }
 
-constexpr int kFirstOutdoor = 10;   // ab diesem Index sind die Orte "Draussen"
+constexpr int kFirstOutdoor = 13;   // ab diesem Index sind die Orte "Draussen"
 
 //==============================================================================
 // Was zwischen Quelle und Hoerer ist (Regler "zu - offen" blendet zwischen diesem Klang und offen)
@@ -72,7 +75,7 @@ struct BarrierDef
     float bodyHz;     // Eigenresonanz (Tuerblatt, Glas, Kabine)
     float bodyQ, bodyAmt;
 };
-constexpr int kNumBarriers = 4;
+constexpr int kNumBarriers = 7;
 inline const BarrierDef& barrier (int i)
 {
     static const BarrierDef defs[kNumBarriers] = {
@@ -80,6 +83,9 @@ inline const BarrierDef& barrier (int i)
         { "Fenster",     1100.0f, -20.0f, 180.0f,  420.0f, 2.0f, 0.25f },
         { "Vorhang",     3500.0f,  -5.0f,  20.0f,  300.0f, 1.0f, 0.00f },
         { "Autoscheibe",  800.0f, -14.0f, 120.0f,  150.0f, 1.6f, 0.50f },
+        { "Schrank",      900.0f, -12.0f,  90.0f,  320.0f, 2.5f, 0.45f },
+        { "Kofferraum",   500.0f, -18.0f,  70.0f,  130.0f, 1.8f, 0.55f },
+        { "Unter Wasser", 320.0f, -10.0f,  40.0f,  520.0f, 1.2f, 0.30f },
     };
     return defs[std::clamp (i, 0, kNumBarriers - 1)];
 }
