@@ -178,7 +178,9 @@ void LocationsEditor::applyTheme()
 
 void LocationsEditor::setupKnob (Knob& k, const juce::String& paramId, const juce::String& text)
 {
-    k.slider.setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
+    // nur senkrecht ziehen (wie bei den meisten Plugins): hoch = mehr, runter = weniger; seitliche Handbewegung zaehlt nicht mit
+    k.slider.setSliderStyle (juce::Slider::RotaryVerticalDrag);
+    k.slider.setMouseDragSensitivity (180);   // Pixel fuer den ganzen Regelweg (Standard waere 250)
     k.slider.setTextBoxStyle (juce::Slider::TextBoxBelow, false, 80, 18);
     content.addAndMakeVisible (k.slider);
     k.label.setText (text, juce::dontSendNotification);

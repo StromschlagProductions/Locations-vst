@@ -147,6 +147,7 @@ Aus der Ferne kommen nur Fetzen durch, je näher er kommt, desto verständlicher
 
 Die Versionsnummer steht in der Datei `VERSION`, im Plugin-Kopf und im Namen der Release. Sie wird bei jeder Änderung hochgezählt (1.0, 1.1, 1.2 …).
 
+- **1.7** – Drehregler lassen sich nur noch senkrecht ziehen (hoch = mehr, runter = weniger), seitliche Handbewegung wirkt nicht mehr mit; kürzerer Weg bis zu den Endstellungen.
 - **1.6** – Kleines Symbol in der Kopfleiste (halboffene Tür mit Schallwellen, dezent in der Farbe der Leiste).
 - **1.5** – „Dazwischen“ heißt jetzt „Verdeckung“, Regler stehen in allen Kästen auf einer Linie, Auswahl darunter.
 - **1.4** – Untere Fläche in drei Kästen gegliedert (Ort A, Dazwischen, Quelle), „Wetter“ heißt jetzt „Wetter-Filter“, Hilfe angepasst.
