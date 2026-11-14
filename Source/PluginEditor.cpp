@@ -94,14 +94,14 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
         "POSITION (A nach B)\n"
         "Der wichtigste Regler. 0 % = Quelle bei Ort A, 100 % = bei Ort B. Automatisiere ihn für jede Bewegung "
         "(Treppe herunter, Förster kommt näher, jemand geht weg).\n\n"
-        "Unten gibt es drei Kästen: ORT A (wirkt nur am Startort), DAZWISCHEN (unabhängig von der Position) "
+        "Unten gibt es drei Kästen: ORT A (wirkt nur am Startort), VERDECKUNG (unabhängig von der Position) "
         "und QUELLE (gilt für die ganze Bewegung).\n\n"
         "ORT A – ENTFERNUNG (nah – weit)\n"
         "Wie weit weg Ort A ist. Beispiel Förster: weit = tief im Wald, 40 % = hinter dem nächsten Baum. "
         "Wirkt nur auf Ort A.\n\n"
-        "DAZWISCHEN (Auswahl + zu – offen)\n"
-        "Im Kasten wählst du, was zwischen Quelle und Hörer ist: Tür, Fenster, Vorhang oder Autoscheibe. "
-        "Der Regler darunter blendet von zu (dumpf, leise, mit dem Klang des Hindernisses) nach offen (keine Wirkung). "
+        "VERDECKUNG (zu – offen + Art)\n"
+        "Etwas, das sich zwischen Quelle und Hörer stellt und den Klang dämpft. Unter dem Regler wählst du die Art: "
+        "Tür, Fenster, Vorhang oder Autoscheibe. Der Regler blendet von zu (dumpf, leise, mit dem Klang des Hindernisses) nach offen (keine Wirkung). "
         "Er hängt nicht an der Position: Die Tür bleibt zu, bis du sie öffnest. "
         "Fenster gekippt = etwa in der Mitte. Autoscheibe: jemand spricht von außen ins Auto oder umgekehrt.\n\n"
         "QUELLE – L ↔ R (Panorama)\n"
@@ -126,7 +126,7 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
     placeB.setTooltip (u8 ("Zielort der Bewegung, meist Gleicher Raum"));
     blend.setTooltip (u8 ("Position: 0 % = bei Ort A (weit), 100 % = bei Ort B (nah). Hauptregler fuer die Bewegung."));
     distance.slider.setTooltip (u8 ("Wie weit weg Ort A ist (nah = 0 %, weit = 100 %). Ort B ist immer nah."));
-    door.slider.setTooltip (u8 ("zu = dumpf und leise (Klang je nach \"Dazwischen\"), offen = keine Wirkung"));
+    door.slider.setTooltip (u8 ("zu = dumpf und leise (Klang je nach Art der Verdeckung), offen = keine Wirkung"));
     rear.slider.setTooltip (u8 ("Quelle vor oder hinter dem H\xc3\xb6rer: hinten klingt sie etwas dunkler. Hall bleibt gleich."));
     barrierBox.setTooltip (u8 ("Was zwischen Quelle und H\xc3\xb6rer ist: T\xc3\xbcr, Fenster, Vorhang oder Autoscheibe (jemand spricht von au\xc3\x9f" "en ins Auto)"));
     weatherBox.setTooltip (u8 ("Ändert nur den Klang, erzeugt keine Wind- oder Regengeräusche: Höhen werden geschluckt, Böen lassen Rufe schwanken. Wirkt nur, wenn Ort A draußen ist, und stärker mit der Entfernung."));
@@ -224,10 +224,10 @@ void LocationsEditor::paint (juce::Graphics& g)
     g.setColour (theme.line);
     g.drawRoundedRectangle (12.5f, 76.5f, (float) W - 25.0f, 121.0f, 8.0f, 1.0f);
 
-    // Untere Kaesten: ORT A | DAZWISCHEN | QUELLE
+    // Untere Kaesten: ORT A | VERDECKUNG | QUELLE
     struct Box { float x, w; const char* title; const char* note; };
     const Box boxes[] = { { 12.0f, 280.0f, "ORT A", "nur am Startort" },
-                          { 300.0f, 152.0f, "DAZWISCHEN", "" },
+                          { 300.0f, 152.0f, "VERDECKUNG", "" },
                           { 460.0f, (float) W - 472.0f, "QUELLE", "ganze Bewegung" } };
     for (const auto& b : boxes)
     {
@@ -273,9 +273,9 @@ void LocationsEditor::resized()
     placeKnob (room, 152, 236, 134);
     weatherLabel.setBounds (24, 368, 100, 26);
     weatherBox.setBounds (124, 366, 156, 28);
-    // DAZWISCHEN: Auswahl oben, Regler darunter
-    barrierBox.setBounds (312, 238, 128, 28);
-    placeKnob (door, 306, 274, 140);
+    // VERDECKUNG: Regler in der Reihe, Art-Auswahl darunter (auf Hoehe des Wetter-Filters)
+    placeKnob (door, 306, 236, 140);
+    barrierBox.setBounds (312, 366, 128, 28);
     // QUELLE: L-R, vorne-hinten
     const int qx = 466, qw = (w - 12 - 6 - qx) / 2;
     placeKnob (pan, qx, 236, qw);

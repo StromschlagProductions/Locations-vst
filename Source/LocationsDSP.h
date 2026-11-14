@@ -423,7 +423,7 @@ private:
         if (sRear < 0.001f) rearCut = 1.0f;
         for (auto& f : rearHp) f.set (2500.0f, sr);
 
-        // Durchgang (Tuer, Fenster, Vorhang, Autoscheibe): zu = Klang des Hindernisses, offen = unveraendert
+        // Verdeckung (Tuer, Fenster, Vorhang, Autoscheibe): zu = Klang des Hindernisses, offen = unveraendert
         const auto& D = barrier (p.barrier);
         if (firstBar) { bFc = std::log (D.fcClosed); bGain = D.gainDb; bHp = D.hpHz; bBodyHz = std::log (D.bodyHz); bQ = D.bodyQ; bAmt = D.bodyAmt; firstBar = false; }
         bFc += smCoef * (std::log (D.fcClosed) - bFc);  bGain += smCoef * (D.gainDb - bGain);   // Typwechsel gleitet
