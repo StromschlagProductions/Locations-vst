@@ -1,6 +1,37 @@
 #pragma once
 #include "PluginProcessor.h"
 
+// Onboard-Hilfe: formatierter Text (Ueberschriften fett in Akzentfarbe), scrollbar in einem Viewport
+class HelpView : public juce::Component
+{
+public:
+    void setAttributed (const juce::AttributedString& s, juce::Colour background)
+    {
+        text = s; bg = background; relayout();
+    }
+    void setWidth (int w)
+    {
+        if (w != laidOutW) { laidOutW = w; relayout(); }
+    }
+    void paint (juce::Graphics& g) override
+    {
+        g.fillAll (bg);
+        tl.draw (g, getLocalBounds().toFloat().reduced (14.0f, 10.0f));
+    }
+private:
+    void relayout()
+    {
+        const int w = juce::jmax (120, laidOutW);
+        tl.createLayout (text, (float) (w - 28));
+        setSize (w, (int) std::ceil (tl.getHeight()) + 24);
+        repaint();
+    }
+    juce::AttributedString text;
+    juce::TextLayout tl;
+    juce::Colour bg;
+    int laidOutW = 0;
+};
+
 class LocationsEditor : public juce::AudioProcessorEditor
 {
 public:
@@ -41,7 +72,8 @@ private:
     std::unique_ptr<APVTS::ComboBoxAttachment> attBarrier, attWeather;
     juce::TextButton themeButton;
     juce::TextButton helpButton;
-    juce::TextEditor helpText;
+    juce::Viewport helpScroll;
+    HelpView helpText;
     juce::TooltipWindow tooltipWindow { this, 400 };
     std::unique_ptr<APVTS::ComboBoxAttachment> attA, attB;
     std::unique_ptr<APVTS::SliderAttachment> attBlend;
