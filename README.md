@@ -9,6 +9,8 @@ VST3-Effekt für Hörspiel-Produktion. Er lässt eine Stimme oder ein Geräusch 
 einem anderen Raum, einer anderen Etage, hinter einer geschlossenen Tür oder aus der Ferne im Freien –
 und lässt es mit **einem** automatisierbaren Regler von dort heranrücken.
 
+**⬇ Download (Windows · VST3 · Stereo):** https://github.com/StromschlagProductions/Locations-vst/releases/latest
+
 ## Warum es dieses Plugin gibt
 
 Bei meiner langjährigen Arbeit an Hörspielproduktionen habe ich immer wieder die Erfahrung gemacht, dass die
@@ -36,12 +38,10 @@ eine ganze Kette von Plugins aufzubauen.
 *LOCATIONS soll niemandem die Erfahrung abnehmen, solche Szenen selbst zu gestalten. Besonders am Anfang kann es viel
 Spaß machen und lehrreich sein, eine Effektkette selbst aufzubauen und zu hören, wie EQ, Hall, Laufzeit und
 Automation ineinandergreifen. Ich bin dankbar, dass ich diesen Weg selbst gegangen bin – auch wenn er manchmal
-umständlich war. Gerade dadurch weiß ich, was ich mir von einem solchen Werkzeug wünsche. LOCATIONS soll diese Arbeit
-nicht ersetzen, sondern sie im Alltag einfacher machen.*
+umständlich war. Gerade dadurch weiß ich, was ich mir von einem solchen Werkzeug wünsche. LOCATIONS soll das Gestalten
+nicht ersetzen, sondern die technische Umsetzung im Alltag einfacher machen.*
 
 – Lars Eickstädt, Stromschlag Audio
-
-**⬇ Download (Windows, VST3):** https://github.com/StromschlagProductions/Locations-vst/releases/latest
 
 ## Oberfläche
 
@@ -58,13 +58,13 @@ verkleinern. Das Seitenverhältnis bleibt dabei fest.
 ## So ist es gedacht
 
 - **Ort A** ist der Ort, an dem die Quelle anfängt (z. B. Obere Etage, Wald).
-- **Ort B** ist das Ziel, fast immer **Gleicher Raum** – der Raum, in dem die Zuhörer sitzen. Ort B ist immer „nah“.
+- **Ort B** ist das Ziel, fast immer **Gleicher Raum** – der Raum der Szene, aus dessen Blickwinkel man hört. Ort B ist immer „nah“.
 - **Position** ist der eine Regler, den du automatisierst: 0 % = bei Ort A, 100 % = bei Ort B.
   Auf dem Weg dahin werden Klangfarbe, Lautstärke, Hall, Echo und Laufzeit gleitend von A nach B überführt.
 - **Entfernung A** legt vorher fest, wie weit weg Ort A ist. So kannst du die Position immer von ganz links
   nach ganz rechts fahren und bestimmst trotzdem, ob der Suchtrupp tief im Wald oder hinter den nächsten Bäumen anfängt.
 
-Den Hall deines Hörraums (z. B. Wohnzimmer-Impulsantwort) legst du wie gewohnt danach in der DAW darüber.
+Den Hall des Szenenraums (z. B. eine Wohnzimmer-Impulsantwort) legst du wie gewohnt danach in der DAW darüber.
 
 ## Orte
 
@@ -114,7 +114,7 @@ passieren automatisch.
 | **VERDECKUNG** – etwas, das sich zwischen Quelle und Hörer stellt; unabhängig von der Position | Art | Tür, Fenster (gekippt ≈ Mitte), Vorhang oder Autoscheibe |
 | | zu ↔ offen | zu = dumpf und leise mit dem Klang des Hindernisses, offen = keine Wirkung. Die Tür bleibt zu, bis du sie öffnest – auch wenn die Quelle schon bei Ort B ist |
 | **QUELLE** – gilt für die ganze Bewegung | L ↔ R | Panorama der Quelle (Stimme, Schritte, Geräusch auf der Spur). Nur die Quelle wandert, Hall und Echo bleiben in der Mitte – anders als beim Pan am Kanal |
-| | Vorne ↔ Hinten | hinter dem Hörer klingt die Quelle etwas dunkler. Hall und Echo bleiben gleich |
+| | Vorne ↔ Hinten | hinter dem Hörer klingt die Quelle etwas dunkler. Es entsteht keine binaurale Rundum-Ortung; Hall und Echo bleiben gleich |
 
 ## Anwendung
 
