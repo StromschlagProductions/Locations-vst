@@ -30,6 +30,7 @@ private:
     juce::Component content;      // feste 680x420-Flaeche, wird skaliert
     float uiScale = 1.0f;
     Theme theme;
+    bool sizeReady = false;   // erst nach dem Wiederherstellen der Groesse Fenstergroesse speichern
     juce::Image logo;
     juce::ComboBox placeA, placeB;
     juce::Label labelA, labelB, labelBlend;

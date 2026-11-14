@@ -152,6 +152,7 @@ Aus der Ferne kommen nur Fetzen durch, je näher er kommt, desto verständlicher
 
 Die Versionsnummer steht in der Datei `VERSION`, im Plugin-Kopf und im Namen der Release. Sie wird bei jeder Änderung hochgezählt (1.0, 1.1, 1.2 …).
 
+- **1.11** – Fenstergröße wird mit dem Projekt gespeichert (vorher sprang sie beim Öffnen auf 100 % zurück).
 - **1.10** – Kasten VERDECKUNG ist orange umrandet und zeigt „aktiv“, solange die Verdeckung wirkt; Hilfe, Tooltip und README erklären, dass sie auch bei Ort B wirkt.
 - **1.9** – Neue Orte Kirche, Museum und Tiefgarage; neue Verdeckungen Schrank, Kofferraum und Unter Wasser.
   *Achtung:* Die Draußen-Orte stehen in der Liste jetzt weiter hinten – Projekte mit älteren Versionen bitte Ort A/B prüfen.

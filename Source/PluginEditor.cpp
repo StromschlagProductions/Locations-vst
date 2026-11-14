@@ -5,6 +5,8 @@ namespace
 {
 juce::String u8 (const char* s) { return juce::String (juce::CharPointer_UTF8 (s)); }
 const char* kThemeProp = "theme";   // 0 = dunkel, 1 = hell (wird mit dem Projekt gespeichert)
+const char* kUiWProp = "uiW";       // Fenstergroesse (wird mit dem Projekt gespeichert)
+const char* kUiHProp = "uiH";
 }
 
 // Farben angelehnt an die Control-Room-App (Schiefer-Gruen + Orange)
@@ -132,7 +134,11 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
     room.slider.setTooltip (u8 ("Mehr oder weniger Hall/Echo von Ort A (Feinregler, dB)"));
 
     applyTheme();
-    setSize (kBaseW, kBaseH);
+    // zuletzt gespeicherte Fenstergroesse wiederherstellen (sonst 100 %)
+    const int savedW = (int) processor.apvts.state.getProperty (kUiWProp, kBaseW);
+    const int savedH = (int) processor.apvts.state.getProperty (kUiHProp, kBaseH);
+    setSize (juce::jlimit (kBaseW / 2, kBaseW * 3, savedW), juce::jlimit (kBaseH / 2, kBaseH * 3, savedH));
+    sizeReady = true;
 }
 
 LocationsEditor::~LocationsEditor() { setLookAndFeel (nullptr); }
@@ -284,6 +290,11 @@ void LocationsEditor::paint (juce::Graphics& g)
 
 void LocationsEditor::resized()
 {
+    if (sizeReady)
+    {
+        processor.apvts.state.setProperty (kUiWProp, getWidth(), nullptr);
+        processor.apvts.state.setProperty (kUiHProp, getHeight(), nullptr);
+    }
     uiScale = std::min ((float) getWidth() / kBaseW, (float) getHeight() / kBaseH);
     content.setTransform (juce::AffineTransform::scale (uiScale));
     content.setBounds (0, 0, kBaseW, kBaseH);
