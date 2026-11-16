@@ -176,7 +176,7 @@ Die Versionsnummer steht in der Datei `VERSION`, im Plugin-Kopf und im Namen der
 
 - `Source/LocationsDSP.h`: Klang-Engine (reines C++, Orte und Werte stehen oben in der Tabelle)
 - `Source/PluginProcessor.*`, `Source/PluginEditor.*`: JUCE-Plugin und Oberfläche
-- `.github/workflows/build.yml`: automatischer Windows-Bau mit Stabilitätstest (pluginval) und Release
+- `.github/workflows/build.yml`: Windows-Bau mit Stabilitätstest (pluginval) auf Anforderung (Run workflow), Release nur mit Haken „publish“, siehe [docs/CI.md](docs/CI.md)
 
 ## Beta-Test und Danke
 
