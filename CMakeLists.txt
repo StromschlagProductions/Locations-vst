@@ -81,3 +81,11 @@ if(BUILD_TESTING)
     target_link_libraries(AudioProcessorTests PRIVATE Locations)
     add_test(NAME AudioProcessor COMMAND AudioProcessorTests)
 endif()
+
+# Real editor snapshots, excluded from normal plugin/release builds.
+juce_add_console_app(LocationsScreenshot PRODUCT_NAME "Locations screenshot")
+target_sources(LocationsScreenshot PRIVATE tools/screenshot.cpp)
+target_include_directories(LocationsScreenshot PRIVATE Source $<TARGET_PROPERTY:Locations,INCLUDE_DIRECTORIES>)
+target_compile_definitions(LocationsScreenshot PRIVATE JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 PLUGIN_VERSION_TEXT="${LOC_VERSION}")
+target_link_libraries(LocationsScreenshot PRIVATE Locations)
+set_target_properties(LocationsScreenshot PROPERTIES EXCLUDE_FROM_ALL TRUE)
