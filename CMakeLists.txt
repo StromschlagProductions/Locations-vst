@@ -9,6 +9,17 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Laufzeitbibliothek fest einbinden: das Plugin braucht dann kein VC++-Redistributable
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
+option(AUDIO_DSP_ONLY "Build portable audio regression tests without JUCE" OFF)
+include(CTest)
+if(BUILD_TESTING)
+    add_executable(AudioDSPTests Tests/DSPTests.cpp)
+    target_include_directories(AudioDSPTests PRIVATE Source)
+    add_test(NAME AudioDSP COMMAND AudioDSPTests)
+endif()
+if(AUDIO_DSP_ONLY)
+    return()
+endif()
+
 set(LOCATIONS_JUCE_PATH "" CACHE PATH "Lokaler JUCE-Ordner (leer = automatisch laden)")
 set(LOCATIONS_FORMATS "VST3" CACHE STRING "Plugin-Formate")
 
@@ -61,3 +72,12 @@ target_link_libraries(Locations
         juce::juce_recommended_config_flags
         juce::juce_recommended_lto_flags
         juce::juce_recommended_warning_flags)
+
+if(BUILD_TESTING)
+    juce_add_console_app(AudioProcessorTests PRODUCT_NAME "Audio processor regression tests")
+    target_sources(AudioProcessorTests PRIVATE Tests/ProcessorTests.cpp)
+    target_include_directories(AudioProcessorTests PRIVATE Source $<TARGET_PROPERTY:Locations,INCLUDE_DIRECTORIES>)
+    target_compile_definitions(AudioProcessorTests PRIVATE JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0)
+    target_link_libraries(AudioProcessorTests PRIVATE Locations)
+    add_test(NAME AudioProcessor COMMAND AudioProcessorTests)
+endif()

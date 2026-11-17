@@ -14,6 +14,9 @@ namespace loc
 {
 constexpr float kPi = 3.14159265358979f;
 
+inline float finiteClamp (float x, float lo, float hi, float fallback) { return std::isfinite (x) ? std::clamp (x, lo, hi) : fallback; }
+inline double validRate (double x) { return std::isfinite (x) && x >= 8000 && x <= 384000 ? x : 48000; }
+
 inline float dbToLin (float db) { return db <= -79.0f ? 0.0f : std::pow (10.0f, db * 0.05f); }
 inline float lerp (float a, float b, float t) { return a + (b - a) * t; }
 inline float logLerp (float a, float b, float t) { return a * std::pow (b / a, t); }
@@ -310,7 +313,7 @@ class Engine
 public:
     void prepare (double sampleRate)
     {
-        sr = (float) sampleRate;
+        sr = (float) validRate (sampleRate);
         roomA.prepare (sr); roomB.prepare (sr);
         for (auto& d : path) d.prepare ((int) (0.04f * sr) + 4);
         smCoef = 1.0f - std::exp (-1.0f / (0.03f * sr / kBlock));   // 30 ms Glaettung
@@ -319,6 +322,8 @@ public:
     }
     void reset()
     {
+        first = true; firstBar = true; counter = 0;
+        gustState = gustState2 = 0; gustCoef = 0.01f; rng = 0x9e3779b9u;
         roomA.reset(); roomB.reset();
         for (auto& d : path) d.reset();
         for (auto& f : lp) f.reset();
@@ -335,7 +340,7 @@ public:
             if (++counter >= kBlock) counter = 0;
 
             curDly += dlyStep;
-            path[0].write (left[i]); path[1].write (right[i]);
+            path[0].write (std::isfinite (left[i]) ? left[i] : 0.0f); path[1].write (std::isfinite (right[i]) ? right[i] : 0.0f);
             const float xl = path[0].readFrac (curDly), xr = path[1].readFrac (curDly);
             float l = lp[0].lowpass (xl), r = lp[1].lowpass (xr);
             l += (xl - l) * open; r += (xr - r) * open;
@@ -366,8 +371,16 @@ public:
     }
 private:
     static constexpr int kBlock = 16;
-    void control (const Params& p)
+    void control (Params p)
     {
+        p.placeA = std::clamp (p.placeA, 0, kNumPlaces - 1);
+        p.placeB = std::clamp (p.placeB, 0, kNumPlaces - 1);
+        p.blend = finiteClamp (p.blend, 0, 1, 0);
+        p.distance = finiteClamp (p.distance, 0, 1, 0.3f);
+        p.door = finiteClamp (p.door, 0, 1, 1);
+        p.pan = finiteClamp (p.pan, -1, 1, 0);
+        p.roomDb = finiteClamp (p.roomDb, -24, 12, 0);
+        p.echoTime = finiteClamp (p.echoTime, 0.25f, 4, 1);
         const float tBlend = std::clamp (p.blend, 0.0f, 1.0f);
         const float tDist = std::clamp (p.distance, 0.0f, 1.0f);
         const float tDoor = std::clamp (p.door, 0.0f, 1.0f);
