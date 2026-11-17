@@ -187,6 +187,8 @@ Die Versionsnummer steht in der Datei `VERSION`, im Plugin-Kopf und im Namen der
 
 **SOUNDJOB / Markus Hildebrandt** – Beta-Testing
 
+Ein großes Dankeschön an **Markus Hildebrandt** von SOUNDJOB. Markus betreibt ein eigenes Tonstudio und hat weit mehr Hörspiele produziert als ich. Er hat LOCATIONS im Studioalltag getestet und mir ehrliches, fachkundiges Feedback gegeben. Auf seine Anregung hin klingen die Draußen-Orte seit Version 1.19 deutlich trockener: Das Echo trägt den Raumeindruck, der Hall bleibt knapp an der Hörschwelle. Außerdem gibt es seitdem den Regler „Echo-Zeit“, mit dem sich zum Beispiel eine Schlucht in den Alpen weiter anfühlt. Dafür danke ich ihm sehr: Seine Erfahrung hat das Plugin spürbar besser gemacht.
+
 Gebaut mit [JUCE](https://juce.com) 8. Ideen zur Raum- und Entfernungssimulation angeregt durch die
 MIT-lizenzierten Airwindows-Plugins (Distance, Cans) von Chris Johnson; kein Code daraus übernommen.
 
