@@ -150,6 +150,7 @@ Aus der Ferne kommen nur Fetzen durch, je näher er kommt, desto verständlicher
 
 Die Versionsnummer steht in der Datei `VERSION`, im Plugin-Kopf und im Namen der Release. Sie wird bei jeder Änderung hochgezählt (1.0, 1.1, 1.2 …).
 
+- Technische Abnahme zu **1.20**: große Mono-Blöcke werden vollständig verarbeitet; neue DSP-/Prozessortests und Schutz vor ungültigen Werten. [Release-Hinweise](docs/RELEASE_NOTES.md).
 - **1.20** – Echo-Zeit ist jetzt ein Drehregler im Kasten ORT A (statt Schieber unter der Position) und wirkt nur auf Ort A, denn Ort B ist meist der gleiche Raum. Das Fenster hat wieder die alte Höhe, der Kasten ORT A ist etwas breiter.
 - **1.19** – Draußen-Orte auf Anregung von Markus Hildebrandt überarbeitet: Hall kaum noch hörbar (knapp an der Hörschwelle), das Echo trägt den Raumeindruck. Neuer Regler „Echo-Zeit“, nur bei Draußen-Orten aktiv (Wald, Straße, Schlucht), von ×0,25 bis ×4 gegenüber dem Original.
 - **1.18** – Look und Hilfe-Knopf getauscht: „?“ ganz rechts, Look links davon.

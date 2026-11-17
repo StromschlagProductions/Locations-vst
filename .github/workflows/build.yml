@@ -41,6 +41,9 @@ jobs:
       - name: Bauen
         run: cmake --build build --config Release --parallel
 
+      - name: Regressionstests
+        run: ctest --test-dir build -C Release --output-on-failure
+
       - name: Plugin bereitstellen
         uses: actions/upload-artifact@v4
         with:
@@ -70,4 +73,4 @@ jobs:
           make_latest: true
           files: |
             Locations-VST3-Windows.zip
-          body: "Windows-VST3 aus dem automatischen Bau. Entpacken, Ordner Locations.vst3 nach C:\\Program Files\\Common Files\\VST3 kopieren."
+          body_path: docs/RELEASE_NOTES.md

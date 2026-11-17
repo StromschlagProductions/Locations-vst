@@ -86,6 +86,24 @@ LocationsProcessor::LocationsProcessor()
     pEchoTime = apvts.getRawParameterValue ("echoTime");
 }
 
+double LocationsProcessor::getTailLengthSeconds() const
+{
+    auto duration = [] (int index, float scale)
+    {
+        const auto& def = loc::place (index);
+        double tail = 2.0 * def.rt60;
+        if (def.echoMs > 0)
+        {
+            const double repeats = def.echoFb > 0 ? 1.0 + std::ceil (std::log (1e-5) / std::log (def.echoFb)) : 1.0;
+            tail = std::max (tail, def.echoMs * 0.001 * (index >= loc::kFirstOutdoor ? scale : 1.0f) * repeats);
+        }
+        return tail + def.delayMs * 0.001;
+    };
+    auto choice = [] (float x) { return (int) loc::finiteClamp (x, 0, loc::kNumPlaces - 1, 0); };
+    const float scale = loc::finiteClamp (pEchoTime->load(), 0.25f, 4, 1);
+    return std::max (duration (choice (pPlaceA->load()), scale), duration (choice (pPlaceB->load()), 1));
+}
+
 void LocationsProcessor::prepareToPlay (double sampleRate, int maxBlock)
 {
     engine.prepare (sampleRate);
@@ -111,16 +129,17 @@ void LocationsProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::M
     if (numSamples == 0 || numCh == 0)
         return;
 
+    auto choice = [] (float x, int maximum) { return juce::roundToInt (loc::finiteClamp (x, 0, (float) maximum, 0)); };
     loc::Params p;
-    p.placeA = juce::roundToInt (pPlaceA->load());
-    p.placeB = juce::roundToInt (pPlaceB->load());
+    p.placeA = choice (pPlaceA->load(), loc::kNumPlaces - 1);
+    p.placeB = choice (pPlaceB->load(), loc::kNumPlaces - 1);
     p.blend = pBlend->load();
     p.distance = pDistance->load();   // Entfernung von Ort A; Ort B ist immer nah
     p.door = pDoor->load();
     p.roomDb = pRoom->load();
     p.pan = pPan->load();
-    p.barrier = juce::roundToInt (pBarrier->load());
-    p.weather = juce::roundToInt (pWeather->load());
+    p.barrier = choice (pBarrier->load(), loc::kNumBarriers - 1);
+    p.weather = choice (pWeather->load(), loc::kNumWeathers - 1);
     p.echoTime = pEchoTime->load();
 
     float* left = buffer.getWritePointer (0);
@@ -136,12 +155,17 @@ void LocationsProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::M
     {
         // reine Mono-Spur: kein Panorama moeglich (das macht der Pan am Kanal), Raum links/rechts zusammenmischen
         p.pan = 0.0f;
-        if ((int) monoScratch.size() < numSamples) return;   // sollte nie passieren
-        float* r = monoScratch.data();
-        std::copy (left, left + numSamples, r);
-        engine.process (left, r, numSamples, p);
-        for (int i = 0; i < numSamples; ++i)
-            left[i] = 0.5f * (left[i] + r[i]);
+        if (monoScratch.empty()) { buffer.clear(); return; }
+        for (int offset = 0; offset < numSamples;)
+        {
+            const int count = std::min ((int) monoScratch.size(), numSamples - offset);
+            auto* l = left + offset;
+            auto* r = monoScratch.data();
+            std::copy_n (l, count, r);
+            engine.process (l, r, count, p);
+            for (int i = 0; i < count; ++i) l[i] = 0.5f * (l[i] + r[i]);
+            offset += count;
+        }
     }
 
     for (int ch = 2; ch < numCh; ++ch)
