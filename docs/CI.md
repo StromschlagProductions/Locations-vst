@@ -19,3 +19,5 @@ Unverändert: Windows-Bau und pluginval Strictness 8.
 3. Wenn alles passt: derselbe Lauf mit Haken **publish**. Das veröffentlicht das Release mit ZIP und setzt den Download-Link der README („latest“) auf die neue Version.
 
 Es wird nie automatisch ein Release oder Merge ausgelöst.
+
+Verbindliches öffentliches Versionsschema: `docs/VERSIONING.md` (ohne Build-Suffix).
