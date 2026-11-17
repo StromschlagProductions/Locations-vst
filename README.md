@@ -183,6 +183,19 @@ Die Versionsnummer steht in der Datei `VERSION`, im Plugin-Kopf und im Namen der
 - `Source/PluginProcessor.*`, `Source/PluginEditor.*`: JUCE-Plugin und Oberfläche
 - `.github/workflows/build.yml`: Windows-Bau mit Stabilitätstest (pluginval) auf Anforderung (Run workflow), Release nur mit Haken „publish“, siehe [docs/CI.md](docs/CI.md)
 
+## Qualität und Prüfung
+
+Wenige Regler heißen nicht, dass hier etwas schnell zusammengeschustert wurde. Die Einfachheit liegt in der Bedienung, nicht in der Technik dahinter. Jede Version durchläuft Prüfungen, wie sie auch bei kommerziellen Plugins üblich sind, und alles ist im Quellcode nachvollziehbar:
+
+- **pluginval, Stufe 8:** Vor jeder Veröffentlichung läuft das Prüfprogramm pluginval von Tracktion auf strenger Stufe. Es lädt das Plugin wieder und wieder, wechselt Abtastraten und Puffergrößen, speichert und lädt Einstellungen und fährt alle Regler mit Zufallswerten durch.
+- **Automatische Tests der Klangberechnung** laufen vor jeder Veröffentlichung. Sie wurden außerdem mit Speicher- und Fehlerprüfern (AddressSanitizer, UndefinedBehaviorSanitizer) durchgespielt, die auch seltene Programmierfehler aufspüren.
+- **Echtzeitsicher:** Während der Wiedergabe wird kein Speicher angefordert und nirgends gewartet. Das verhindert Aussetzer und Knackser, auch bei kleinen Puffern und vielen Instanzen.
+- **Saubere Übergänge:** Positionswechsel werden gleichmäßig laut überblendet, Ortwechsel kurz ein- und ausgeblendet, alle Regler gleiten. Beim Automatisieren knackt nichts.
+- **Keine Latenz**, Mono- und Stereospuren werden korrekt verarbeitet.
+- **Nichts wird dazugemischt:** LOCATIONS verändert nur den Klang der Spur, es fügt keine Geräusche hinzu.
+
+Ob es gut klingt, entscheidet am Ende das Ohr. Deshalb geht jede Version auch durch den Studioalltag von Markus Hildebrandt (siehe unten).
+
 ## Beta-Test und Danke
 
 **SOUNDJOB / Markus Hildebrandt** – Beta-Testing
