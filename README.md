@@ -82,14 +82,14 @@ Den Hall des Szenenraums (z. B. eine Wohnzimmer-Impulsantwort) legst du wie gewo
 | Museum | Hohe Ausstellungsräume, Foyer | Großer, heller, harter Hall |
 | Tiefgarage | Beton, niedrige Decke | Langer, rauer Hall mit kurzem Flatterecho |
 
-**Draußen** (kein Raumhall, sondern Höhenverlust mit der Entfernung und Echos)
+**Draußen** (Höhenverlust mit der Entfernung und Echos; Hall nur noch knapp an der Hörschwelle, das Echo trägt den Raumeindruck)
 
 | Ort | Wann nehmen | Klang |
 |---|---|---|
 | Draußen: Feld | Offene Fläche, Steppe, Outback | Kein Hall, nur Höhen- und Pegelverlust |
-| Draußen: Wald | Im Wald, zwischen Bäumen | Kein Hall, weiches dumpfes Echo aus der Ferne |
-| Draußen: Straße | Zwischen Häusern | Kurzes Echo von den Hauswänden, etwas Raum |
-| Draußen: Schlucht / Felswand | Berge, Steinbruch, Felswand | Langes, wiederholtes Echo |
+| Draußen: Wald | Im Wald, zwischen Bäumen | Weiches dumpfes Echo aus der Ferne, Hall kaum hörbar |
+| Draußen: Straße | Zwischen Häusern | Kurzes Echo von den Hauswänden, Hall kaum hörbar |
+| Draußen: Schlucht / Felswand | Berge, Steinbruch, Felswand | Langes, wiederholtes Echo, Hall kaum hörbar; die Echo-Zeit lässt sich verlängern (Alpen, weite Täler) |
 
 Die Laufzeit des Weges (ein paar Millisekunden innen, mehr draußen) und das Leiserwerden mit der Entfernung
 passieren automatisch.
@@ -102,6 +102,7 @@ passieren automatisch.
 |---|---|
 | Ort A / Ort B | Start und Ziel der Bewegung |
 | Position (A nach B) | **der Regler für die Bewegung**: 0 % = bei Ort A, 100 % = bei Ort B (nah) |
+| Echo-Zeit (nur Draußen) | Schieberegler unter der Position. Streckt oder verkürzt das Echo von Wald, Straße und Schlucht: Mitte = Original, rechts länger (bis ×4), links kürzer. Angezeigt wird die Zeit in ms. Bei allen anderen Orten grau und ohne Wirkung |
 
 **Unten, in drei Kästen**
 
@@ -148,6 +149,7 @@ Aus der Ferne kommen nur Fetzen durch, je näher er kommt, desto verständlicher
 
 Die Versionsnummer steht in der Datei `VERSION`, im Plugin-Kopf und im Namen der Release. Sie wird bei jeder Änderung hochgezählt (1.0, 1.1, 1.2 …).
 
+- **1.19** – Draußen-Orte auf Anregung von Markus Hildebrandt überarbeitet: Hall kaum noch hörbar (knapp an der Hörschwelle), das Echo trägt den Raumeindruck. Neuer Regler „Echo-Zeit“ unter der Position, nur bei Draußen-Orten aktiv (Wald, Straße, Schlucht), von ×0,25 bis ×4 gegenüber dem Original. Das Fenster ist dadurch etwas höher; gespeicherte Fenstergrößen bleiben in der Breite erhalten.
 - **1.18** – Look und Hilfe-Knopf getauscht: „?“ ganz rechts, Look links davon.
 - **1.17** – Hilfe: Fenster deckt die Kartenfläche mit gleichen runden Ecken genau ab.
 - **1.16** – Hilfe: Credits zeigen „Idee und Konzept: Lars Eickstädt“ (ohne Umsetzungszeile).

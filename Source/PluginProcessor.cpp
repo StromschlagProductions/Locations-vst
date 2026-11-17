@@ -51,6 +51,13 @@ juce::AudioProcessorValueTreeState::ParameterLayout LocationsProcessor::createLa
                                                        NormalisableRange<float> (0.0f, 1.0f), 1.0f, doorText));
     layout.add (std::make_unique<AudioParameterChoice> (ParameterID { "barrier", 1 }, "Verdeckung (Art)", barrierNames(), 0));
     layout.add (std::make_unique<AudioParameterChoice> (ParameterID { "weather", 1 }, "Wetter-Filter (Ort A draussen)", weatherNames(), 0));
+    {
+        NormalisableRange<float> r (0.25f, 4.0f);
+        r.setSkewForCentre (1.0f);   // Mitte = Original-Echo-Zeit des Ortes
+        auto echoText = AudioParameterFloatAttributes().withStringFromValueFunction (
+            [] (float v, int) { return "x" + String (v, 2); });
+        layout.add (std::make_unique<AudioParameterFloat> (ParameterID { "echoTime", 1 }, "Echo-Zeit (nur Draussen)", r, 1.0f, echoText));
+    }
     layout.add (std::make_unique<AudioParameterFloat> (ParameterID { "room", 1 }, "Raumanteil (Ort A)",
                                                        NormalisableRange<float> (-24.0f, 12.0f), 0.0f, decibel));
     auto panText = AudioParameterFloatAttributes().withStringFromValueFunction (
@@ -76,6 +83,7 @@ LocationsProcessor::LocationsProcessor()
     pPan = apvts.getRawParameterValue ("pan");
     pBarrier = apvts.getRawParameterValue ("barrier");
     pWeather = apvts.getRawParameterValue ("weather");
+    pEchoTime = apvts.getRawParameterValue ("echoTime");
 }
 
 void LocationsProcessor::prepareToPlay (double sampleRate, int maxBlock)
@@ -113,6 +121,7 @@ void LocationsProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::M
     p.pan = pPan->load();
     p.barrier = juce::roundToInt (pBarrier->load());
     p.weather = juce::roundToInt (pWeather->load());
+    p.echoTime = pEchoTime->load();
 
     float* left = buffer.getWritePointer (0);
 

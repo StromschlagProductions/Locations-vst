@@ -55,9 +55,9 @@ inline const PlaceDef& place (int i)
         { "Museum",             10000,  3500,  -2.0f, -12.0f, 1.80f, 5500, 1.8f, -12,  -3, 10.0f,   0, -80,  -80, 0.0f },
         { "Tiefgarage",          8000,  3000,  -2.0f, -12.0f, 2.00f, 4500, 1.6f,  -9,  -2, 10.0f,  35, -26,  -18, 0.25f },
         { "Draussen: Feld",     16000,  2200,   0.0f, -24.0f, 0.00f, 6000, 1.0f, -80, -80, 30.0f,   0, -80,  -80, 0.0f },
-        { "Draussen: Wald",     12000,  1800,  -1.0f, -22.0f, 0.00f, 2800, 1.0f, -80, -80, 30.0f, 140, -32,  -13, 0.30f },
-        { "Draussen: Strasse",  14000,  2500,   0.0f, -22.0f, 0.50f, 3500, 1.6f, -24, -13, 30.0f,  95, -20,  -10, 0.35f },
-        { "Draussen: Schlucht", 14000,  2200,   0.0f, -22.0f, 0.00f, 6000, 1.0f, -80, -80, 30.0f, 420, -16,   -6, 0.45f },
+        { "Draussen: Wald",     12000,  1800,  -1.0f, -22.0f, 0.70f, 2800, 1.2f, -46, -32, 30.0f, 140, -32,  -13, 0.30f },
+        { "Draussen: Strasse",  14000,  2500,   0.0f, -22.0f, 0.50f, 3500, 1.6f, -40, -28, 30.0f,  95, -20,  -10, 0.35f },
+        { "Draussen: Schlucht", 14000,  2200,   0.0f, -22.0f, 1.40f, 4000, 1.5f, -44, -32, 30.0f, 420, -16,   -6, 0.45f },
     };
     return defs[std::clamp (i, 0, kNumPlaces - 1)];
 }
@@ -234,13 +234,16 @@ public:
     {
         sr = sampleRate;
         rev.prepare (sr);
-        echo.prepare ((int) (0.6f * sr));
+        echo.prepare ((int) (2.0f * sr));   // bis 2 s (Schlucht x4 = 1,7 s)
         echoLp.set (2500.0f, sr);
+        echoGlide = 1.0f / (0.25f * sr);   // ca. 250 ms Gleitzeit
         current = -1;
         reset();
     }
     void reset() { rev.reset(); echo.reset(); echoLp.reset(); }
     void want (int p) { wanted = p; if (current < 0) apply(); }
+    // Echo-Zeit-Faktor: wirkt nur bei Orten draussen (Wald, Strasse, Schlucht)
+    void setEchoScale (float s) { scale = s; }
 
     inline void process (float in, float wet, float echoGain, float& l, float& r)
     {
@@ -259,7 +262,9 @@ public:
         }
         if (hasEcho)
         {
-            const float e = echo.read();
+            const float target = echoBase * (outdoor ? scale : 1.0f);
+            echoLen += (target - echoLen) * echoGlide;       // gleitend: kein Knacken beim Verstellen
+            const float e = echo.readFrac (echoLen);
             echo.write (in + echoLp.lowpass (e) * fb);
             l += e * echoGain; r += e * echoGain;
         }
@@ -274,12 +279,15 @@ private:
         hasRev = p.rt60 > 0.0f;
         hasEcho = p.echoMs > 0.0f;
         rev.set (std::max (0.1f, p.rt60), p.dampHz, p.size);
-        echo.setLength (std::max (1, (int) (p.echoMs * 0.001f * sr)));
+        echoBase = std::max (1.0f, p.echoMs * 0.001f * sr);
+        outdoor = current >= kFirstOutdoor;
+        echoLen = echoBase * (outdoor ? scale : 1.0f);
         fb = p.echoFb;
     }
     float sr = 48000.0f, fade = 1.0f, fb = 0.0f;
+    float scale = 1.0f, echoBase = 1.0f, echoLen = 1.0f, echoGlide = 0.0001f;
     int current = -1, wanted = 0;
-    bool hasRev = false, hasEcho = false;
+    bool hasRev = false, hasEcho = false, outdoor = false;
     Reverb rev; Delay echo; OnePole echoLp;
 };
 
@@ -294,6 +302,7 @@ struct Params
     float pan = 0.0f;          // -1 = links, 0 = Mitte, +1 = rechts (nur die Quelle, nicht der Raum)
     int   barrier = 0;         // Tuer / Fenster / Vorhang / Autoscheibe
     int   weather = 0;         // Ruhig / Wind-Regen / Sturm (wirkt nur draussen bei Ort A)
+    float echoTime = 1.0f;     // Faktor auf die Echo-Zeit der Orte draussen (0,25 bis 4)
 };
 
 class Engine
@@ -363,6 +372,8 @@ private:
         const float tDist = std::clamp (p.distance, 0.0f, 1.0f);
         const float tDoor = std::clamp (p.door, 0.0f, 1.0f);
         const float tPan = std::clamp (p.pan, -1.0f, 1.0f);
+        const float es = std::clamp (p.echoTime, 0.25f, 4.0f);
+        roomA.setEchoScale (es); roomB.setEchoScale (es);   // vor want(): neue Orte starten gleich mit der richtigen Echo-Zeit
         roomA.want (p.placeA); roomB.want (p.placeB);
 
         const auto& A = place (p.placeA);
