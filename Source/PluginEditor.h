@@ -69,7 +69,7 @@ private:
     static Theme darkTheme();
     static Theme lightTheme();
 
-    static constexpr int kBaseW = 680, kBaseH = 480;
+    static constexpr int kBaseW = 680, kBaseH = 420;
 
     LocationsProcessor& processor;
     juce::LookAndFeel_V4 look;
@@ -79,11 +79,10 @@ private:
     bool sizeReady = false;   // erst nach dem Wiederherstellen der Groesse Fenstergroesse speichern
     juce::Image logo;
     juce::ComboBox placeA, placeB;
-    juce::Label labelA, labelB, labelBlend, labelEcho;
-    juce::Slider blend, echoSlider;
-    std::unique_ptr<APVTS::SliderAttachment> attEcho;
+    juce::Label labelA, labelB, labelBlend;
+    juce::Slider blend;
     void updateEchoState();
-    Knob distance, door, pan, room;
+    Knob distance, door, pan, room, echo;
     juce::ComboBox barrierBox, weatherBox;
     juce::Label weatherLabel;
     std::unique_ptr<APVTS::ComboBoxAttachment> attBarrier, attWeather;

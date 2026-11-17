@@ -302,7 +302,7 @@ struct Params
     float pan = 0.0f;          // -1 = links, 0 = Mitte, +1 = rechts (nur die Quelle, nicht der Raum)
     int   barrier = 0;         // Tuer / Fenster / Vorhang / Autoscheibe
     int   weather = 0;         // Ruhig / Wind-Regen / Sturm (wirkt nur draussen bei Ort A)
-    float echoTime = 1.0f;     // Faktor auf die Echo-Zeit der Orte draussen (0,25 bis 4)
+    float echoTime = 1.0f;     // Faktor auf die Echo-Zeit von Ort A, wenn draussen (0,25 bis 4)
 };
 
 class Engine
@@ -373,7 +373,7 @@ private:
         const float tDoor = std::clamp (p.door, 0.0f, 1.0f);
         const float tPan = std::clamp (p.pan, -1.0f, 1.0f);
         const float es = std::clamp (p.echoTime, 0.25f, 4.0f);
-        roomA.setEchoScale (es); roomB.setEchoScale (es);   // vor want(): neue Orte starten gleich mit der richtigen Echo-Zeit
+        roomA.setEchoScale (es);   // nur Ort A (Ort B ist meist der gleiche Raum); vor want(): neue Orte starten gleich richtig
         roomA.want (p.placeA); roomB.want (p.placeB);
 
         const auto& A = place (p.placeA);

@@ -44,11 +44,9 @@ static juce::AttributedString buildHelp (juce::Colour text, juce::Colour accent,
     head ("POSITION (A nach B)");
     body ("Der wichtigste Regler: 0 % = Quelle bei Ort A, 100 % = bei Ort B. Automatisiere ihn für jede Bewegung, zum Beispiel Treppe herunter, Suchtrupp kommt näher oder jemand geht weg.");
 
-    head ("ECHO-ZEIT (nur Draußen)");
-    body ("Unter der Position. Verlängert oder verkürzt das Echo der Draußen-Orte (Wald, Straße, Schlucht): Mitte = Original, nach rechts länger, zum Beispiel für weite Täler oder Alpen. Der Wert zeigt die Echo-Zeit in Millisekunden. Bei allen anderen Orten ist der Regler grau und ohne Wirkung. Der Hall ist draußen nur noch knapp hörbar, das Echo trägt den Raumeindruck.");
-
     head ("Kasten ORT A (wirkt nur am Startort)");
     body ("Entfernung: wie weit weg Ort A ist, von nah bis weit. Beispiel Suchtrupp: weit = tief im Wald, 40 % = ein paar Bäume entfernt.");
+    body ("Echo-Zeit: verlängert oder verkürzt das Echo, wenn Ort A draußen ist (Wald, Straße, Schlucht). Mitte = Original, rechts länger, zum Beispiel für weite Täler oder Alpen; angezeigt in Millisekunden. Bei allen anderen Orten ist der Regler grau und ohne Wirkung. Der Hall ist draußen nur noch knapp hörbar, das Echo trägt den Raumeindruck.");
     body ("Raumanteil: mehr oder weniger Hall bzw. Echo von Ort A, in dB. Feinregler, normalerweise auf 0 dB lassen.");
     body ("Wetter-Filter: Ruhig, Wind / Regen, Sturm. Ändert nur den Klang, es kommen keine Wind- oder Regengeräusche dazu. Wirkt nur, wenn Ort A draußen ist, stärker mit der Entfernung, und verschwindet bei Ort B.");
 
@@ -109,25 +107,16 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
     content.addAndMakeVisible (blend);
     attBlend = std::make_unique<APVTS::SliderAttachment> (processor.apvts, "blend", blend);
 
-    labelEcho.setText (u8 ("ECHO-ZEIT  (nur Drau\xc3\x9f""en)"), juce::dontSendNotification);
-    labelEcho.setJustificationType (juce::Justification::centred);
-    content.addAndMakeVisible (labelEcho);
-    echoSlider.setSliderStyle (juce::Slider::LinearHorizontal);
-    echoSlider.setTextBoxStyle (juce::Slider::TextBoxBelow, false, 70, 18);
-    content.addAndMakeVisible (echoSlider);
-    attEcho = std::make_unique<APVTS::SliderAttachment> (processor.apvts, "echoTime", echoSlider);
-    echoSlider.textFromValueFunction = [this] (double v)
-    {
-        // Anzeige in ms: Echo-Zeit des Ortes (A, sonst B) mal Faktor
-        const int a = juce::roundToInt (processor.apvts.getRawParameterValue ("placeA")->load());
-        const int b = juce::roundToInt (processor.apvts.getRawParameterValue ("placeB")->load());
-        const int i = (a >= loc::kFirstOutdoor && loc::place (a).echoMs > 0.0f) ? a : b;
-        if (i < loc::kFirstOutdoor || loc::place (i).echoMs <= 0.0f) return juce::String ("--");
-        return juce::String (juce::roundToInt (loc::place (i).echoMs * (float) v)) + " ms";
-    };
-    echoSlider.valueFromTextFunction = [] (const juce::String& t) { return (double) t.getFloatValue(); };
     placeA.onChange = [this] { updateEchoState(); };
-    placeB.onChange = [this] { updateEchoState(); };
+    setupKnob (echo, "echoTime", "Echo-Zeit");
+    echo.slider.textFromValueFunction = [this] (double v)
+    {
+        // Anzeige in ms: Echo-Zeit von Ort A mal Faktor
+        const int a = juce::roundToInt (processor.apvts.getRawParameterValue ("placeA")->load());
+        if (a < loc::kFirstOutdoor || loc::place (a).echoMs <= 0.0f) return juce::String ("--");
+        return juce::String (juce::roundToInt (loc::place (a).echoMs * (float) v)) + " ms";
+    };
+    echo.slider.valueFromTextFunction = [] (const juce::String& t) { return (double) t.getFloatValue(); };
     updateEchoState();
 
     setupKnob (distance, "distance", "Entfernung");
@@ -168,7 +157,7 @@ LocationsEditor::LocationsEditor (LocationsProcessor& p) : AudioProcessorEditor 
     // Tooltips
     placeA.setTooltip (u8 ("Startort der Bewegung"));
     placeB.setTooltip (u8 ("Zielort der Bewegung, meist Gleicher Raum"));
-    echoSlider.setTooltip (u8 ("Echo-Zeit der Drau\xc3\x9f""en-Orte (Wald, Stra\xc3\x9f""e, Schlucht): Mitte = Original, rechts l\xc3\xa4nger (weite T\xc3\xa4ler, Alpen). Bei anderen Orten ohne Wirkung."));
+    echo.slider.setTooltip (u8 ("Echo-Zeit von Ort A, wenn er drau\xc3\x9f""en ist (Wald, Stra\xc3\x9f""e, Schlucht): Mitte = Original, rechts l\xc3\xa4nger (weite T\xc3\xa4ler, Alpen). Bei anderen Orten ohne Wirkung."));
     blend.setTooltip (u8 ("Position: 0 % = bei Ort A (weit), 100 % = bei Ort B (nah). Hauptregler fuer die Bewegung."));
     distance.slider.setTooltip (u8 ("Wie weit weg Ort A ist (nah = 0 %, weit = 100 %). Ort B ist immer nah."));
     door.slider.setTooltip (u8 ("zu = dumpf und leise (Klang je nach Art der Verdeckung), offen = keine Wirkung. Wirkt auch bei Ort B (100 %) \xe2\x80\x93 f\xc3\xbcr frei im Raum ganz auf offen stellen."));
@@ -214,7 +203,7 @@ void LocationsEditor::applyTheme()
     look.setColour (juce::TextButton::buttonColourId, theme.dark ? theme.panel : theme.bg);
     look.setColour (juce::TextButton::textColourOffId, theme.text);
 
-    for (auto* l : { &labelA, &labelB, &labelBlend, &labelEcho })
+    for (auto* l : { &labelA, &labelB, &labelBlend })
         l->setColour (juce::Label::textColourId, theme.dim);
     themeButton.setButtonText (theme.dark ? "Look: Dunkel" : "Look: Hell");
     helpText.setAttributed (buildHelp (theme.text, theme.accent, theme.dim), theme.panel);
@@ -307,29 +296,29 @@ void LocationsEditor::paint (juce::Graphics& g)
 
     // Karten
     g.setColour (theme.panel);
-    g.fillRoundedRectangle (12.0f, 76.0f, (float) W - 24.0f, 182.0f, 8.0f);
+    g.fillRoundedRectangle (12.0f, 76.0f, (float) W - 24.0f, 122.0f, 8.0f);
     g.setColour (theme.line);
-    g.drawRoundedRectangle (12.5f, 76.5f, (float) W - 25.0f, 181.0f, 8.0f, 1.0f);
+    g.drawRoundedRectangle (12.5f, 76.5f, (float) W - 25.0f, 121.0f, 8.0f, 1.0f);
 
     // Untere Kaesten: ORT A | VERDECKUNG | QUELLE
     struct Box { float x, w; const char* title; const char* note; };
-    const Box boxes[] = { { 12.0f, 280.0f, "ORT A", "nur am Startort" },
-                          { 300.0f, 152.0f, "QUELLE", "" },
-                          { 460.0f, (float) W - 472.0f, "VERDECKUNG", "" } };
+    const Box boxes[] = { { 12.0f, 336.0f, "ORT A", "nur am Startort" },
+                          { 356.0f, 124.0f, "QUELLE", "" },
+                          { 488.0f, (float) W - 500.0f, "VERDECKUNG", "" } };
     const bool barrierActive = door.slider.getValue() < 0.995;   // Verdeckung wirkt (nicht ganz offen)
     for (const auto& b : boxes)
     {
         const bool hot = barrierActive && juce::String (b.title) == "VERDECKUNG";
         g.setColour (theme.panel);
-        g.fillRoundedRectangle (b.x, 268.0f, b.w, 200.0f, 8.0f);
+        g.fillRoundedRectangle (b.x, 208.0f, b.w, 200.0f, 8.0f);
         g.setColour (hot ? theme.accent : theme.line);
-        g.drawRoundedRectangle (b.x + 0.5f, 268.5f, b.w - 1.0f, 199.0f, 8.0f, hot ? 2.0f : 1.0f);
+        g.drawRoundedRectangle (b.x + 0.5f, 208.5f, b.w - 1.0f, 199.0f, 8.0f, hot ? 2.0f : 1.0f);
         g.setColour (theme.accent);
         g.setFont (juce::FontOptions (12.0f, juce::Font::bold));
-        g.drawText (b.title, (int) b.x + 12, 274, (int) b.w - 24, 16, juce::Justification::centredLeft);
+        g.drawText (b.title, (int) b.x + 12, 214, (int) b.w - 24, 16, juce::Justification::centredLeft);
         g.setColour (hot ? theme.accent : theme.dim);
         g.setFont (juce::FontOptions (10.5f, hot ? juce::Font::bold : juce::Font::plain));
-        g.drawText (hot ? juce::String ("aktiv") : u8 (b.note), (int) b.x + 12, 274, (int) b.w - 24, 16, juce::Justification::centredRight);
+        g.drawText (hot ? juce::String ("aktiv") : u8 (b.note), (int) b.x + 12, 214, (int) b.w - 24, 16, juce::Justification::centredRight);
     }
 }
 
@@ -349,7 +338,7 @@ void LocationsEditor::resized()
     // Look links, Hilfe ganz rechts (gleicher Gesamtplatz, nur getauscht)
     themeButton.setBounds (w - 170, 18, 112, 28);
     helpButton.setBounds (w - 48, 18, 32, 28);
-    helpScroll.setBounds (12, 76, w - 24, 392);   // deckt die Kartenflaeche (y 76 bis 468) genau ab
+    helpScroll.setBounds (12, 76, w - 24, 332);   // deckt die Kartenflaeche (y 76 bis 408) genau ab
     helpText.setWidth (helpScroll.getMaximumVisibleWidth());
 
     labelA.setBounds (24, 82, 200, 18);
@@ -358,8 +347,6 @@ void LocationsEditor::resized()
     placeB.setBounds (w - 214, 102, 190, 28);
     labelBlend.setBounds (224, 82, w - 448, 18);
     blend.setBounds (24, 140, w - 48, 50);
-    labelEcho.setBounds (224, 200, w - 448, 18);
-    echoSlider.setBounds (24, 216, w - 48, 40);
 
     auto placeKnob = [] (Knob& k, int x, int y, int cw)
     {
@@ -367,28 +354,27 @@ void LocationsEditor::resized()
         k.slider.setBounds (x + 10, y + 20, cw - 20, 100);
     };
     // ORT A: Entfernung, Raumanteil, darunter Wetter-Filter
-    placeKnob (distance, 18, 296, 134);
-    placeKnob (room, 152, 296, 134);
-    weatherLabel.setBounds (24, 428, 100, 26);
-    weatherBox.setBounds (124, 426, 156, 28);
+    placeKnob (distance, 16, 236, 108);
+    placeKnob (room, 124, 236, 108);
+    placeKnob (echo, 232, 236, 108);
+    weatherLabel.setBounds (24, 368, 100, 26);
+    weatherBox.setBounds (124, 366, 200, 28);
     // QUELLE (Mitte): L-R
-    placeKnob (pan, 306, 296, 140);
+    placeKnob (pan, 356, 236, 124);
     // VERDECKUNG (rechts aussen, wirkt bis zum Schluss): Regler, Art-Auswahl darunter (auf Hoehe des Wetter-Filters)
-    const int vx = 466, vw = w - 12 - 6 - vx;
-    placeKnob (door, vx, 296, vw);
-    barrierBox.setBounds (vx + 12, 426, vw - 24, 28);
+    const int vx = 494, vw = w - 12 - 6 - vx;
+    placeKnob (door, vx, 236, vw);
+    barrierBox.setBounds (vx + 8, 366, vw - 16, 28);
     helpScroll.toFront (false);
 }
 
-// Echo-Zeit ist nur aktiv (orange), wenn Ort A oder B ein Draussen-Ort mit Echo ist (Wald, Strasse, Schlucht)
+// Echo-Zeit ist nur aktiv (orange), wenn Ort A ein Draussen-Ort mit Echo ist (Wald, Strasse, Schlucht)
 void LocationsEditor::updateEchoState()
 {
     const int a = juce::roundToInt (processor.apvts.getRawParameterValue ("placeA")->load());
-    const int b = juce::roundToInt (processor.apvts.getRawParameterValue ("placeB")->load());
-    auto usable = [] (int i) { return i >= loc::kFirstOutdoor && loc::place (i).echoMs > 0.0f; };
-    const bool active = usable (a) || usable (b);
-    echoSlider.setEnabled (active);
-    echoSlider.setAlpha (active ? 1.0f : 0.35f);
-    labelEcho.setAlpha (active ? 1.0f : 0.45f);
-    echoSlider.updateText();
+    const bool active = a >= loc::kFirstOutdoor && loc::place (a).echoMs > 0.0f;
+    echo.slider.setEnabled (active);
+    echo.slider.setAlpha (active ? 1.0f : 0.35f);
+    echo.label.setAlpha (active ? 1.0f : 0.45f);
+    echo.slider.updateText();
 }

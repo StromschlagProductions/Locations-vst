@@ -102,7 +102,7 @@ passieren automatisch.
 |---|---|
 | Ort A / Ort B | Start und Ziel der Bewegung |
 | Position (A nach B) | **der Regler für die Bewegung**: 0 % = bei Ort A, 100 % = bei Ort B (nah) |
-| Echo-Zeit (nur Draußen) | Schieberegler unter der Position. Streckt oder verkürzt das Echo von Wald, Straße und Schlucht: Mitte = Original, rechts länger (bis ×4), links kürzer. Angezeigt wird die Zeit in ms. Bei allen anderen Orten grau und ohne Wirkung |
+
 
 **Unten, in drei Kästen**
 
@@ -110,6 +110,7 @@ passieren automatisch.
 |---|---|---|
 | **ORT A** – wirkt nur am Startort | Entfernung | wie weit weg Ort A ist (nah – weit) |
 | | Raumanteil | mehr oder weniger Hall bzw. Echo von Ort A (Feinregler, normalerweise 0 dB) |
+| | Echo-Zeit | nur wenn Ort A draußen ist (Wald, Straße, Schlucht): streckt oder verkürzt dessen Echo, Mitte = Original, rechts länger (bis ×4), zum Beispiel für Alpen und weite Täler. Angezeigt in ms; sonst grau und ohne Wirkung |
 | | Wetter-Filter | Ruhig, Wind / Regen, Sturm. **Ändert nur den Klang, erzeugt keine Wind- oder Regengeräusche.** Nur wenn Ort A draußen ist: Höhen werden geschluckt, Böen lassen Rufe schwanken. Stärker mit der Entfernung, verschwindet zu Ort B hin |
 | **QUELLE** | L ↔ R | Panorama der Quelle (Stimme, Schritte, Geräusch auf der Spur). Nur die Quelle wandert, Hall und Echo bleiben in der Mitte – anders als beim Pan am Kanal. Gilt über die ganze Bewegung. Nur auf Stereo-Spur oder Stereo-Bus – auf einer Mono-Spur den Pan am Kanal benutzen |
 | **VERDECKUNG** (ganz rechts) – etwas, das sich zwischen Quelle und Hörer stellt; unabhängig von der Position | Art | Tür, Fenster (gekippt ≈ Mitte), Vorhang, Autoscheibe, Schrank, Kofferraum oder Unter Wasser |
@@ -149,7 +150,8 @@ Aus der Ferne kommen nur Fetzen durch, je näher er kommt, desto verständlicher
 
 Die Versionsnummer steht in der Datei `VERSION`, im Plugin-Kopf und im Namen der Release. Sie wird bei jeder Änderung hochgezählt (1.0, 1.1, 1.2 …).
 
-- **1.19** – Draußen-Orte auf Anregung von Markus Hildebrandt überarbeitet: Hall kaum noch hörbar (knapp an der Hörschwelle), das Echo trägt den Raumeindruck. Neuer Regler „Echo-Zeit“ unter der Position, nur bei Draußen-Orten aktiv (Wald, Straße, Schlucht), von ×0,25 bis ×4 gegenüber dem Original. Das Fenster ist dadurch etwas höher; gespeicherte Fenstergrößen bleiben in der Breite erhalten.
+- **1.20** – Echo-Zeit ist jetzt ein Drehregler im Kasten ORT A (statt Schieber unter der Position) und wirkt nur auf Ort A, denn Ort B ist meist der gleiche Raum. Das Fenster hat wieder die alte Höhe, der Kasten ORT A ist etwas breiter.
+- **1.19** – Draußen-Orte auf Anregung von Markus Hildebrandt überarbeitet: Hall kaum noch hörbar (knapp an der Hörschwelle), das Echo trägt den Raumeindruck. Neuer Regler „Echo-Zeit“, nur bei Draußen-Orten aktiv (Wald, Straße, Schlucht), von ×0,25 bis ×4 gegenüber dem Original.
 - **1.18** – Look und Hilfe-Knopf getauscht: „?“ ganz rechts, Look links davon.
 - **1.17** – Hilfe: Fenster deckt die Kartenfläche mit gleichen runden Ecken genau ab.
 - **1.16** – Hilfe: Credits zeigen „Idee und Konzept: Lars Eickstädt“ (ohne Umsetzungszeile).
